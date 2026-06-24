@@ -349,6 +349,63 @@ img{max-width:100%}
 .scr::before,.scr::after{display:none!important}
 .photo-slot,.pet-photo{position:relative!important;overflow:visible!important}
 .photo-slot .card-svg,.pet-photo .card-svg{position:absolute!important;inset:0;width:100%!important;height:100%!important}
+
+/* ═══ GIFTS & DATES PAGE ═══ */
+.gifts{position:relative;z-index:2;padding:0 22px 20px;display:flex;flex-direction:column;gap:24px}
+.gift-section-label{text-align:center;margin:6px 0 2px}
+.gift-section-label .gsl-title{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:800;color:var(--gold2)}
+.gift-section-label .gsl-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.82rem;opacity:.5;margin-top:2px}
+.gift-section-label .gsl-deco{font-size:.75rem;letter-spacing:4px;opacity:.3;margin-top:4px}
+
+/* Voucher scratch cards grid */
+.voucher-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.voucher{aspect-ratio:.82;border-radius:14px;position:relative;overflow:hidden;cursor:pointer;-webkit-user-select:none;user-select:none;touch-action:none;transition:transform .25s;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.voucher:hover{transform:scale(1.03)}.voucher:active{transform:scale(.97)}
+.v-bg{background:linear-gradient(160deg,#1A1408,#201C0C,#161408)}
+/* revealed voucher content */
+.v-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 10px;text-align:center;z-index:1;opacity:0;transform:scale(.5) rotate(-8deg)}
+.v-in.on{opacity:1;transform:scale(1) rotate(0);animation:pop .6s cubic-bezier(.34,1.56,.64,1)}
+.v-emoji{font-size:2.4rem;margin-bottom:6px;filter:drop-shadow(0 3px 10px rgba(0,0,0,.4))}
+.v-title{font-family:'Playfair Display',serif;font-size:.82rem;font-weight:700;line-height:1.3;color:var(--cream);text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.v-sub{font-family:'Cormorant Garamond',serif;font-size:.66rem;font-style:italic;opacity:.55;margin-top:3px}
+/* voucher scratch cover (gold) */
+.v-scr{position:absolute;inset:0;z-index:3;border-radius:13px;display:flex;align-items:center;justify-content:center;transition:opacity .45s,transform .45s;background-color:#1A1508}
+.v-scr.off{opacity:0;transform:scale(1.08);pointer-events:none}
+.v-scr-center{display:flex;flex-direction:column;align-items:center;gap:6px;z-index:2}
+.v-scr-icon{font-size:2rem}
+.v-scr-mini{font-size:.46rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(232,184,109,.55);white-space:nowrap}
+.v-sp-box{position:absolute;inset:0;z-index:6;pointer-events:none;overflow:hidden;border-radius:13px}
+
+/* Dates timeline */
+.dates-block{display:flex;flex-direction:column;gap:12px}
+.date-card{
+  background:rgba(240,223,192,.03);border-radius:14px;
+  border:1px solid rgba(240,223,192,.08);
+  padding:14px 16px;display:flex;align-items:flex-start;gap:12px;
+  position:relative;overflow:hidden;
+}
+.date-card.done-date{background:linear-gradient(135deg,rgba(124,91,173,.1),rgba(212,115,110,.08))}
+.date-emoji{font-size:1.8rem;flex-shrink:0;filter:drop-shadow(0 2px 6px rgba(0,0,0,.3))}
+.date-info{flex:1;min-width:0}
+.date-title{font-family:'Playfair Display',serif;font-size:.92rem;font-weight:700;margin-bottom:2px}
+.date-desc{font-family:'Cormorant Garamond',serif;font-size:.78rem;font-style:italic;opacity:.55;line-height:1.4}
+.date-badge{font-size:.5rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:99px;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.badge-idea{border:1px solid rgba(124,91,173,.3);color:var(--mauve)}
+.badge-done{border:1px solid rgba(232,184,109,.3);color:var(--gold2);background:rgba(232,184,109,.05)}
+.date-check{font-size:1rem;flex-shrink:0;align-self:center}
+
+/* ═══ IMAGE UPLOAD ZONES ═══ */
+.upload-zone{cursor:pointer;position:relative}
+.upload-zone.filled{background-image:var(--uimg)!important;background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important}
+.upload-zone.filled .ps-icon,.upload-zone.filled .pp-icon,.upload-zone.filled .uz-label,.upload-zone.filled .sph{opacity:0!important;visibility:hidden}
+.upload-zone.filled .card-svg{opacity:.9}
+/* little hint badge */
+.uz-hint{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);z-index:7;font-size:.45rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:rgba(232,184,109,.6);background:rgba(10,8,32,.6);padding:2px 8px;border-radius:99px;white-space:nowrap;pointer-events:none}
+.upload-zone.filled .uz-hint{opacity:0}
+/* sticker photo upload zone (covers revealed sticker content) */
+.stk-upload{position:absolute;left:8px;right:8px;bottom:8px;top:8px;border-radius:10px;z-index:2;pointer-events:none;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px}
+.stk-upload.filled{background-image:var(--uimg);background-size:cover;background-position:center;box-shadow:inset 0 0 0 2px rgba(196,149,106,.7),inset 0 0 0 4px rgba(10,8,32,.5),inset 0 0 0 5px rgba(196,149,106,.4)}
+.stk-upload.filled ~ .stk-in .se,.stk-upload.filled ~ .stk-in .stt,.stk-upload.filled ~ .stk-in .sd,.stk-upload.filled ~ .stk-in .sph{opacity:0}
 </style>
 </head>
 <body>
@@ -459,6 +516,27 @@ const AL=[
    s:[{e:'🫂',t:'Primeiro Abraço',d:'Quis que durasse pra sempre',ph:1},{e:'💋',t:'Primeiro Beijo',d:'O mundo parou',ph:1},{e:'😂',t:'Risada até Chorar',d:'Ninguém me faz rir assim',ph:0},{e:'❤️‍🔥',t:'Primeiro Eu Te Amo',d:'As 3 palavras mais bonitas',ph:0}]},
   {type:'sticker',num:'Página VI',title:'Nossos Sonhos',sub:'O que o universo reserva pra nós',deco:'☆ ✦ ☽ ✦ ☆',cn:'🌙',vine:'☆☽✦☽☆',sc:'sc-co',sb:'sb-co',si:'🌙',stamp:'🌙 Capítulo completo — nosso futuro brilha',bg:'radial-gradient(ellipse at 50% 50%,rgba(74,64,144,.1),transparent 55%),radial-gradient(ellipse at 20% 80%,rgba(6,182,212,.04),transparent 40%),linear-gradient(170deg,#0E0C28,#141240,#100E35,#0C0A22)',
    s:[{e:'✈️',t:'Viajar Juntas',d:'Conhecer o mundo contigo',ph:0},{e:'🏠',t:'Nosso Cantinho',d:'Um lar só nosso',ph:0},{e:'🐾',t:'Nosso Pet',d:'Mais amor nessa família',ph:0},{e:'🌅',t:'Envelhecer Juntas',d:'De mãos dadas até o fim',ph:1}]},
+  {type:'gifts',num:'Página VII',title:'Presentes & Dates',sub:'Vales pra trocar e nossos encontros',deco:'🎁 ✦ ♡ ✦ 🎁',cn:'🎁',vine:'🎁♡✦♡🎁',
+   bg:'radial-gradient(ellipse at 50% 25%,rgba(196,149,106,.1),transparent 50%),radial-gradient(ellipse at 30% 80%,rgba(212,115,110,.08),transparent 45%),linear-gradient(170deg,#161228,#1C1638,#181230,#120E24)',
+   vouchers:[
+     {e:'💆',t:'Vale 1 Massagem',s:'resgatável quando quiser'},
+     {e:'🍝',t:'Vale 1 Jantar',s:'eu cozinho pra você'},
+     {e:'🎬',t:'Vale Sessão Cinema',s:'você escolhe o filme'},
+     {e:'🛌',t:'Vale Café na Cama',s:'manhã preguiçosa garantida'},
+     {e:'🌹',t:'Vale 1 Desejo',s:'pede o que quiser'},
+     {e:'🤗',t:'Vale Abraço Infinito',s:'sem hora pra acabar'},
+   ],
+   dateIdeas:[
+     {e:'🌅',t:'Piquenique ao pôr-do-sol',d:'numa praça ou parque, só nós duas'},
+     {e:'⭐',t:'Observar estrelas',d:'deitar e procurar constelações'},
+     {e:'🎨',t:'Aula de algo novo juntas',d:'cerâmica, dança, pintura...'},
+     {e:'🏖️',t:'Viagem de fim de semana',d:'um cantinho perto de SP'},
+   ],
+   datesDone:[
+     {e:'☕',t:'Nosso primeiro date',d:'preencher: onde foi, o que rolou'},
+     {e:'🍕',t:'Aquele dia especial',d:'preencher com uma memória de vocês'},
+   ]
+  },
   {type:'sticker',num:'✦ Edição Especial ✦',title:'Figurinhas Raras',sub:'Brilham porque nosso amor é raro',deco:'⭐ ✦ 💛 ✦ ⭐',cn:'✦',vine:'⭐✦💛✦⭐',rare:1,sc:'sc-gd',sb:'sb-gd',si:'⭐',stamp:'⭐ Coleção rara completa — amor de ouro',bg:'radial-gradient(ellipse at 50% 40%,rgba(196,149,106,.1),transparent 50%),radial-gradient(ellipse at 30% 80%,rgba(232,184,109,.05),transparent 40%),linear-gradient(170deg,#161408,#1E1A0C,#181510,#121008)',
    s:[{e:'💎',t:'Ela É Rara',d:'Não existe outra igual',ph:1},{e:'🔮',t:'Amor Mágico',d:'Não tem explicação',ph:1},{e:'♾️',t:'Pra Sempre',d:'Infinito é pouco',ph:1},{e:'💫',t:'Constelação do Amor',d:'Escrita nas estrelas',ph:0}]},
   {type:'final'}
@@ -487,7 +565,7 @@ const JUSSARA_HTML = `
     <div class="stat-row"><span class="stat-label">⭐ Lealdade</span><div class="stat-track"><div class="stat-fill" style="width:100%;background:linear-gradient(90deg,var(--violet),var(--coral-lt))"></div></div><span class="stat-val">100</span></div>
     <div class="stat-row"><span class="stat-label">⭐ Responsabilidade</span><div class="stat-track"><div class="stat-fill" style="width:95%;background:linear-gradient(90deg,var(--indigo),var(--mauve))"></div></div><span class="stat-val">95</span></div>
   </div>
-  <div class="photo-slot">${CARD_FRAME}<span class="ps-icon">📸</span>Espaço para foto da Jussara</div>
+  <div class="photo-slot upload-zone">${CARD_FRAME}<span class="ps-icon">📸</span><span class="uz-label">Espaço para foto da Jussara</span><span class="uz-hint">toque pra adicionar foto</span></div>
 </div>
 
 <div class="sign-card" data-glyph="♐">
@@ -500,7 +578,7 @@ const JUSSARA_HTML = `
     <span class="tag" style="border-color:rgba(212,115,110,.2);color:var(--coral-lt)">🏹 Espírito Livre</span>
     <span class="tag" style="border-color:rgba(124,91,173,.2);color:var(--mauve)">🏹 Curiosidade Infinita</span>
   </div>
-  <div class="photo-slot">${CARD_FRAME}<span class="ps-icon">📸</span>Espaço para foto divertida ou espontânea</div>
+  <div class="photo-slot upload-zone">${CARD_FRAME}<span class="ps-icon">📸</span><span class="uz-label">Espaço para foto divertida ou espontânea</span><span class="uz-hint">toque pra adicionar foto</span></div>
 </div>
 
 <div class="sign-card" data-glyph="♊">
@@ -513,7 +591,7 @@ const JUSSARA_HTML = `
     <span class="tag" style="border-color:rgba(232,184,109,.2);color:var(--gold2)">💬 Inteligência</span>
     <span class="tag" style="border-color:rgba(212,115,110,.2);color:var(--coral-lt)">💬 Sensibilidade</span>
   </div>
-  <div class="photo-slot">${CARD_FRAME}<span class="ps-icon">📸</span>Espaço para selfie ou foto sorrindo</div>
+  <div class="photo-slot upload-zone">${CARD_FRAME}<span class="ps-icon">📸</span><span class="uz-label">Espaço para selfie ou foto sorrindo</span><span class="uz-hint">toque pra adicionar foto</span></div>
 </div>
 
 <div class="sign-card" data-glyph="🐶">
@@ -524,13 +602,13 @@ const JUSSARA_HTML = `
     <div class="pet-card">
       <span class="pet-emoji">🐾</span>
       <div class="pet-name-slot">Pet 01 — Nome: ___</div>
-      <div class="pet-photo">${CARD_FRAME}<span class="pp-icon">📸</span>foto do pet</div>
+      <div class="pet-photo upload-zone">${CARD_FRAME}<span class="pp-icon">📸</span><span class="uz-label">foto do pet</span><span class="uz-hint">toque</span></div>
       <div class="pet-curiosity">Curiosidades: ...</div>
     </div>
     <div class="pet-card">
       <span class="pet-emoji">🐾</span>
       <div class="pet-name-slot">Pet 02 — Nome: ___</div>
-      <div class="pet-photo">${CARD_FRAME}<span class="pp-icon">📸</span>foto do pet</div>
+      <div class="pet-photo upload-zone">${CARD_FRAME}<span class="pp-icon">📸</span><span class="uz-label">foto do pet</span><span class="uz-hint">toque</span></div>
       <div class="pet-curiosity">Curiosidades: ...</div>
     </div>
   </div>
@@ -581,6 +659,41 @@ AL.forEach((pg,i)=>{
     <div class="nav"><button class="nb" onclick="goP(${i-1})">← Voltar</button><div class="dots" id="d-${i}"></div>
     <button class="nb go" onclick="goP(${i+1})">Próxima →</button></div></div>`;
 
+  } else if(pg.type==='gifts'){
+    // Gifts & Dates page
+    const vouchersHTML = pg.vouchers.map((v,vi)=>`
+      <div class="voucher v-bg" data-vi="${vi}">
+        <div class="v-in"><span class="v-emoji">${v.e}</span><span class="v-title">${v.t}</span><span class="v-sub">${v.s}</span></div>
+        <div class="v-scr">${CARD_FRAME}<div class="v-scr-center"><span class="v-scr-icon">🎁</span><span class="v-scr-mini">✦ raspe o vale ✦</span></div></div>
+        <div class="v-sp-box"></div>
+      </div>`).join('');
+    const ideasHTML = pg.dateIdeas.map(dt=>`
+      <div class="date-card">
+        <span class="date-emoji">${dt.e}</span>
+        <div class="date-info"><div class="date-title">${dt.t}</div><div class="date-desc">${dt.d}</div></div>
+        <span class="date-badge badge-idea">ideia</span>
+      </div>`).join('');
+    const doneHTML = pg.datesDone.map(dt=>`
+      <div class="date-card done-date">
+        <span class="date-emoji">${dt.e}</span>
+        <div class="date-info"><div class="date-title">${dt.t}</div><div class="date-desc">${dt.d}</div></div>
+        <span class="date-check">💛</span>
+      </div>`).join('');
+    d.innerHTML=`<div class="pg-inner"><div class="pbg" style="background:${pg.bg}"></div><div class="pf"></div>
+    <span class="cn tl">${pg.cn}</span><span class="cn tr">${pg.cn}</span><span class="cn bl">${pg.cn}</span><span class="cn br">${pg.cn}</span>
+    <div class="vine l">${pg.vine}</div><div class="vine r">${pg.vine}</div>
+    <div class="pt"><div class="pt-n">${pg.num}</div><h2 class="pt-h">${pg.title}</h2><div class="pt-s">${pg.sub}</div><div class="pt-d">${pg.deco}</div></div>
+    <div class="gifts">
+      <div class="gift-section-label"><div class="gsl-title">🎁 Vales de Presente</div><div class="gsl-sub">raspe pra resgatar — valem de verdade!</div><div class="gsl-deco">✦ ♡ ✦</div></div>
+      <div class="voucher-grid">${vouchersHTML}</div>
+      <div class="gift-section-label"><div class="gsl-title">💡 Ideias de Dates</div><div class="gsl-sub">lugares e momentos pra viver juntas</div><div class="gsl-deco">✦ ☽ ✦</div></div>
+      <div class="dates-block">${ideasHTML}</div>
+      <div class="gift-section-label"><div class="gsl-title">💛 Dates Que Já Rolaram</div><div class="gsl-sub">memórias que a gente guarda</div><div class="gsl-deco">✦ ♡ ✦</div></div>
+      <div class="dates-block">${doneHTML}</div>
+    </div>
+    <div class="nav"><button class="nb" onclick="goP(${i-1})">← Voltar</button><div class="dots" id="d-${i}"></div>
+    <button class="nb go" onclick="goP(${i+1})">Próxima →</button></div></div>`;
+
   } else {
     // Sticker page
     done[i]=false;const lk=false;
@@ -596,12 +709,24 @@ AL.forEach((pg,i)=>{
   }
   bk.appendChild(d);
 
+  // Wire up voucher scratch cards on gifts page
+  if(pg.type==='gifts'){
+    d.querySelectorAll('.voucher').forEach(v=>{
+      const scr=v.querySelector('.v-scr'),inn=v.querySelector('.v-in'),spb=v.querySelector('.v-sp-box');
+      let a=false,pr=0;const N=3;
+      v.addEventListener('pointerdown',e=>{if(scr.classList.contains('off'))return;a=true;pr=0;v.setPointerCapture(e.pointerId)});
+      v.addEventListener('pointermove',e=>{if(!a)return;e.preventDefault();pr++;scr.style.opacity=Math.max(.1,1-pr/N);if(pr>=N){a=false;revVoucher(scr,inn,spb)}});
+      v.addEventListener('pointerup',()=>{if(a&&pr<N)scr.style.opacity='1';a=false});
+      v.addEventListener('click',()=>{if(!scr.classList.contains('off'))revVoucher(scr,inn,spb)});
+    });
+  }
+
   // Build stickers for sticker pages
   if(pg.type==='sticker'){
     const g=document.getElementById(`sg-${i}`);
     pg.s.forEach((st,si)=>{
       const c=document.createElement('div');c.className=`stk ${pg.sb}`;
-      c.innerHTML=`<div class="stk-in"><span class="se">${st.e}</span><span class="stt">${st.t}</span><span class="sd">${st.d}</span>${st.ph?'<span class="sph">📸 foto pixar</span>':''}</div>
+      c.innerHTML=`${st.ph?'<div class="stk-upload upload-zone"><span class="uz-hint">toque pra trocar a foto</span></div>':''}<div class="stk-in"><span class="se">${st.e}</span><span class="stt">${st.t}</span><span class="sd">${st.d}</span>${st.ph?'<span class="sph">📸 foto pixar</span>':''}</div>
       <div class="scr ${pg.sc}">${CARD_FRAME}<div class="scr-center"><span class="scr-num">${si+1}</span><span class="scr-mini">✦ raspe aqui ✦</span></div></div>
       <div class="stk-fr"></div><div class="sp-box"></div>`;
       const sc=c.querySelector('.scr'),inn=c.querySelector('.stk-in'),spb=c.querySelector('.sp-box');
@@ -617,6 +742,15 @@ AL.forEach((pg,i)=>{
 
 // Build dots
 for(let i=0;i<totalPages;i++){const dt=document.getElementById(`d-${i}`);if(!dt)continue;for(let j=0;j<totalPages;j++){const d=document.createElement('div');d.className=`dt${j===i?' now':''}${j<i?' done':''}`;dt.appendChild(d)}}
+
+function revVoucher(scr,inn,spb){
+  if(scr.classList.contains('off'))return;
+  scr.classList.add('off');inn.classList.add('on');
+  if(navigator.vibrate)navigator.vibrate([30,40,30]);
+  const sp=['🎁','✨','💛','🌟','💫','♡'];
+  for(let k=0;k<12;k++){const s=document.createElement('span');s.className='sp';s.textContent=sp[k%sp.length];s.style.fontSize=`${.5+Math.random()*.6}rem`;s.style.left=`${20+Math.random()*60}%`;s.style.top=`${20+Math.random()*60}%`;s.style.setProperty('--dx',`${(Math.random()-.5)*120}px`);s.style.setProperty('--dy',`${(Math.random()-.5)*120}px`);spb.appendChild(s);setTimeout(()=>s.remove(),750)}
+  confetti(20);
+}
 
 function doRev(sc,inn,spb,rare,pi){
   if(sc.classList.contains('off'))return;sc.classList.add('off');inn.classList.add('on');rev++;
@@ -655,6 +789,48 @@ function goP(i){
 function updD(){document.querySelectorAll('.dots').forEach(c=>{c.querySelectorAll('.dt').forEach((d,i)=>{d.className=`dt${i===cur?' now':''}${i<cur?' done':''}`})})}
 
 function confetti(n){const h=['#D4736E','#C4956A','#7C5BAD','#5B4FA0','#E8B86D','#4A6741','#E8A0A0','#E8D5B7','#8B6B95'];for(let i=0;i<n;i++){const c=document.createElement('div');c.className='conf';c.style.left=`${Math.random()*100}vw`;c.style.top='-8px';c.style.background=h[~~(Math.random()*h.length)];c.style.width=`${5+Math.random()*5}px`;c.style.height=`${5+Math.random()*5}px`;c.style.borderRadius=Math.random()>.5?'50%':'1px';c.style.setProperty('--t',`${1.3+Math.random()*2}s`);c.style.animationDelay=`${Math.random()*.6}s`;document.body.appendChild(c);setTimeout(()=>c.remove(),4500)}}
+
+/* ═══ IMAGE UPLOAD HANDLER ═══ */
+let _activeZone = null;
+const _fileInput = document.createElement('input');
+_fileInput.type = 'file';
+_fileInput.accept = 'image/*';
+_fileInput.style.display = 'none';
+document.body.appendChild(_fileInput);
+
+// Delegated click: open picker for upload zones (photo slots, pet photos)
+document.addEventListener('click', e=>{
+  // 1) Direct upload zones (Jussara photo slots, pet photos)
+  let zone = e.target.closest('.photo-slot.upload-zone, .pet-photo.upload-zone');
+  // 2) Photo sticker: clicking a REVEALED sticker that has a stk-upload zone
+  if(!zone){
+    const card = e.target.closest('.stk');
+    if(card){
+      const scr = card.querySelector('.scr');
+      const su = card.querySelector('.stk-upload');
+      if(su && scr && scr.classList.contains('off')){
+        zone = su; // revealed photo sticker → allow upload
+      }
+    }
+  }
+  if(!zone) return;
+  e.stopPropagation();
+  _activeZone = zone;
+  _fileInput.value='';
+  _fileInput.click();
+});
+
+_fileInput.addEventListener('change', ()=>{
+  const file = _fileInput.files && _fileInput.files[0];
+  if(!file || !_activeZone) return;
+  const reader = new FileReader();
+  reader.onload = ev=>{
+    _activeZone.style.setProperty('--uimg', `url("${ev.target.result}")`);
+    _activeZone.classList.add('filled');
+    if(navigator.vibrate) navigator.vibrate(20);
+  };
+  reader.readAsDataURL(file);
+});
 
 // Swipe
 let tx=0;
