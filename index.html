@@ -455,6 +455,7 @@ img{max-width:100%}
 <!-- Firebase (compartilha as fotos entre os aparelhos). Carrega antes do app. -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
 <script>
 /* ═══ SCRATCH ENGINE ═══ */
 const canvas=document.getElementById('scratchCanvas'),ctx=canvas.getContext('2d'),
@@ -875,9 +876,39 @@ const _CLIENT = (function(){
 })();
 let _firstSnap = true; // ignora a 1ª leitura (fotos que já existiam) para não notificar
 
+// ─── Push com o app FECHADO (Firebase Cloud Messaging) ───
+// Cole aqui a "chave do par de chaves" do Web Push:
+// Console Firebase → Configurações do projeto → Cloud Messaging →
+// "Certificados push da Web" → Gerar par de chaves → copie a chave.
+const VAPID_KEY = "COLE_AQUI";
+let _fcmActive = false;
+
+async function _initFCM(){
+  try{
+    if(!_db || typeof firebase === 'undefined' || typeof firebase.messaging !== 'function') return;
+    if(!('Notification' in window) || Notification.permission !== 'granted') return;
+    if(!VAPID_KEY || VAPID_KEY.indexOf('COLE_AQUI') !== -1) return;            // ainda não configurado
+    if(firebase.messaging.isSupported && !firebase.messaging.isSupported()) return;
+    const messaging = firebase.messaging();
+    const token = await messaging.getToken({ vapidKey: VAPID_KEY });
+    if(!token) return;
+    _fcmActive = true;
+    // guarda o token deste aparelho para a função no servidor enviar o push
+    await _db.collection('tokens').doc(_CLIENT).set({ token, client: _CLIENT, ts: Date.now() });
+    // com o app aberto, mostra a notificação na hora
+    messaging.onMessage(()=> _notifyNewPhoto());
+  }catch(e){ console.warn('FCM não ativou:', e); }
+}
+
 // Pede permissão de notificação (chamado a partir de um toque do usuário)
 function _askNotify(){
-  try{ if('Notification' in window && Notification.permission === 'default'){ Notification.requestPermission(); } }catch(e){}
+  try{
+    if(!('Notification' in window)) return;
+    if(Notification.permission === 'granted'){ _initFCM(); return; }
+    if(Notification.permission === 'default'){
+      Notification.requestPermission().then(p=>{ if(p === 'granted') _initFCM(); });
+    }
+  }catch(e){}
 }
 
 // Mostra a notificação "foto nova"
@@ -959,10 +990,14 @@ if(_db){
       });
       _savePhotos(cache);
       _firstSnap = false;
-      if(notify) _notifyNewPhoto();
+      // se o FCM estiver ativo, ele cuida da notificação (inclusive app fechado)
+      if(notify && !_fcmActive) _notifyNewPhoto();
     }, err=>{ console.warn('Falha ao sincronizar fotos:', err); _toast('Não consegui ler as fotos online: '+(err.code||err.message), false); });
   }catch(e){ console.warn('onSnapshot falhou:', e); }
 }
+
+// Se a permissão já foi concedida antes, ativa o push agora (sem precisar reabrir)
+if(_db && 'Notification' in window && Notification.permission === 'granted'){ _initFCM(); }
 
 // Reduz a imagem antes de salvar para caber no armazenamento do navegador
 function _resizeImage(dataURL, maxDim, cb){

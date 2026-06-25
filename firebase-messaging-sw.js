@@ -1,0 +1,39 @@
+/* Service worker do Firebase Cloud Messaging — recebe o push com o app fechado */
+importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
+
+firebase.initializeApp({
+  apiKey: "AIzaSyD0-GBYHLsYc_mqqq3Ymhbq3ynpIdx2sMg",
+  authDomain: "album--jussara.firebaseapp.com",
+  projectId: "album--jussara",
+  storageBucket: "album--jussara.firebasestorage.app",
+  messagingSenderId: "732871382789",
+  appId: "1:732871382789:web:7d93bce8c431ba80bd496c",
+  measurementId: "G-50GSPDT1P9"
+});
+
+const messaging = firebase.messaging();
+
+// Mensagem recebida com o app em segundo plano / fechado
+messaging.onBackgroundMessage((payload) => {
+  const d = (payload && payload.data) || {};
+  self.registration.showNotification(d.title || '💛 Nova foto no álbum!', {
+    body: d.body || 'Alguém adicionou uma foto novinha 📸✨',
+    icon: 'icon-192.png',
+    badge: 'icon-192.png',
+    tag: 'cosmo-photo',
+    renotify: true,
+    data: { link: '/' }
+  });
+});
+
+// Tocar na notificação foca/abre o álbum
+self.addEventListener('notificationclick', (e) => {
+  e.notification.close();
+  e.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((cs) => {
+      for (const c of cs) { if ('focus' in c) return c.focus(); }
+      if (clients.openWindow) return clients.openWindow('/');
+    })
+  );
+});
