@@ -824,6 +824,20 @@ const _PHOTO_KEY = 'cosmoAlbumPhotos';
 function _loadPhotos(){ try{ return JSON.parse(localStorage.getItem(_PHOTO_KEY)||'{}'); }catch(e){ return {}; } }
 function _savePhotos(map){ try{ localStorage.setItem(_PHOTO_KEY, JSON.stringify(map)); return true; }catch(e){ return false; } }
 
+// Aviso curtinho na tela (para o usuário saber se a foto foi salva/compartilhada)
+function _toast(msg, ok){
+  let t = document.getElementById('_toast');
+  if(!t){
+    t = document.createElement('div'); t.id = '_toast';
+    t.style.cssText = 'position:fixed;left:50%;bottom:18px;transform:translateX(-50%);max-width:88vw;z-index:99999;padding:10px 16px;border-radius:12px;font:600 13px/1.35 system-ui,sans-serif;color:#fff;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.45);opacity:0;transition:opacity .25s;pointer-events:none';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.background = ok ? 'rgba(74,103,65,.96)' : 'rgba(150,50,50,.96)';
+  t.style.opacity = '1';
+  clearTimeout(t._h); t._h = setTimeout(()=>{ t.style.opacity='0'; }, 4200);
+}
+
 // Liga o Firebase só se a configuração estiver preenchida e o SDK carregado
 let _db = null;
 const _FB_ON = FIREBASE_CONFIG.projectId && FIREBASE_CONFIG.projectId.indexOf('COLE_AQUI') === -1 && typeof firebase !== 'undefined';
@@ -840,8 +854,9 @@ function _applyPhoto(uid, img){
   z.classList.add('filled');
 }
 
-// Dá um id estável (pela ordem no documento) a cada quadro, restaura o cache
-// local e, se o Firebase estiver ligado, escuta as fotos compartilhadas ao vivo
+// Dá um id estável (pela ordem no documento) a cada quadro e restaura o cache local.
+// IMPORTANTE: nada do Firebase pode quebrar este bloco (envvolto em try/catch),
+// senão os cliques de upload parariam de funcionar.
 (function initPhotos(){
   const saved = _loadPhotos();
   document.querySelectorAll('.upload-zone').forEach((z,i)=>{
@@ -849,7 +864,11 @@ function _applyPhoto(uid, img){
     z.dataset.uid = uid;
     if(saved[uid]) _applyPhoto(uid, saved[uid]);
   });
-  if(_db){
+})();
+
+// Escuta as fotos compartilhadas ao vivo (totalmente isolado e protegido)
+if(_db){
+  try{
     _db.collection('photos').onSnapshot(snap=>{
       const cache = _loadPhotos();
       snap.forEach(doc=>{
@@ -857,9 +876,9 @@ function _applyPhoto(uid, img){
         if(d && d.img){ _applyPhoto(doc.id, d.img); cache[doc.id] = d.img; }
       });
       _savePhotos(cache);
-    }, err=>console.warn('Falha ao sincronizar fotos:', err));
-  }
-})();
+    }, err=>{ console.warn('Falha ao sincronizar fotos:', err); _toast('Não consegui ler as fotos online: '+(err.code||err.message), false); });
+  }catch(e){ console.warn('onSnapshot falhou:', e); }
+}
 
 // Reduz a imagem antes de salvar para caber no armazenamento do navegador
 function _resizeImage(dataURL, maxDim, cb){
@@ -905,17 +924,20 @@ _fileInput.addEventListener('change', ()=>{
   const zone = _activeZone;
   const reader = new FileReader();
   reader.onload = ev=>{
-    _resizeImage(ev.target.result, 1000, out=>{
+    _resizeImage(ev.target.result, 900, out=>{
       const uid = zone.dataset.uid;
-      _applyPhoto(uid, out);
-      // cache local (sempre)
-      const map = _loadPhotos(); map[uid] = out; _savePhotos(map);
+      _applyPhoto(uid, out);            // mostra a imagem na hora (sempre)
+      const map = _loadPhotos(); map[uid] = out; _savePhotos(map); // cache local
+      if(navigator.vibrate) navigator.vibrate(20);
       // compartilha online, se o Firebase estiver ligado
       if(_db){
+        _toast('Salvando online...', true);
         _db.collection('photos').doc(uid).set({ img: out, ts: Date.now() })
-          .catch(e=>alert('A foto apareceu, mas não consegui salvá-la online: '+e.message));
+          .then(()=>_toast('Foto salva e compartilhada ✓', true))
+          .catch(e=>_toast('Apareceu aqui, mas falhou ao salvar online: '+(e.code||e.message), false));
+      }else{
+        _toast('Foto salva neste aparelho (compartilhamento off)', true);
       }
-      if(navigator.vibrate) navigator.vibrate(20);
     });
   };
   reader.readAsDataURL(file);
