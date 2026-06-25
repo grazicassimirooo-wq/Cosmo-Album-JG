@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>✨ Surpresa pra você</title>
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#16123A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Álbum J&G">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Dancing+Script:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -504,7 +513,7 @@ function showReveal(){
     for(let i=0;i<20;i++){const s=document.createElement('span');s.className='sp';s.textContent=['✨','⭐','💛','🌟','💫','🌸'][i%6];s.style.fontSize=`${.7+Math.random()*.6}rem`;s.style.left=`${10+Math.random()*80}%`;s.style.top=`${10+Math.random()*80}%`;s.style.setProperty('--dx',`${(Math.random()-.5)*150}px`);s.style.setProperty('--dy',`${(Math.random()-.5)*150}px`);sp.appendChild(s)}
   },800);
 }
-function openAlbum(){document.getElementById('s-reveal').classList.remove('active');document.getElementById('s-book').classList.add('active')}
+function openAlbum(){document.getElementById('s-reveal').classList.remove('active');document.getElementById('s-book').classList.add('active');_askNotify();}
 
 /* ═══ ALBUM DATA ═══ */
 const AL=[
@@ -856,6 +865,35 @@ if(_FB_ON){
   catch(e){ console.warn('Firebase não iniciou:', e); _db = null; }
 }
 
+// ─── Notificações de foto nova ───
+// id único deste aparelho (para não notificar você das suas próprias fotos)
+const _CLIENT = (function(){
+  let c = null;
+  try{ c = localStorage.getItem('cosmoClientId'); }catch(e){}
+  if(!c){ c = 'c' + Math.random().toString(36).slice(2) + Date.now().toString(36); try{ localStorage.setItem('cosmoClientId', c); }catch(e){} }
+  return c;
+})();
+let _firstSnap = true; // ignora a 1ª leitura (fotos que já existiam) para não notificar
+
+// Pede permissão de notificação (chamado a partir de um toque do usuário)
+function _askNotify(){
+  try{ if('Notification' in window && Notification.permission === 'default'){ Notification.requestPermission(); } }catch(e){}
+}
+
+// Mostra a notificação "foto nova"
+function _notifyNewPhoto(){
+  try{
+    if(!('Notification' in window) || Notification.permission !== 'granted') return;
+    const title = '💛 Nova foto no álbum!';
+    const opts = { body: 'Alguém adicionou uma foto novinha 📸✨', icon: 'icon-192.png', badge: 'icon-192.png', tag: 'cosmo-photo', renotify: true };
+    if(navigator.serviceWorker && navigator.serviceWorker.ready){
+      navigator.serviceWorker.ready.then(reg => reg.showNotification(title, opts)).catch(()=>{ try{ new Notification(title, opts); }catch(e){} });
+    } else {
+      new Notification(title, opts);
+    }
+  }catch(e){}
+}
+
 // Acha o quadro pela chave: id fixo (novo) OU id legado (fotos antigas)
 function _findZone(key){
   return document.querySelector(`.upload-zone[data-uid="${key}"]`)
@@ -906,15 +944,22 @@ if(_db){
   try{
     _db.collection('photos').onSnapshot(snap=>{
       const cache = _loadPhotos();
-      const docs = [];
-      snap.forEach(doc=>docs.push(doc));
+      const changes = snap.docChanges();
       // aplica os ids legados primeiro e os fixos depois (id fixo tem prioridade)
-      docs.sort((a,b)=> (a.id[0]==='z'?0:1) - (b.id[0]==='z'?0:1));
-      docs.forEach(doc=>{
-        const d = doc.data();
-        if(d && d.img){ _applyPhoto(doc.id, d.img); cache[doc.id] = d.img; }
+      changes.sort((a,b)=> (a.doc.id[0]==='z'?0:1) - (b.doc.id[0]==='z'?0:1));
+      let notify = false;
+      changes.forEach(ch=>{
+        if(ch.type === 'removed') return;
+        const d = ch.doc.data();
+        if(!d || !d.img) return;
+        _applyPhoto(ch.doc.id, d.img);
+        cache[ch.doc.id] = d.img;
+        // foto nova/alterada por OUTRO aparelho → notifica (menos na 1ª leitura)
+        if(!_firstSnap && d.by && d.by !== _CLIENT) notify = true;
       });
       _savePhotos(cache);
+      _firstSnap = false;
+      if(notify) _notifyNewPhoto();
     }, err=>{ console.warn('Falha ao sincronizar fotos:', err); _toast('Não consegui ler as fotos online: '+(err.code||err.message), false); });
   }catch(e){ console.warn('onSnapshot falhou:', e); }
 }
@@ -982,7 +1027,7 @@ _fileInput.addEventListener('change', ()=>{
       // compartilha online, se o Firebase estiver ligado
       if(_db){
         _toast('Salvando online...', true);
-        _db.collection('photos').doc(uid).set({ img: out, ts: Date.now() })
+        _db.collection('photos').doc(uid).set({ img: out, ts: Date.now(), by: _CLIENT })
           .then(()=>_toast('Foto salva e compartilhada ✓', true))
           .catch(e=>_toast('Apareceu aqui, mas falhou ao salvar online: '+(e.code||e.message), false));
       }else{
@@ -998,6 +1043,13 @@ _fileInput.addEventListener('change', ()=>{
 let tx=0;
 bk.addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
 bk.addEventListener('touchend',e=>{const d=tx-e.changedTouches[0].clientX;if(Math.abs(d)>60){if(d>0){const b=document.getElementById(`nx-${cur}`);if(b&&!b.disabled)goP(cur+1)}else{if(cur>0)goP(cur-1)}}},{passive:true});
+
+/* ═══ PWA: registra o service worker ═══ */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(e=>console.warn('Service worker não registrou:', e));
+  });
+}
 </script>
 </body>
 </html>
