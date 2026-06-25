@@ -842,7 +842,12 @@ function _toast(msg, ok){
 let _db = null;
 const _FB_ON = FIREBASE_CONFIG.projectId && FIREBASE_CONFIG.projectId.indexOf('COLE_AQUI') === -1 && typeof firebase !== 'undefined';
 if(_FB_ON){
-  try{ firebase.initializeApp(FIREBASE_CONFIG); _db = firebase.firestore(); }
+  try{
+    firebase.initializeApp(FIREBASE_CONFIG);
+    _db = firebase.firestore();
+    // Conexão robusta (funciona em celular/dados móveis e redes restritivas)
+    try{ _db.settings({ experimentalAutoDetectLongPolling: true, merge: true }); }catch(e){}
+  }
   catch(e){ console.warn('Firebase não iniciou:', e); _db = null; }
 }
 
@@ -852,6 +857,17 @@ function _applyPhoto(uid, img){
   if(!z || !img) return;
   z.style.setProperty('--uimg', `url("${img}")`);
   z.classList.add('filled');
+  // Se for figurinha (raspadinha) com foto compartilhada, revela automaticamente
+  // para a foto aparecer na hora em todos os aparelhos (sem precisar raspar).
+  if(z.classList.contains('stk-upload')){
+    const card = z.closest('.stk');
+    if(card){
+      const scr = card.querySelector('.scr');
+      const inn = card.querySelector('.stk-in');
+      if(scr) scr.classList.add('off');
+      if(inn) inn.classList.add('on');
+    }
+  }
 }
 
 // Dá um id estável (pela ordem no documento) a cada quadro e restaura o cache local.
