@@ -439,6 +439,9 @@ img{max-width:100%}
   <div class="book" id="book"></div>
 </div>
 
+<!-- Firebase (compartilha as fotos entre os aparelhos). Carrega antes do app. -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 /* ═══ SCRATCH ENGINE ═══ */
 const canvas=document.getElementById('scratchCanvas'),ctx=canvas.getContext('2d'),
@@ -798,22 +801,63 @@ _fileInput.accept = 'image/*';
 _fileInput.style.display = 'none';
 document.body.appendChild(_fileInput);
 
-// — Armazenamento das fotos no navegador (localStorage) —
+/* ─────────────────────────────────────────────────────────────
+   CONFIGURAÇÃO DO FIREBASE
+   Cole aqui os dados do SEU projeto Firebase (Configurações do
+   projeto → Seus apps → SDK do Firebase → "Configuração").
+   Enquanto estiver com "COLE_AQUI", o álbum funciona só no aparelho
+   (as fotos NÃO são compartilhadas). Depois de colar, as fotos que
+   qualquer pessoa enviar aparecem para todo mundo que abrir o link.
+   ───────────────────────────────────────────────────────────── */
+const FIREBASE_CONFIG = {
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
+};
+
+// Cache local (reserva): mantém as fotos rápidas e funciona offline
 const _PHOTO_KEY = 'cosmoAlbumPhotos';
 function _loadPhotos(){ try{ return JSON.parse(localStorage.getItem(_PHOTO_KEY)||'{}'); }catch(e){ return {}; } }
 function _savePhotos(map){ try{ localStorage.setItem(_PHOTO_KEY, JSON.stringify(map)); return true; }catch(e){ return false; } }
 
-// Dá um id estável (pela ordem no documento) a cada quadro e restaura fotos salvas
+// Liga o Firebase só se a configuração estiver preenchida e o SDK carregado
+let _db = null;
+const _FB_ON = FIREBASE_CONFIG.projectId && FIREBASE_CONFIG.projectId.indexOf('COLE_AQUI') === -1 && typeof firebase !== 'undefined';
+if(_FB_ON){
+  try{ firebase.initializeApp(FIREBASE_CONFIG); _db = firebase.firestore(); }
+  catch(e){ console.warn('Firebase não iniciou:', e); _db = null; }
+}
+
+// Coloca a imagem no quadro correspondente
+function _applyPhoto(uid, img){
+  const z = document.querySelector(`.upload-zone[data-uid="${uid}"]`);
+  if(!z || !img) return;
+  z.style.setProperty('--uimg', `url("${img}")`);
+  z.classList.add('filled');
+}
+
+// Dá um id estável (pela ordem no documento) a cada quadro, restaura o cache
+// local e, se o Firebase estiver ligado, escuta as fotos compartilhadas ao vivo
 (function initPhotos(){
   const saved = _loadPhotos();
   document.querySelectorAll('.upload-zone').forEach((z,i)=>{
     const uid = 'z'+i;
     z.dataset.uid = uid;
-    if(saved[uid]){
-      z.style.setProperty('--uimg', `url("${saved[uid]}")`);
-      z.classList.add('filled');
-    }
+    if(saved[uid]) _applyPhoto(uid, saved[uid]);
   });
+  if(_db){
+    _db.collection('photos').onSnapshot(snap=>{
+      const cache = _loadPhotos();
+      snap.forEach(doc=>{
+        const d = doc.data();
+        if(d && d.img){ _applyPhoto(doc.id, d.img); cache[doc.id] = d.img; }
+      });
+      _savePhotos(cache);
+    }, err=>console.warn('Falha ao sincronizar fotos:', err));
+  }
 })();
 
 // Reduz a imagem antes de salvar para caber no armazenamento do navegador
@@ -860,13 +904,15 @@ _fileInput.addEventListener('change', ()=>{
   const zone = _activeZone;
   const reader = new FileReader();
   reader.onload = ev=>{
-    _resizeImage(ev.target.result, 1100, out=>{
-      zone.style.setProperty('--uimg', `url("${out}")`);
-      zone.classList.add('filled');
-      const map = _loadPhotos();
-      map[zone.dataset.uid] = out;
-      if(!_savePhotos(map)){
-        alert('Foto adicionada! Mas o navegador está sem espaço para guardá-la — ela pode sumir ao recarregar. Tente uma foto menor ou remova alguma.');
+    _resizeImage(ev.target.result, 1000, out=>{
+      const uid = zone.dataset.uid;
+      _applyPhoto(uid, out);
+      // cache local (sempre)
+      const map = _loadPhotos(); map[uid] = out; _savePhotos(map);
+      // compartilha online, se o Firebase estiver ligado
+      if(_db){
+        _db.collection('photos').doc(uid).set({ img: out, ts: Date.now() })
+          .catch(e=>alert('A foto apareceu, mas não consegui salvá-la online: '+e.message));
       }
       if(navigator.vibrate) navigator.vibrate(20);
     });
