@@ -406,6 +406,10 @@ img{max-width:100%}
 .stk-upload{position:absolute;left:8px;right:8px;bottom:8px;top:8px;border-radius:10px;z-index:2;pointer-events:none;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px}
 .stk-upload.filled{background-image:var(--uimg);background-size:cover;background-position:center;box-shadow:inset 0 0 0 2px rgba(196,149,106,.7),inset 0 0 0 4px rgba(10,8,32,.5),inset 0 0 0 5px rgba(196,149,106,.4)}
 .stk-upload.filled ~ .stk-in .se,.stk-upload.filled ~ .stk-in .stt,.stk-upload.filled ~ .stk-in .sd,.stk-upload.filled ~ .stk-in .sph{opacity:0}
+/* voucher photo upload zone (covers revealed voucher content) */
+.v-upload{position:absolute;left:6px;right:6px;top:6px;bottom:6px;border-radius:10px;z-index:2;pointer-events:none}
+.v-upload.filled{background-image:var(--uimg);background-size:cover;background-position:center;box-shadow:inset 0 0 0 2px rgba(196,149,106,.7),inset 0 0 0 4px rgba(10,8,32,.5),inset 0 0 0 5px rgba(196,149,106,.4)}
+.v-upload.filled ~ .v-in .v-emoji,.v-upload.filled ~ .v-in .v-title,.v-upload.filled ~ .v-in .v-sub{opacity:0}
 </style>
 </head>
 <body>
@@ -568,7 +572,7 @@ const JUSSARA_HTML = `
     <div class="stat-row"><span class="stat-label">⭐ Lealdade</span><div class="stat-track"><div class="stat-fill" style="width:100%;background:linear-gradient(90deg,var(--violet),var(--coral-lt))"></div></div><span class="stat-val">100</span></div>
     <div class="stat-row"><span class="stat-label">⭐ Responsabilidade</span><div class="stat-track"><div class="stat-fill" style="width:95%;background:linear-gradient(90deg,var(--indigo),var(--mauve))"></div></div><span class="stat-val">95</span></div>
   </div>
-  <div class="photo-slot upload-zone">${CARD_FRAME}<span class="ps-icon">📸</span><span class="uz-label">Espaço para foto da Jussara</span><span class="uz-hint">toque pra adicionar foto</span></div>
+  <div class="photo-slot upload-zone" data-uid="j0">${CARD_FRAME}<span class="ps-icon">📸</span><span class="uz-label">Espaço para foto da Jussara</span><span class="uz-hint">toque pra adicionar foto</span></div>
 </div>
 
 <div class="sign-card" data-glyph="♐">
@@ -581,7 +585,7 @@ const JUSSARA_HTML = `
     <span class="tag" style="border-color:rgba(212,115,110,.2);color:var(--coral-lt)">🏹 Espírito Livre</span>
     <span class="tag" style="border-color:rgba(124,91,173,.2);color:var(--mauve)">🏹 Curiosidade Infinita</span>
   </div>
-  <div class="photo-slot upload-zone">${CARD_FRAME}<span class="ps-icon">📸</span><span class="uz-label">Espaço para foto divertida ou espontânea</span><span class="uz-hint">toque pra adicionar foto</span></div>
+  <div class="photo-slot upload-zone" data-uid="j1">${CARD_FRAME}<span class="ps-icon">📸</span><span class="uz-label">Espaço para foto divertida ou espontânea</span><span class="uz-hint">toque pra adicionar foto</span></div>
 </div>
 
 <div class="sign-card" data-glyph="♊">
@@ -594,7 +598,7 @@ const JUSSARA_HTML = `
     <span class="tag" style="border-color:rgba(232,184,109,.2);color:var(--gold2)">💬 Inteligência</span>
     <span class="tag" style="border-color:rgba(212,115,110,.2);color:var(--coral-lt)">💬 Sensibilidade</span>
   </div>
-  <div class="photo-slot upload-zone">${CARD_FRAME}<span class="ps-icon">📸</span><span class="uz-label">Espaço para selfie ou foto sorrindo</span><span class="uz-hint">toque pra adicionar foto</span></div>
+  <div class="photo-slot upload-zone" data-uid="j2">${CARD_FRAME}<span class="ps-icon">📸</span><span class="uz-label">Espaço para selfie ou foto sorrindo</span><span class="uz-hint">toque pra adicionar foto</span></div>
 </div>
 
 <div class="sign-card" data-glyph="🐶">
@@ -605,13 +609,13 @@ const JUSSARA_HTML = `
     <div class="pet-card">
       <span class="pet-emoji">🐾</span>
       <div class="pet-name-slot">Pet 01 — Nome: ___</div>
-      <div class="pet-photo upload-zone">${CARD_FRAME}<span class="pp-icon">📸</span><span class="uz-label">foto do pet</span><span class="uz-hint">toque</span></div>
+      <div class="pet-photo upload-zone" data-uid="pet0">${CARD_FRAME}<span class="pp-icon">📸</span><span class="uz-label">foto do pet</span><span class="uz-hint">toque</span></div>
       <div class="pet-curiosity">Curiosidades: ...</div>
     </div>
     <div class="pet-card">
       <span class="pet-emoji">🐾</span>
       <div class="pet-name-slot">Pet 02 — Nome: ___</div>
-      <div class="pet-photo upload-zone">${CARD_FRAME}<span class="pp-icon">📸</span><span class="uz-label">foto do pet</span><span class="uz-hint">toque</span></div>
+      <div class="pet-photo upload-zone" data-uid="pet1">${CARD_FRAME}<span class="pp-icon">📸</span><span class="uz-label">foto do pet</span><span class="uz-hint">toque</span></div>
       <div class="pet-curiosity">Curiosidades: ...</div>
     </div>
   </div>
@@ -666,6 +670,7 @@ AL.forEach((pg,i)=>{
     // Gifts & Dates page
     const vouchersHTML = pg.vouchers.map((v,vi)=>`
       <div class="voucher v-bg" data-vi="${vi}">
+        <div class="v-upload upload-zone nz" data-uid="v${i}_${vi}"></div>
         <div class="v-in"><span class="v-emoji">${v.e}</span><span class="v-title">${v.t}</span><span class="v-sub">${v.s}</span></div>
         <div class="v-scr">${CARD_FRAME}<div class="v-scr-center"><span class="v-scr-icon">🎁</span><span class="v-scr-mini">✦ raspe o vale ✦</span></div></div>
         <div class="v-sp-box"></div>
@@ -729,7 +734,7 @@ AL.forEach((pg,i)=>{
     const g=document.getElementById(`sg-${i}`);
     pg.s.forEach((st,si)=>{
       const c=document.createElement('div');c.className=`stk ${pg.sb}`;
-      c.innerHTML=`${st.ph?'<div class="stk-upload upload-zone"><span class="uz-hint">toque pra trocar a foto</span></div>':''}<div class="stk-in"><span class="se">${st.e}</span><span class="stt">${st.t}</span><span class="sd">${st.d}</span>${st.ph?'<span class="sph">📸 foto pixar</span>':''}</div>
+      c.innerHTML=`<div class="stk-upload upload-zone${st.ph?'':' nz'}" data-uid="s${i}_${si}"><span class="uz-hint">toque pra adicionar foto</span></div><div class="stk-in"><span class="se">${st.e}</span><span class="stt">${st.t}</span><span class="sd">${st.d}</span>${st.ph?'<span class="sph">📸 foto pixar</span>':''}</div>
       <div class="scr ${pg.sc}">${CARD_FRAME}<div class="scr-center"><span class="scr-num">${si+1}</span><span class="scr-mini">✦ raspe aqui ✦</span></div></div>
       <div class="stk-fr"></div><div class="sp-box"></div>`;
       const sc=c.querySelector('.scr'),inn=c.querySelector('.stk-in'),spb=c.querySelector('.sp-box');
@@ -851,14 +856,20 @@ if(_FB_ON){
   catch(e){ console.warn('Firebase não iniciou:', e); _db = null; }
 }
 
+// Acha o quadro pela chave: id fixo (novo) OU id legado (fotos antigas)
+function _findZone(key){
+  return document.querySelector(`.upload-zone[data-uid="${key}"]`)
+      || document.querySelector(`.upload-zone[data-legacy="${key}"]`);
+}
+
 // Coloca a imagem no quadro correspondente
-function _applyPhoto(uid, img){
-  const z = document.querySelector(`.upload-zone[data-uid="${uid}"]`);
+function _applyPhoto(key, img){
+  const z = _findZone(key);
   if(!z || !img) return;
   z.style.setProperty('--uimg', `url("${img}")`);
   z.classList.add('filled');
-  // Se for figurinha (raspadinha) com foto compartilhada, revela automaticamente
-  // para a foto aparecer na hora em todos os aparelhos (sem precisar raspar).
+  // Figurinha (raspadinha) com foto: revela automaticamente para a foto
+  // aparecer na hora em todos os aparelhos (sem precisar raspar).
   if(z.classList.contains('stk-upload')){
     const card = z.closest('.stk');
     if(card){
@@ -868,18 +879,26 @@ function _applyPhoto(uid, img){
       if(inn) inn.classList.add('on');
     }
   }
+  // Vale (presente) com foto: revela automaticamente também.
+  if(z.classList.contains('v-upload')){
+    const vc = z.closest('.voucher');
+    if(vc){
+      const vscr = vc.querySelector('.v-scr');
+      const vin = vc.querySelector('.v-in');
+      if(vscr) vscr.classList.add('off');
+      if(vin) vin.classList.add('on');
+    }
+  }
 }
 
-// Dá um id estável (pela ordem no documento) a cada quadro e restaura o cache local.
-// IMPORTANTE: nada do Firebase pode quebrar este bloco (envvolto em try/catch),
-// senão os cliques de upload parariam de funcionar.
+// Cada quadro já tem um id FIXO por posição (data-uid no HTML). Aqui só atribuímos
+// o id "legado" (pela ordem antiga) aos quadros que já existiam, para que as fotos
+// enviadas antes continuem aparecendo. Depois restauramos o cache local.
 (function initPhotos(){
+  let li = 0;
+  document.querySelectorAll('.upload-zone:not(.nz)').forEach(z=>{ z.dataset.legacy = 'z'+li; li++; });
   const saved = _loadPhotos();
-  document.querySelectorAll('.upload-zone').forEach((z,i)=>{
-    const uid = 'z'+i;
-    z.dataset.uid = uid;
-    if(saved[uid]) _applyPhoto(uid, saved[uid]);
-  });
+  Object.keys(saved).forEach(k=> _applyPhoto(k, saved[k]));
 })();
 
 // Escuta as fotos compartilhadas ao vivo (totalmente isolado e protegido)
@@ -887,7 +906,11 @@ if(_db){
   try{
     _db.collection('photos').onSnapshot(snap=>{
       const cache = _loadPhotos();
-      snap.forEach(doc=>{
+      const docs = [];
+      snap.forEach(doc=>docs.push(doc));
+      // aplica os ids legados primeiro e os fixos depois (id fixo tem prioridade)
+      docs.sort((a,b)=> (a.id[0]==='z'?0:1) - (b.id[0]==='z'?0:1));
+      docs.forEach(doc=>{
         const d = doc.data();
         if(d && d.img){ _applyPhoto(doc.id, d.img); cache[doc.id] = d.img; }
       });
@@ -916,14 +939,25 @@ function _resizeImage(dataURL, maxDim, cb){
 document.addEventListener('click', e=>{
   // 1) Direct upload zones (Jussara photo slots, pet photos)
   let zone = e.target.closest('.photo-slot.upload-zone, .pet-photo.upload-zone');
-  // 2) Photo sticker: clicking a REVEALED sticker that has a stk-upload zone
+  // 2) Figurinha: clicar numa figurinha JÁ RASPADA libera o upload
   if(!zone){
     const card = e.target.closest('.stk');
     if(card){
       const scr = card.querySelector('.scr');
       const su = card.querySelector('.stk-upload');
       if(su && scr && scr.classList.contains('off')){
-        zone = su; // revealed photo sticker → allow upload
+        zone = su; // figurinha revelada → permite upload
+      }
+    }
+  }
+  // 3) Vale (presente): clicar num vale JÁ RASPADO libera o upload
+  if(!zone){
+    const vc = e.target.closest('.voucher');
+    if(vc){
+      const vscr = vc.querySelector('.v-scr');
+      const vu = vc.querySelector('.v-upload');
+      if(vu && vscr && vscr.classList.contains('off')){
+        zone = vu; // vale revelado → permite upload
       }
     }
   }
