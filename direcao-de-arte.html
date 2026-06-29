@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Direção de Arte · J&G · v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Dancing+Script:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+/* ════════ TOKENS ════════ */
+:root{
+  --night:#12102E;--night2:#0A0820;--cream:#F0DFC0;--cream2:#E8D5B7;--cream3:#D4C4A0;
+  --coral:#D4736E;--coral-lt:#E89890;--mauve:#8B6B95;--green:#4A6741;
+  --gold:#C4956A;--gold2:#E8B86D;--violet:#7C5BAD;--indigo:#4A4090;--ink:#2A2540;
+  --space:clamp(22px,6vw,30px);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--night2);color:var(--cream);-webkit-font-smoothing:antialiased;line-height:1.5}
+/* grão de papel (textura — não imagem) */
+body::after{content:'';position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.045;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.board{max-width:468px;margin:0 auto;position:relative;z-index:1}
+:focus-visible{outline:2px solid var(--gold2);outline-offset:3px;border-radius:4px}
+
+/* utilidades */
+.kicker{font-family:'Nunito';font-weight:800;font-size:.6rem;letter-spacing:4px;text-transform:uppercase}
+.folio{font-family:'Cormorant Garamond',serif;font-size:.62rem;letter-spacing:3px;text-transform:uppercase;opacity:.5}
+.foil{background:linear-gradient(110deg,#E8B86D,#F4DCA8 28%,#C4956A 52%,#F4DCA8 76%,#C4956A);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hair{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.7}
+.orn{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--gold2);opacity:.8;font-size:.7rem}
+.orn::before,.orn::after{content:'';height:1px;width:46px;background:linear-gradient(90deg,transparent,var(--gold2))}
+.orn::after{background:linear-gradient(90deg,var(--gold2),transparent)}
+
+/* ════════ CAPA ════════ */
+.cover{position:relative;padding:42px var(--space) 34px;overflow:hidden;
+  background:radial-gradient(ellipse 70% 45% at 70% 6%,rgba(124,91,173,.30),transparent 60%),
+    radial-gradient(ellipse 60% 40% at 14% 92%,rgba(212,115,110,.20),transparent 60%),
+    linear-gradient(180deg,var(--night),var(--night2))}
+.cover .stars{position:absolute;inset:0;pointer-events:none;opacity:.8;
+  background-image:radial-gradient(1.4px 1.4px at 16% 20%,#fff 50%,transparent),radial-gradient(1px 1px at 34% 32%,var(--gold2) 50%,transparent),radial-gradient(1.5px 1.5px at 72% 12%,#fff 50%,transparent),radial-gradient(1px 1px at 88% 24%,rgba(255,255,255,.7) 50%,transparent),radial-gradient(1.4px 1.4px at 60% 40%,var(--gold2) 50%,transparent);background-repeat:no-repeat}
+.cover .moon{position:absolute;top:24px;right:28px;width:28px;height:28px;border-radius:50%;background:radial-gradient(circle at 68% 32%,#F4E3B8,#C9A04A 70%,#7A5A20);box-shadow:0 0 24px rgba(232,184,109,.4)}
+.cover .kicker{color:var(--gold2);position:relative}
+.cover h1{font-family:'Playfair Display',serif;font-weight:900;font-size:clamp(2.6rem,12vw,3.2rem);line-height:.96;margin:12px 0 4px;position:relative}
+.cover .sub{font-family:'Dancing Script',cursive;font-size:1.6rem;color:var(--coral-lt);position:relative;margin-bottom:12px}
+.cover .essence{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--cream2);opacity:.88;max-width:320px;position:relative;line-height:1.45}
+/* readout do sistema (tokens) */
+.sysrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:20px;position:relative}
+.chip{font-family:'Nunito';font-weight:800;font-size:.54rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--cream3);border:1px solid rgba(232,184,109,.32);border-radius:99px;padding:5px 11px}
+.chip b{color:var(--gold2)}
+
+/* ════════ SEÇÕES ════════ */
+.paper{background:radial-gradient(ellipse at 18% 12%,rgba(0,0,0,.03),transparent 55%),radial-gradient(ellipse at 50% 50%,var(--cream),var(--cream2) 70%,var(--cream3));color:var(--ink);padding:34px var(--space);position:relative}
+.paper .kicker{color:var(--coral)}
+.paper h2{font-family:'Playfair Display',serif;font-weight:800;font-size:1.7rem;color:var(--night);margin:6px 0 4px;line-height:1.1}
+.paper .deck{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:var(--mauve);margin-bottom:20px}
+.paper .note{font-size:.8rem;color:#5a5168;margin-top:10px;line-height:1.55}
+.dark{background:linear-gradient(180deg,var(--night),var(--night2));padding:34px var(--space);position:relative}
+.dark .kicker{color:var(--gold2)}
+.dark h2{font-family:'Playfair Display',serif;font-weight:800;font-size:1.7rem;margin:6px 0 4px;line-height:1.1}
+.dark .deck{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:var(--cream3);margin-bottom:20px}
+.dark .note{font-size:.8rem;color:var(--cream3);line-height:1.55;margin-top:10px}
+
+/* ════════ ASSINATURA — a figurinha-relíquia (herói) ════════ */
+.sig{background:linear-gradient(180deg,#171436,var(--night));padding:36px var(--space) 38px;position:relative;overflow:hidden}
+.sig .badge{display:inline-block;font-family:'Nunito';font-weight:900;font-size:.52rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--night);background:linear-gradient(120deg,#E8B86D,#F4DCA8);padding:4px 10px;border-radius:99px;margin-bottom:10px}
+.sig h2{font-family:'Playfair Display',serif;font-weight:900;font-size:1.9rem;line-height:1.05;margin-bottom:4px}
+.sig .deck{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--cream3);margin-bottom:24px}
+.stamps{display:flex;gap:16px;justify-content:center;align-items:flex-start;flex-wrap:wrap}
+
+/* o selo/figurinha com borda picotada (a ousadia única) */
+.stamp{
+  width:150px;padding:9px;position:relative;
+  background:linear-gradient(160deg,var(--cream),var(--cream2));
+  /* borda PICOTADA de selo postal — feita em CSS, o risco do projeto */
+  -webkit-mask:
+    radial-gradient(circle 3px at 7px 7px,transparent 2.6px,#000 3px) top left/14px 14px repeat-x,
+    radial-gradient(circle 3px at 7px 7px,transparent 2.6px,#000 3px) bottom left/14px 14px repeat-x,
+    radial-gradient(circle 3px at 7px 7px,transparent 2.6px,#000 3px) top left/14px 14px repeat-y,
+    radial-gradient(circle 3px at 7px 7px,transparent 2.6px,#000 3px) top right/14px 14px repeat-y,
+    linear-gradient(#000,#000);
+          mask:
+    radial-gradient(circle 3px at 7px 7px,transparent 2.6px,#000 3px) top left/14px 14px repeat-x,
+    radial-gradient(circle 3px at 7px 7px,transparent 2.6px,#000 3px) bottom left/14px 14px repeat-x,
+    radial-gradient(circle 3px at 7px 7px,transparent 2.6px,#000 3px) top left/14px 14px repeat-y,
+    radial-gradient(circle 3px at 7px 7px,transparent 2.6px,#000 3px) top right/14px 14px repeat-y,
+    linear-gradient(#000,#000);
+  -webkit-mask-composite:source-over;mask-composite:add;
+  filter:drop-shadow(0 10px 22px rgba(0,0,0,.5));
+  transition:transform .25s ease;
+}
+.stamp:hover{transform:translateY(-4px) rotate(-1.2deg)}
+.stamp .inner{border:1.5px solid rgba(142,106,31,.5);border-radius:3px;padding:8px 8px 10px;position:relative}
+.stamp .denom{position:absolute;top:5px;right:6px;font-family:'Playfair Display',serif;font-weight:900;font-size:.62rem;color:var(--coral);letter-spacing:.5px}
+.stamp .photo{height:96px;border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center}
+/* estado COLADA — placeholder de foto real (nunca imagem gerada) */
+.stamp .photo.filled{background:repeating-linear-gradient(45deg,rgba(139,107,149,.18),rgba(139,107,149,.18) 8px,rgba(212,115,110,.16) 8px,rgba(212,115,110,.16) 16px);border:1px dashed rgba(90,56,32,.4)}
+.stamp .photo.filled .ph{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.7rem;color:#6a4a3a}
+.stamp .photo.filled .ico{font-size:1.3rem;opacity:.5}
+/* estado A COLAR — vazio (empty state projetado) */
+.stamp.empty .photo{background:rgba(90,56,32,.06);border:1px dashed rgba(90,56,32,.3)}
+.stamp.empty .photo .ico{font-size:1.4rem;opacity:.3}
+.stamp.empty .photo .ph{font-family:'Nunito';font-weight:800;font-size:.5rem;letter-spacing:1.5px;text-transform:uppercase;color:rgba(90,56,32,.45)}
+.stamp .cap{font-family:'Dancing Script',cursive;font-size:1.1rem;color:var(--ink);text-align:center;margin-top:7px;line-height:1}
+.stamp .date{font-family:'Cormorant Garamond',serif;font-size:.55rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);text-align:center;margin-top:3px;opacity:.8}
+.stamp .wax{position:absolute;bottom:6px;left:7px;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 38% 30%,#9E2E36,#7A2530 50%,#4E1118);border:1px solid rgba(232,184,109,.5)}
+.stamp .star{position:absolute;top:6px;left:7px;color:var(--gold2);font-size:.6rem;opacity:.8}
+.stamp-cap{text-align:center;font-family:'Nunito';font-weight:800;font-size:.5rem;letter-spacing:2px;text-transform:uppercase;color:var(--cream3);margin-top:10px}
+.risk{margin-top:26px;border-left:3px solid var(--coral);padding:4px 0 4px 14px}
+.risk b{font-family:'Nunito';font-weight:900;font-size:.56rem;letter-spacing:2px;text-transform:uppercase;color:var(--coral-lt);display:block;margin-bottom:4px}
+.risk p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:var(--cream2);line-height:1.45}
+
+/* ════════ PALETA ════════ */
+.swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.sw{border-radius:10px;height:74px;position:relative;overflow:hidden;border:1px solid rgba(0,0,0,.08);box-shadow:0 4px 12px rgba(0,0,0,.12);display:flex;flex-direction:column;justify-content:flex-end;transition:transform .2s ease}
+.sw:hover{transform:translateY(-3px)}
+.sw .lab{background:rgba(255,255,255,.88);padding:5px 8px;backdrop-filter:blur(4px)}
+.sw .lab b{display:block;font-size:.6rem;font-weight:900;color:#2A2540;line-height:1.1}
+.sw .lab i{font-size:.52rem;font-style:normal;color:#7a7290;letter-spacing:.8px}
+.sw.big{grid-column:span 3;height:58px;flex-direction:row;align-items:center}
+.sw.big .lab{margin-left:auto;height:100%;display:flex;flex-direction:column;justify-content:center;width:60%}
+
+/* ════════ TIPOGRAFIA ════════ */
+.type{display:flex;flex-direction:column;gap:16px}
+.spec{border-left:2px solid var(--gold);padding-left:14px}
+.spec .role{font-family:'Nunito';font-weight:800;font-size:.56rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold2);margin-bottom:2px}
+.spec .name{font-size:.68rem;color:var(--cream3);font-style:italic;font-family:'Cormorant Garamond',serif;margin-bottom:5px}
+.s-play{font-family:'Playfair Display',serif;font-weight:800;font-size:1.8rem;line-height:1.05;color:var(--cream)}
+.s-cor{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.3rem;color:var(--cream2)}
+.s-dance{font-family:'Dancing Script',cursive;font-size:1.9rem;color:var(--coral-lt)}
+.s-nun{font-family:'Nunito';font-weight:700;font-size:.8rem;letter-spacing:2px;text-transform:uppercase;color:var(--cream2)}
+
+/* ════════ MOTIVOS ════════ */
+.motifs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.mot{background:rgba(255,255,255,.04);border:1px solid rgba(232,184,109,.26);border-radius:10px;padding:14px 8px 11px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;min-height:100px;justify-content:center;transition:border-color .2s ease}
+.mot:hover{border-color:rgba(232,184,109,.6)}
+.mot .cap{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.72rem;color:var(--cream3)}
+.dropcap{font-family:'Playfair Display',serif;font-weight:900;font-size:2.2rem;line-height:.8;color:var(--gold2)}
+.moon-row{display:flex;gap:5px}
+.mphase{width:12px;height:12px;border-radius:50%;background:var(--cream2)}
+.mphase.b{box-shadow:inset -5px 0 0 0 var(--night)}
+.mphase.c{box-shadow:inset -9px 0 0 0 var(--night)}
+.mphase.d{background:var(--night);border:1px solid var(--cream3)}
+.star2{color:var(--gold2);font-size:1.5rem;text-shadow:0 0 12px rgba(232,184,109,.6)}
+.waxm{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 38% 30%,#9E2E36,#7A2530 45%,#4E1118);color:var(--gold2);font-family:'Dancing Script',cursive;font-size:.95rem;border:2px solid rgba(232,184,109,.4)}
+.corner{width:32px;height:32px;border-top:2px solid var(--gold2);border-left:2px solid var(--gold2);border-radius:6px 0 0 0;position:relative}
+.corner::after{content:'❦';position:absolute;top:-4px;left:-2px;color:var(--coral);font-size:.68rem}
+.hairsample{width:56px;height:1px;background:linear-gradient(90deg,transparent,var(--gold2),transparent)}
+
+/* ════════ REGRA DE OURO ════════ */
+.rule{background:linear-gradient(180deg,rgba(124,91,173,.16),rgba(18,16,46,0)),var(--night);border:1px solid rgba(232,184,109,.35);border-radius:14px;margin:0 var(--space) 30px;padding:26px 22px;position:relative}
+.rule .seal-badge{position:absolute;top:-16px;left:50%;transform:translateX(-50%);width:42px;height:42px;border-radius:50%;background:radial-gradient(circle at 38% 30%,#F4E3B8,#C4956A 65%,#7A5A20);display:flex;align-items:center;justify-content:center;color:#4E1118;font-size:1.05rem;border:2px solid var(--night2);box-shadow:0 4px 12px rgba(0,0,0,.5)}
+.rule h3{font-family:'Playfair Display',serif;font-weight:800;font-size:1.3rem;text-align:center;margin:10px 0 2px}
+.rule .big-quote{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.15rem;text-align:center;color:var(--cream2);line-height:1.5;margin:12px 4px}
+.rule .yn{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.rule .col{border-radius:10px;padding:12px}
+.rule .col.yes{background:rgba(74,103,65,.18);border:1px solid rgba(120,170,110,.4)}
+.rule .col.no{background:rgba(212,115,110,.14);border:1px solid rgba(212,115,110,.4)}
+.rule .col h4{font-family:'Nunito';font-weight:900;font-size:.56rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.rule .col.yes h4{color:#9DD18C}.rule .col.no h4{color:var(--coral-lt)}
+.rule .col li{list-style:none;font-size:.74rem;color:var(--cream2);margin-bottom:5px;padding-left:14px;position:relative;line-height:1.35}
+.rule .col.yes li::before{content:'✦';position:absolute;left:0;color:#9DD18C;font-size:.58rem;top:3px}
+.rule .col.no li::before{content:'✕';position:absolute;left:0;color:var(--coral-lt);font-size:.58rem;top:2px}
+
+/* ════════ RODAPÉ ════════ */
+.foot{padding:30px var(--space) 40px;text-align:center;background:var(--night2)}
+.foot .tag{display:inline-block;font-family:'Nunito';font-weight:800;font-size:.54rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold2);border:1px solid rgba(232,184,109,.4);border-radius:99px;padding:5px 14px}
+.foot .next{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:var(--cream3);margin-top:14px}
+.foot .next b{font-family:'Nunito';font-weight:800;font-style:normal;color:var(--gold2)}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:360px){.stamps{gap:12px}.stamp{width:138px}}
+</style>
+</head>
+<body>
+<div class="board">
+
+  <!-- CAPA -->
+  <header class="cover">
+    <div class="stars"></div><div class="moon"></div>
+    <div class="kicker">Dossiê Visual · Etapa 1 · padrão profissional</div>
+    <h1 class="foil">Direção<br>de Arte</h1>
+    <div class="sub">a moldura do nosso álbum</div>
+    <p class="essence">Uma revista de amor impressa em papel-creme e noite estrelada — feita à mão, nunca pela máquina.</p>
+    <div class="sysrow">
+      <span class="chip"><b>Cor</b> noite · papel · ouro</span>
+      <span class="chip"><b>Tipo</b> Playfair + Cormorant</span>
+      <span class="chip"><b>Layout</b> revista editorial</span>
+      <span class="chip"><b>Assinatura</b> figurinha-relíquia</span>
+    </div>
+  </header>
+
+  <!-- ASSINATURA (herói: a coisa memorável) -->
+  <section class="sig">
+    <span class="badge">O elemento-assinatura</span>
+    <h2>A figurinha-relíquia</h2>
+    <p class="deck">Cada memória de vocês vira um selo de colecionador: foto emoldurada, picote de selo postal, assinatura à mão e lacre de cera. É o que ninguém mais tem.</p>
+    <div class="stamps">
+      <div>
+        <div class="stamp">
+          <div class="inner">
+            <span class="star">✦</span><span class="denom">J&amp;G</span>
+            <div class="photo filled"><span class="ico">📷</span><span class="ph">[foto de vocês]</span></div>
+            <div class="cap">nosso primeiro café</div>
+            <div class="date">março · 2024</div>
+            <span class="wax"></span>
+          </div>
+        </div>
+        <div class="stamp-cap">colada ✦ memória real</div>
+      </div>
+      <div>
+        <div class="stamp empty">
+          <div class="inner">
+            <span class="star">✦</span><span class="denom">♡</span>
+            <div class="photo"><span class="ico">✶</span><span class="ph">a colar</span></div>
+            <div class="cap">em breve…</div>
+            <div class="date">a conquistar</div>
+          </div>
+        </div>
+        <div class="stamp-cap">vazia ✦ a colecionar</div>
+      </div>
+    </div>
+
+    <div class="risk">
+      <b>O risco deliberado</b>
+      <p>O picote de selo postal, todo feito em CSS — é a ousadia única do projeto. Transforma "foto num card" em "relíquia que se cola". Tudo ao redor fica quieto pra ele brilhar.</p>
+    </div>
+  </section>
+
+  <div class="hair"></div>
+
+  <!-- PALETA -->
+  <section class="paper">
+    <div class="kicker">A Paleta</div>
+    <h2>Noite &amp; Papel, ouro como joia</h2>
+    <p class="deck">Duas dominantes — a noite e o creme — e o ouro só onde merece brilhar.</p>
+    <div class="swatches">
+      <div class="sw big" style="background:linear-gradient(120deg,#12102E,#0A0820)"><div class="lab"><b>Noite</b><i>#12102E · fundo</i></div></div>
+      <div class="sw big" style="background:linear-gradient(120deg,#F0DFC0,#D4C4A0)"><div class="lab"><b>Papel</b><i>#F0DFC0 · base</i></div></div>
+      <div class="sw" style="background:linear-gradient(135deg,#E8B86D,#C4956A)"><div class="lab"><b>Ouro</b><i>destaque</i></div></div>
+      <div class="sw" style="background:linear-gradient(135deg,#E89890,#D4736E)"><div class="lab"><b>Coral</b><i>afeto</i></div></div>
+      <div class="sw" style="background:linear-gradient(135deg,#8B6B95,#7C5BAD)"><div class="lab"><b>Malva</b><i>romance</i></div></div>
+      <div class="sw" style="background:linear-gradient(135deg,#4A6741,#3a5233)"><div class="lab"><b>Verde</b><i>raiz</i></div></div>
+    </div>
+    <p class="note"><b>Proporção 80 · 15 · 5</b> — 80% noite e papel, 15% um acento (coral ou malva), 5% ouro. Cor tímida e espalhada é o que dá ar de template.</p>
+  </section>
+
+  <!-- TIPOGRAFIA -->
+  <section class="dark">
+    <div class="kicker">A Tipografia</div>
+    <h2>Quatro vozes, uma revista</h2>
+    <p class="deck">Cada fonte tem um papel — e nunca trocam de função.</p>
+    <div class="type">
+      <div class="spec"><div class="role">Manchete · títulos</div><div class="name">Playfair Display</div><div class="s-play">O nosso amor em capítulos</div></div>
+      <div class="spec"><div class="role">Alma · textos &amp; legendas</div><div class="name">Cormorant Garamond, itálico</div><div class="s-cor">cada figurinha guarda um dia que vivemos</div></div>
+      <div class="spec"><div class="role">Afeto · assinaturas</div><div class="name">Dancing Script</div><div class="s-dance">com amor, G</div></div>
+      <div class="spec"><div class="role">Interface · botões &amp; rótulos</div><div class="name">Nunito</div><div class="s-nun">Abrir álbum · Colar figurinha</div></div>
+    </div>
+  </section>
+
+  <div class="hair"></div>
+
+  <!-- MOTIVOS -->
+  <section class="dark" style="padding-top:30px">
+    <div class="kicker">Os Motivos</div>
+    <h2>O vocabulário visual</h2>
+    <p class="deck">Elementos celestes e de papelaria fina que se repetem em todo o app.</p>
+    <div class="motifs">
+      <div class="mot"><div class="moon-row"><span class="mphase d"></span><span class="mphase c"></span><span class="mphase b"></span><span class="mphase"></span></div><span class="cap">fases da lua</span></div>
+      <div class="mot"><span class="star2">✦</span><span class="cap">estrelas &amp; brilho</span></div>
+      <div class="mot"><span class="dropcap">A</span><span class="cap">capitular</span></div>
+      <div class="mot"><span class="waxm">JG</span><span class="cap">selo de cera</span></div>
+      <div class="mot"><span class="corner"></span><span class="cap">cantoneira ❦</span></div>
+      <div class="mot"><span class="hairsample"></span><span class="cap">filete dourado</span></div>
+    </div>
+  </section>
+
+  <!-- REGRA DE OURO -->
+  <section class="dark" style="padding-top:8px;padding-bottom:8px">
+    <div class="rule">
+      <div class="seal-badge">✶</div>
+      <h3>A regra de <span class="foil">ouro</span></h3>
+      <p class="big-quote">“A arte é de vocês. O design é só a moldura.”</p>
+      <div class="yn">
+        <div class="col yes"><h4>Sempre</h4>
+          <li>Fotos e arte autoral suas</li><li>Textura de papel e grão</li><li>Layout de revista, com folio</li><li>Espaços marcados pra foto real</li></div>
+        <div class="col no"><h4>Nunca</h4>
+          <li>Imagem gerada por IA</li><li>Gradiente roxo genérico</li><li>Ícones e fontes de sistema</li><li>Layout simétrico sem alma</li></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="orn" style="margin:0 var(--space)">☾ ❦ ☽</div>
+
+  <footer class="foot">
+    <span class="tag">Etapa 1 · Direção de Arte · v2</span>
+    <p class="next">Aprovando esta direção, a próxima é a<br><b>Etapa 2 — Narrativa das 5 linguagens.</b></p>
+  </footer>
+
+</div>
+</body>
+</html>
