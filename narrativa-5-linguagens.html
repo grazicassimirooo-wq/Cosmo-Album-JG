@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Narrativa · As 5 Linguagens · J&G</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Dancing+Script:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#12102E;--night2:#0A0820;--cream:#F0DFC0;--cream2:#E8D5B7;--cream3:#D4C4A0;
+  --coral:#D4736E;--coral-lt:#E89890;--mauve:#8B6B95;--green:#4A6741;--green-lt:#7BA06B;
+  --gold:#C4956A;--gold2:#E8B86D;--violet:#7C5BAD;--indigo:#4A4090;--ink:#2A2540;
+  --space:clamp(22px,6vw,30px);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--night2);color:var(--cream);-webkit-font-smoothing:antialiased;line-height:1.5}
+body::after{content:'';position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.045;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.board{max-width:468px;margin:0 auto;position:relative;z-index:1}
+:focus-visible{outline:2px solid var(--gold2);outline-offset:3px;border-radius:4px}
+.foil{background:linear-gradient(110deg,#E8B86D,#F4DCA8 28%,#C4956A 52%,#F4DCA8 76%,#C4956A);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hair{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.7;margin:0 var(--space)}
+.orn{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--gold2);opacity:.8;font-size:.7rem}
+.orn::before,.orn::after{content:'';height:1px;width:46px;background:linear-gradient(90deg,transparent,var(--gold2))}
+.orn::after{background:linear-gradient(90deg,var(--gold2),transparent)}
+.kicker{font-family:'Nunito';font-weight:800;font-size:.6rem;letter-spacing:4px;text-transform:uppercase}
+
+/* ───── CAPA ───── */
+.cover{position:relative;padding:42px var(--space) 30px;overflow:hidden;
+  background:radial-gradient(ellipse 70% 45% at 30% 6%,rgba(124,91,173,.30),transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 90%,rgba(212,115,110,.18),transparent 60%),
+    linear-gradient(180deg,var(--night),var(--night2))}
+.cover .stars{position:absolute;inset:0;pointer-events:none;opacity:.8;
+  background-image:radial-gradient(1.4px 1.4px at 16% 20%,#fff 50%,transparent),radial-gradient(1px 1px at 34% 32%,var(--gold2) 50%,transparent),radial-gradient(1.5px 1.5px at 72% 12%,#fff 50%,transparent),radial-gradient(1.4px 1.4px at 60% 40%,var(--gold2) 50%,transparent);background-repeat:no-repeat}
+.cover .kicker{color:var(--gold2);position:relative}
+.cover h1{font-family:'Playfair Display',serif;font-weight:900;font-size:clamp(2.3rem,10vw,2.9rem);line-height:1;margin:12px 0 6px;position:relative}
+.cover .sub{font-family:'Dancing Script',cursive;font-size:1.6rem;color:var(--coral-lt);position:relative;margin-bottom:16px}
+.premise{position:relative;border-left:3px solid var(--gold);padding-left:16px}
+.premise p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.18rem;color:var(--cream2);line-height:1.5}
+.premise .drop{font-family:'Playfair Display',serif;font-weight:900;font-style:normal;font-size:2.4rem;float:left;line-height:.78;margin:4px 8px 0 0;color:var(--gold2)}
+
+/* ───── SUMÁRIO ───── */
+.toc{padding:26px var(--space) 8px;text-align:center}
+.toc .kicker{color:var(--coral-lt)}
+.toc h2{font-family:'Playfair Display',serif;font-weight:800;font-size:1.5rem;margin:6px 0 2px}
+.toc .deck{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.98rem;color:var(--cream3)}
+
+/* ───── CAPÍTULO ───── */
+.chapters{padding:14px var(--space) 8px;display:flex;flex-direction:column;gap:16px}
+.chap{
+  --acc:var(--coral);
+  position:relative;display:flex;gap:0;border-radius:12px;overflow:hidden;
+  background:linear-gradient(180deg,#171436,#13102f);
+  border:1px solid rgba(232,184,109,.18);
+  box-shadow:0 8px 22px rgba(0,0,0,.4);
+  transition:transform .25s ease,border-color .25s ease;
+}
+.chap:hover{transform:translateY(-3px);border-color:rgba(232,184,109,.45)}
+.chap .spine{width:7px;flex-shrink:0;background:linear-gradient(180deg,var(--acc),transparent)}
+.chap .body{padding:18px 18px 18px 16px;flex:1;min-width:0}
+.chap .head{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+/* chip picotado com o numeral — eco da figurinha-assinatura */
+.numchip{
+  width:46px;height:46px;flex-shrink:0;position:relative;
+  background:linear-gradient(160deg,var(--cream),var(--cream2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-weight:900;font-size:1.15rem;color:var(--ink);
+  -webkit-mask:
+    radial-gradient(circle 2.2px at 5px 5px,transparent 1.8px,#000 2.2px) top left/10px 10px repeat-x,
+    radial-gradient(circle 2.2px at 5px 5px,transparent 1.8px,#000 2.2px) bottom left/10px 10px repeat-x,
+    radial-gradient(circle 2.2px at 5px 5px,transparent 1.8px,#000 2.2px) top left/10px 10px repeat-y,
+    radial-gradient(circle 2.2px at 5px 5px,transparent 1.8px,#000 2.2px) top right/10px 10px repeat-y,
+    linear-gradient(#000,#000);
+          mask:
+    radial-gradient(circle 2.2px at 5px 5px,transparent 1.8px,#000 2.2px) top left/10px 10px repeat-x,
+    radial-gradient(circle 2.2px at 5px 5px,transparent 1.8px,#000 2.2px) bottom left/10px 10px repeat-x,
+    radial-gradient(circle 2.2px at 5px 5px,transparent 1.8px,#000 2.2px) top left/10px 10px repeat-y,
+    radial-gradient(circle 2.2px at 5px 5px,transparent 1.8px,#000 2.2px) top right/10px 10px repeat-y,
+    linear-gradient(#000,#000);
+  -webkit-mask-composite:source-over;mask-composite:add;
+}
+.chap .titles{min-width:0}
+.chap .lang{font-family:'Playfair Display',serif;font-weight:800;font-size:1.18rem;line-height:1.1;color:var(--cream)}
+.chap .promise{font-family:'Dancing Script',cursive;font-size:1.15rem;color:var(--acc);line-height:1}
+.chap .rows{display:flex;flex-direction:column;gap:7px;margin-top:6px}
+.chap .row{display:grid;grid-template-columns:74px 1fr;gap:10px;align-items:start}
+.chap .row .l{font-family:'Nunito';font-weight:800;font-size:.54rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold2);padding-top:3px}
+.chap .row .v{font-family:'Cormorant Garamond',serif;font-size:.92rem;color:var(--cream2);line-height:1.35}
+.chap .row .v b{font-family:'Nunito';font-weight:800;font-size:.72rem;color:var(--cream);font-style:normal}
+.tagx{display:inline-block;font-family:'Nunito';font-weight:800;font-size:.5rem;letter-spacing:1px;text-transform:uppercase;color:var(--night);background:var(--acc);border-radius:99px;padding:2px 8px;margin-left:2px;vertical-align:1px}
+.exist{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.72rem;color:var(--green-lt);margin-top:8px;opacity:.9}
+.exist::before{content:'✓ ';font-style:normal}
+
+/* ───── FIO CONDUTOR ───── */
+.thread{margin:20px var(--space);background:linear-gradient(180deg,rgba(124,91,173,.16),rgba(18,16,46,0)),var(--night);border:1px solid rgba(232,184,109,.32);border-radius:14px;padding:24px 20px;text-align:center;position:relative}
+.thread .seal-badge{position:absolute;top:-15px;left:50%;transform:translateX(-50%);width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 38% 30%,#F4E3B8,#C4956A 65%,#7A5A20);display:flex;align-items:center;justify-content:center;color:#4E1118;font-size:1rem;border:2px solid var(--night2);box-shadow:0 4px 12px rgba(0,0,0,.5)}
+.thread h3{font-family:'Playfair Display',serif;font-weight:800;font-size:1.25rem;margin:8px 0 8px}
+.thread p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--cream2);line-height:1.5}
+.thread .two{display:flex;justify-content:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+.thread .two span{font-family:'Nunito';font-weight:800;font-size:.56rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--cream3);border:1px solid rgba(232,184,109,.3);border-radius:99px;padding:5px 12px}
+.thread .two b{color:var(--gold2)}
+
+/* ───── RODAPÉ ───── */
+.foot{padding:26px var(--space) 40px;text-align:center;background:var(--night2)}
+.foot .tag{display:inline-block;font-family:'Nunito';font-weight:800;font-size:.54rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold2);border:1px solid rgba(232,184,109,.4);border-radius:99px;padding:5px 14px}
+.foot .next{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:var(--cream3);margin-top:14px}
+.foot .next b{font-family:'Nunito';font-weight:800;font-style:normal;color:var(--gold2)}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="board">
+
+  <!-- CAPA -->
+  <header class="cover">
+    <div class="stars"></div>
+    <div class="kicker">Dossiê Visual · Etapa 2</div>
+    <h1 class="foil">As 5 Linguagens</h1>
+    <div class="sub">os cinco capítulos do nosso álbum</div>
+    <div class="premise">
+      <p><span class="drop">N</span>ão é um app de fotos. É um álbum que cresce com a gente. Cada capítulo é uma das cinco formas de amar — e cada figurinha, a prova de que a gente amou daquele jeito.</p>
+    </div>
+  </header>
+
+  <div class="hair"></div>
+
+  <!-- SUMÁRIO -->
+  <section class="toc">
+    <div class="kicker">Sumário</div>
+    <h2>Cinco cadernos, um amor</h2>
+    <p class="deck">cada linguagem é um caderno da revista — com figurinhas, um ritual e um poder do app</p>
+  </section>
+
+  <!-- CAPÍTULOS -->
+  <section class="chapters">
+
+    <!-- I -->
+    <article class="chap" style="--acc:var(--gold2)">
+      <div class="spine"></div>
+      <div class="body">
+        <div class="head">
+          <div class="numchip">I</div>
+          <div class="titles"><div class="lang">Palavras de Afirmação</div><div class="promise">o que eu nunca te disse em voz alta</div></div>
+        </div>
+        <div class="rows">
+          <div class="row"><span class="l">Figurinhas</span><span class="v">cartas seladas, bilhetes, a frase do dia</span></div>
+          <div class="row"><span class="l">Ritual</span><span class="v">escrever e selar uma carta no pergaminho</span></div>
+          <div class="row"><span class="l">Poder</span><span class="v"><b>Notificação</b> — uma palavra-surpresa chega de manhã <span class="tagx">notificações</span></span></div>
+        </div>
+        <div class="exist">já existe: a página Carta de Amor entra aqui</div>
+      </div>
+    </article>
+
+    <!-- II -->
+    <article class="chap" style="--acc:var(--green-lt)">
+      <div class="spine"></div>
+      <div class="body">
+        <div class="head">
+          <div class="numchip">II</div>
+          <div class="titles"><div class="lang">Tempo de Qualidade</div><div class="promise">os lugares onde fomos nós</div></div>
+        </div>
+        <div class="rows">
+          <div class="row"><span class="l">Figurinhas</span><span class="v">memórias, a linha do tempo de vocês</span></div>
+          <div class="row"><span class="l">Ritual</span><span class="v">marcar onde se falaram e onde querem ir</span></div>
+          <div class="row"><span class="l">Poder</span><span class="v"><b>Mapa afetivo</b> — os nossos lugares no mapa <span class="tagx">localização</span></span></div>
+        </div>
+        <div class="exist">já existe: a Galeria de Memórias entra aqui</div>
+      </div>
+    </article>
+
+    <!-- III -->
+    <article class="chap" style="--acc:var(--coral-lt)">
+      <div class="spine"></div>
+      <div class="body">
+        <div class="head">
+          <div class="numchip">III</div>
+          <div class="titles"><div class="lang">Toque Físico</div><div class="promise">a saudade que se sente na pele</div></div>
+        </div>
+        <div class="rows">
+          <div class="row"><span class="l">Figurinhas</span><span class="v">abraço guardado, beijo enviado, contador de saudade</span></div>
+          <div class="row"><span class="l">Ritual</span><span class="v">mandar um abraço que vibra no celular dela</span></div>
+          <div class="row"><span class="l">Poder</span><span class="v"><b>Toque a distância</b> — "te abraço daqui" <span class="tagx">vibração</span></span></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- IV -->
+    <article class="chap" style="--acc:var(--mauve)">
+      <div class="spine"></div>
+      <div class="body">
+        <div class="head">
+          <div class="numchip">IV</div>
+          <div class="titles"><div class="lang">Atos de Serviço</div><div class="promise">amar é fazer</div></div>
+        </div>
+        <div class="rows">
+          <div class="row"><span class="l">Figurinhas</span><span class="v">cupons de amor (vale-café, vale-colo), cuidados</span></div>
+          <div class="row"><span class="l">Ritual</span><span class="v">criar e resgatar um cupom</span></div>
+          <div class="row"><span class="l">Poder</span><span class="v"><b>Cupons</b> — aviso quando a outra resgata <span class="tagx">resgate</span></span></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- V -->
+    <article class="chap" style="--acc:var(--violet)">
+      <div class="spine"></div>
+      <div class="body">
+        <div class="head">
+          <div class="numchip">V</div>
+          <div class="titles"><div class="lang">Presentes</div><div class="promise">um doce, sem motivo</div></div>
+        </div>
+        <div class="rows">
+          <div class="row"><span class="l">Figurinhas</span><span class="v">doces-surpresa, desejos, o pacote de figurinhas</span></div>
+          <div class="row"><span class="l">Ritual</span><span class="v">mandar um doce — abre raspando, como a capa</span></div>
+          <div class="row"><span class="l">Poder</span><span class="v"><b>Surpresa</b> — chega no aparelho dela de repente <span class="tagx">compartilhado</span></span></div>
+        </div>
+        <div class="exist">já existe: a raspadinha da capa vira o "doce"</div>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- FIO CONDUTOR -->
+  <section style="padding-top:6px">
+    <div class="thread">
+      <div class="seal-badge">∞</div>
+      <h3>O fio que costura tudo</h3>
+      <p>Um <b style="color:var(--gold2);font-style:normal">Perfil</b> revela a linguagem principal de cada uma — e o álbum destaca o capítulo que fala mais alto pra ela.</p>
+      <div class="two">
+        <span><b>Compartilhado</b> · dois aparelhos</span>
+        <span><b>Um álbum</b> · uma história</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="orn" style="margin:0 var(--space)">☾ ❦ ☽</div>
+
+  <footer class="foot">
+    <span class="tag">Etapa 2 · Narrativa</span>
+    <p class="next">Aprovando a narrativa, a próxima é a<br><b>Etapa 3 — Mapa de navegação (o sumário vivo).</b></p>
+  </footer>
+
+</div>
+</body>
+</html>
