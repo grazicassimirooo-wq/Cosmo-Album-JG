@@ -347,6 +347,15 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
 .quiz-opt.theirs{outline:1.5px dashed var(--teal-lt);outline-offset:1px}
 .quiz-opt .badge{display:inline-block;margin-left:6px;font-size:.6rem;letter-spacing:1px;font-weight:800;color:var(--teal-lt)}
 .quiz-summary{margin-top:8px;padding:10px 12px;border-radius:10px;background:rgba(46,139,124,.12);border:1px solid rgba(91,191,176,.3);font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--cream2);font-size:.85rem;text-align:center}
+.quiz-langs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.quiz-lang-card{padding:14px 10px;border-radius:12px;background:rgba(10,20,28,.55);border:1px solid rgba(91,191,176,.2);display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;min-height:160px;justify-content:space-between}
+.quiz-lang-card.me{border-color:rgba(232,184,109,.5)}
+.quiz-lang-card .who{font-family:'Nunito';font-weight:900;font-size:.55rem;letter-spacing:1.8px;text-transform:uppercase;color:var(--teal-lt)}
+.quiz-lang-card.me .who{color:var(--gold2)}
+.quiz-lang-card .qico{font-size:2.6rem;line-height:1;filter:drop-shadow(0 0 14px currentColor)}
+.quiz-lang-card .qname{font-family:'Playfair Display',serif;font-weight:800;font-size:.95rem;color:var(--cream);line-height:1.2;padding:0 4px}
+.quiz-lang-card .qname.empty{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;color:rgba(240,223,192,.4);font-size:.82rem}
+.quiz-lang-card .qcta{display:inline-block;margin-top:6px;padding:8px 14px;border-radius:99px;background:linear-gradient(180deg,var(--gold3),var(--gold) 60%,var(--gold-deep));color:var(--ink);font-family:'Nunito';font-weight:900;font-size:.6rem;letter-spacing:1.4px;text-transform:uppercase;text-decoration:none;cursor:pointer}
 
 /* modal genérico pra adicionar lugar */
 .mini-modal{position:fixed;inset:0;display:none;z-index:120;align-items:center;justify-content:center;background:rgba(6,4,28,.86);backdrop-filter:blur(6px);padding:20px}
@@ -564,13 +573,25 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     <button class="profile-save" type="button" onclick="saveProfile()">salvar e sincronizar ✦</button>
   </section>
 
-  <!-- ════════ QUIZ ════════ -->
+  <!-- ════════ QUIZ DA LINGUAGEM DO AMOR ════════ -->
   <section class="quiz-section reveal" id="s-quiz">
-    <div class="label">o quiz das duas</div>
-    <h3>Como a gente se ama hoje?</h3>
-    <p class="deck">cada uma marca a sua resposta · a outra vê em tempo real</p>
-    <div id="quizList"></div>
-    <div class="quiz-summary" id="quizSummary">marque pelo menos uma resposta pra começar</div>
+    <div class="label">o quiz da linguagem do amor</div>
+    <h3>Como cada uma de vocês ama</h3>
+    <p class="deck">12 perguntas · descobre a sua linguagem principal · a dela aparece quando ela responder</p>
+    <div class="quiz-langs">
+      <div class="quiz-lang-card me" id="qLangMe">
+        <span class="who">você</span>
+        <span class="qico" id="meQico">✦</span>
+        <span class="qname" id="meQname">faça o quiz pra revelar</span>
+        <a class="qcta" href="quiz-linguagem.html">fazer o quiz das 12 ✦</a>
+      </div>
+      <div class="quiz-lang-card" id="qLangOther">
+        <span class="who">a outra</span>
+        <span class="qico" id="otherQico">·</span>
+        <span class="qname empty" id="otherQname">— ainda não fez —</span>
+      </div>
+    </div>
+    <div class="quiz-summary" id="quizSummary">cada uma responde no seu celular · os resultados se encontram aqui</div>
   </section>
 
   <!-- PULL QUOTE -->
@@ -1038,71 +1059,59 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     }, err=>console.warn('profiles err', err));
   }
 
-  /* ── QUIZ DOS DOIS ── */
-  const QUIZ = [
-    { id:'q1', q:'Como a gente prefere se ver?',          opts:['filme em casa','passeio','jantar','silêncio juntas'] },
-    { id:'q2', q:'O que faz seu dia melhor?',             opts:['um café','um abraço','uma mensagem','uma surpresa'] },
-    { id:'q3', q:'Sua linguagem do amor de hoje?',        opts:['palavras','tempo','toque','presentes','atos'] },
-    { id:'q4', q:'Um emoji pra hoje?',                    opts:['🌸','💛','🌿','🌙','✨'] },
-    { id:'q5', q:'Pra onde a gente foge juntas?',         opts:['praia','montanha','cidade','casa'] }
-  ];
-  const quizList = document.getElementById('quizList');
-  const quizState = { me:{}, other:{} };
-  function renderQuiz(){
-    quizList.innerHTML = '';
-    QUIZ.forEach(q=>{
-      const qDiv = document.createElement('div');
-      qDiv.className = 'quiz-question';
-      const opts = q.opts.map(o=>{
-        const mine = quizState.me[q.id] === o;
-        const theirs = quizState.other[q.id] === o;
-        return `<button type="button" class="quiz-opt${mine?' mine':''}${theirs?' theirs':''}" data-q="${q.id}" data-o="${escapeHtml(o)}">${escapeHtml(o)}${theirs?'<span class="badge">ela</span>':''}</button>`;
-      }).join('');
-      qDiv.innerHTML = `<div class="quiz-q">${escapeHtml(q.q)}</div><div class="quiz-opts">${opts}</div>`;
-      quizList.appendChild(qDiv);
-    });
-    quizList.querySelectorAll('.quiz-opt').forEach(b=>{
-      b.addEventListener('click', ()=>{
-        const qid = b.dataset.q, opt = b.dataset.o;
-        quizState.me[qid] = opt;
-        try{ localStorage.setItem('jg-quiz-me', JSON.stringify(quizState.me)); }catch(e){}
-        if(_db) _db.collection('quiz').doc(_CLIENT).set({ answers: quizState.me, by: _CLIENT, ts: Date.now() }, { merge: true }).catch(()=>{});
-        renderQuiz(); updateQuizSummary();
-      });
-    });
-  }
-  function updateQuizSummary(){
-    const mineCnt = Object.keys(quizState.me).length;
-    const otherCnt = Object.keys(quizState.other).length;
-    if(mineCnt === 0 && otherCnt === 0){
-      document.getElementById('quizSummary').textContent = 'marque pelo menos uma resposta pra começar';
+  /* ── QUIZ DAS LINGUAGENS DO AMOR (resumo das duas) ── */
+  const LANG_META = {
+    T: { nome:'Toque Físico',          ico:'🤍', cor:'#D4736E' },
+    P: { nome:'Presentes',             ico:'🎁', cor:'#7C5CBF' },
+    S: { nome:'Atos de Serviço',       ico:'✨', cor:'#2E8B7C' },
+    Q: { nome:'Tempo de Qualidade',    ico:'🌿', cor:'#C4956A' },
+    W: { nome:'Palavras de Afirmação', ico:'💌', cor:'#8B6B95' }
+  };
+  function paintLang(card, winnerCode){
+    const meta = LANG_META[winnerCode];
+    const icoEl = card.querySelector('.qico');
+    const nmEl  = card.querySelector('.qname');
+    if(!meta){
+      icoEl.textContent = card.id === 'qLangMe' ? '✦' : '·';
+      icoEl.style.color = '';
+      nmEl.textContent  = card.id === 'qLangMe' ? 'faça o quiz pra revelar' : '— ainda não fez —';
+      nmEl.classList.add('empty');
       return;
     }
-    let match = 0, both = 0;
-    QUIZ.forEach(q=>{
-      if(quizState.me[q.id] && quizState.other[q.id]){
-        both++;
-        if(quizState.me[q.id] === quizState.other[q.id]) match++;
-      }
-    });
-    if(both === 0){
-      document.getElementById('quizSummary').textContent = mineCnt + ' resposta(s) sua(s) · esperando ela...';
+    icoEl.textContent = meta.ico;
+    icoEl.style.color = meta.cor;
+    nmEl.textContent  = meta.nome;
+    nmEl.style.color  = meta.cor;
+    nmEl.classList.remove('empty');
+  }
+  function updateQuizSummary(meCode, otherCode){
+    const el = document.getElementById('quizSummary');
+    if(!meCode && !otherCode){ el.textContent = 'cada uma responde no seu celular · os resultados se encontram aqui'; return; }
+    if(meCode && !otherCode){ el.textContent = 'esperando a outra responder...'; return; }
+    if(!meCode && otherCode){ el.textContent = 'ela já respondeu · sua vez ✦'; return; }
+    if(meCode === otherCode){
+      el.textContent = 'vocês duas falam a mesma língua de amor ✦';
     } else {
-      document.getElementById('quizSummary').textContent = `${match} de ${both} respostas em comum ✦`;
+      el.textContent = 'línguas diferentes — se complementam ✦';
     }
   }
-  // restaura quiz local
-  try{ const m = JSON.parse(localStorage.getItem('jg-quiz-me')||'{}'); Object.assign(quizState.me, m); }catch(e){}
-  renderQuiz(); updateQuizSummary();
+  // restaura resultado local imediatamente
+  let _meLang = null, _otherLang = null;
+  try{
+    const r = JSON.parse(localStorage.getItem('jg-quiz-result')||'null');
+    if(r && r.winner){ _meLang = r.winner; paintLang(document.getElementById('qLangMe'), _meLang); }
+  }catch(e){}
+  updateQuizSummary(_meLang, _otherLang);
   if(_db){
-    _db.collection('quiz').onSnapshot(snap=>{
+    _db.collection('quiz-linguagem').onSnapshot(snap=>{
       snap.forEach(doc=>{
         const d = doc.data();
-        if(!d) return;
-        if(d.by && d.by !== _CLIENT && d.answers) Object.assign(quizState.other, d.answers);
+        if(!d || !d.winner) return;
+        if(d.by === _CLIENT){ _meLang = d.winner; paintLang(document.getElementById('qLangMe'), _meLang); }
+        else { _otherLang = d.winner; paintLang(document.getElementById('qLangOther'), _otherLang); }
       });
-      renderQuiz(); updateQuizSummary();
-    }, err=>console.warn('quiz err', err));
+      updateQuizSummary(_meLang, _otherLang);
+    }, err=>console.warn('quiz-linguagem err', err));
   }
 
   /* ── REVEAL DAS SEÇÕES ── */
