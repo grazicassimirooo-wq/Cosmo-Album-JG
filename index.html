@@ -872,7 +872,7 @@ function checkScratch(){
   const pct=cl/tot,prog=document.getElementById('scratchProg');
   if(pct>.08){prog.classList.add('show');prog.textContent=`${Math.min(99,Math.round(pct/.4*100))}% aberto...`}
   if(pct>.4&&!scratchDone){
-    scratchDone=true;document.getElementById('scratchHint').style.opacity='0';
+    scratchDone=true;_jgMarkPackOpened();document.getElementById('scratchHint').style.opacity='0';
     prog.textContent='✨ Aberto!';
     canvas.parentElement.style.transition='opacity .8s';canvas.parentElement.style.opacity='0';
     setTimeout(showReveal,1200);
@@ -908,7 +908,22 @@ function goCap(n){
   el.classList.add('active'); window.scrollTo({top:0,behavior:'instant'});
   _jgMarkRead(String(n)); _jgInit();
 }
-function goPack(){ _hideAllScreens(); document.getElementById('s-pack').classList.add('active'); window.scrollTo({top:0,behavior:'instant'}); }
+const _JG_PACK_KEY='jg-pack-opened-date';
+function _jgTodayStr(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function _jgPackOpenedToday(){try{return localStorage.getItem(_JG_PACK_KEY)===_jgTodayStr();}catch(e){return false;}}
+function _jgMarkPackOpened(){try{localStorage.setItem(_JG_PACK_KEY,_jgTodayStr());}catch(e){}}
+function _jgShowRevealInstant(){
+  _hideAllScreens();
+  document.getElementById('s-reveal').classList.add('active');
+  document.getElementById('revText').classList.add('show');
+  document.getElementById('revFrame').classList.add('show');
+  window.scrollTo({top:0,behavior:'instant'});
+}
+function goPack(){
+  if(_jgPackOpenedToday()){ _jgShowRevealInstant(); return; }
+  _hideAllScreens(); document.getElementById('s-pack').classList.add('active'); window.scrollTo({top:0,behavior:'instant'});
+}
+document.addEventListener('DOMContentLoaded',()=>{ if(_jgPackOpenedToday()) _jgShowRevealInstant(); });
 
 /* marca de leitura */
 const _JG_KEY = 'jg-read-chapters';
