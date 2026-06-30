@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Capítulo IV · Atos de Serviço · J&G</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Dancing+Script:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#12102E;--night2:#0A0820;--night3:#06041C;
+  --cream:#F0DFC0;--cream2:#E8D5B7;--cream3:#D4C4A0;
+  --amber:#C4956A;--amber-lt:#E8B86D;--amber-deep:#8E6A1F;
+  --gold:#C4956A;--gold2:#E8B86D;--gold3:#F4DCA8;--gold-deep:#8E6A1F;
+  --ink:#2A2540;--ink2:#3A2410;
+  --space:clamp(22px,6vw,30px);
+  --ease-out:cubic-bezier(.2,.7,.2,1);
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream);
+  -webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh;overflow-x:hidden}
+.board{max-width:468px;margin:0 auto;position:relative;z-index:1}
+:focus-visible{outline:2px solid var(--gold2);outline-offset:3px;border-radius:8px}
+
+.sky-bg{position:fixed;inset:-10% -5%;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 45% at 28% 6%,rgba(196,149,106,.22),transparent 60%),
+    radial-gradient(ellipse 55% 35% at 80% 88%,rgba(232,184,109,.14),transparent 60%),
+    linear-gradient(180deg,var(--night),var(--night2) 55%,var(--night3));will-change:transform}
+.sky-stars{position:fixed;inset:-10%;z-index:0;pointer-events:none;opacity:0;
+  background-image:
+    radial-gradient(1px 1px at 16% 14%,rgba(255,255,255,.5) 50%,transparent),
+    radial-gradient(1px 1px at 72% 24%,rgba(255,255,255,.45) 50%,transparent),
+    radial-gradient(1.2px 1.2px at 24% 62%,var(--gold3) 50%,transparent),
+    radial-gradient(1px 1px at 50% 80%,rgba(255,255,255,.4) 50%,transparent),
+    radial-gradient(1px 1px at 86% 48%,#fff 50%,transparent);
+  background-repeat:no-repeat;
+  animation:bgIn 1.4s var(--ease-out) .15s forwards}
+@keyframes bgIn{to{opacity:.7}}
+
+/* HEADER */
+.chap-head{position:relative;padding:46px var(--space) 16px;text-align:left}
+.chap-meta{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--amber-lt);opacity:0;animation:fadeUp .7s var(--ease-out) .1s forwards}
+.chap-meta b{color:var(--cream3);font-style:normal;font-weight:800}
+.chap-head h1{font-family:'Playfair Display',serif;font-weight:900;font-size:clamp(2.2rem,10vw,2.9rem);line-height:.95;margin:10px 0 4px;letter-spacing:-.5px}
+.chap-head h1 .w{display:inline-block;opacity:0;transform:translateY(40px);animation:wordIn .9s var(--ease-spring) forwards}
+.chap-head h1 .w:nth-child(1){animation-delay:.30s}
+.chap-head h1 .w:nth-child(2){animation-delay:.46s}
+.chap-head h1 .w:nth-child(3){animation-delay:.62s}
+.chap-head .promise{font-family:'Dancing Script',cursive;font-size:1.6rem;color:var(--amber-lt);opacity:0;animation:fadeUp .8s var(--ease-out) .88s forwards;margin-bottom:18px}
+.chap-head .lede{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.1rem;color:var(--cream2);max-width:360px;line-height:1.55;opacity:0;animation:fadeUp .8s var(--ease-out) 1.02s forwards}
+.chap-head .lede .drop{font-family:'Playfair Display',serif;font-weight:900;font-style:normal;font-size:2.6rem;float:left;line-height:.78;margin:4px 8px 0 0;color:var(--amber-lt)}
+.chap-head .folio{font-family:'Cormorant Garamond',serif;font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--cream3);opacity:.55;margin-top:16px}
+.numeral{position:absolute;top:30px;right:var(--space);font-family:'Playfair Display',serif;font-weight:900;font-size:5rem;line-height:.85;
+  background:linear-gradient(180deg,var(--gold3),var(--amber) 60%,var(--amber-deep));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  opacity:0;animation:numIn 1.1s var(--ease-spring) .35s forwards;pointer-events:none;letter-spacing:-2px}
+.numeral::after{content:'';position:absolute;top:8px;right:-6px;width:8px;height:8px;border-radius:50%;background:var(--gold2);box-shadow:0 0 12px var(--gold2)}
+
+@keyframes wordIn{to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes numIn{from{opacity:0;transform:scale(.6) rotate(-8deg)}to{opacity:.9;transform:scale(1) rotate(0)}}
+.hair{height:1px;background:linear-gradient(90deg,transparent,var(--amber-lt),transparent);opacity:.55;margin:6px var(--space)}
+
+/* GESTO — botão de ação */
+.gesto-box{margin:18px var(--space) 8px;padding:26px 22px 24px;border-radius:18px;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 100%,rgba(196,149,106,.20),transparent 65%),
+    linear-gradient(180deg,#1c1830,#13102f);
+  border:1px solid rgba(196,149,106,.35);
+  box-shadow:0 10px 28px rgba(0,0,0,.4),inset 0 1px 0 rgba(244,220,168,.15);
+  text-align:center}
+.gesto-box .label{font-family:'Nunito';font-weight:900;font-size:.56rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--amber-lt);margin-bottom:6px}
+.gesto-box h3{font-family:'Playfair Display',serif;font-weight:800;font-size:1.4rem;margin-bottom:4px;line-height:1.1}
+.gesto-box p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:var(--cream3);margin-bottom:20px;line-height:1.45;max-width:340px;margin-left:auto;margin-right:auto}
+
+/* botão de ação */
+.act-btn{
+  position:relative;width:132px;height:132px;border-radius:50%;border:none;cursor:pointer;
+  background:radial-gradient(circle at 35% 30%,var(--gold3) 0%,var(--amber) 45%,var(--amber-deep) 90%);
+  box-shadow:
+    0 0 0 1px rgba(244,220,168,.25),
+    0 0 26px rgba(196,149,106,.5),
+    inset 0 -8px 18px rgba(80,50,10,.4),
+    inset 0 6px 16px rgba(255,230,180,.3);
+  color:var(--cream);display:inline-flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;
+  font-family:'Playfair Display',serif;font-weight:800;
+  animation:actPulse 2.6s ease-in-out infinite;
+  transition:transform .25s var(--ease-spring),box-shadow .25s}
+.act-btn .ic{font-size:1.6rem;line-height:1}
+.act-btn .tx{font-family:'Dancing Script',cursive;font-size:1.05rem;color:var(--cream)}
+.act-btn:hover{transform:scale(1.04)}
+.act-btn:active{transform:scale(.97)}
+.act-btn.sending{animation:actSend 1.4s var(--ease-spring) forwards}
+.act-btn::before{content:'';position:absolute;inset:-12px;border-radius:50%;
+  border:2px solid rgba(232,184,109,.4);animation:ringExp 2.6s ease-out infinite;pointer-events:none}
+@keyframes actPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+@keyframes ringExp{0%{opacity:.7;transform:scale(.85)}100%{opacity:0;transform:scale(1.35)}}
+@keyframes actSend{0%{transform:scale(1)}25%{transform:scale(1.16)}60%{transform:scale(.9)}100%{transform:scale(1.04);opacity:.7}}
+
+.act-counter{margin-top:16px;display:inline-flex;align-items:center;gap:8px;
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.85rem;color:var(--cream3)}
+.act-counter b{font-family:'Playfair Display',serif;font-style:normal;font-weight:800;font-size:1.3rem;color:var(--gold2);line-height:1}
+
+/* categorias de gesto */
+.act-modes{display:flex;justify-content:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+.amod{font-family:'Nunito';font-weight:800;font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--cream3);background:rgba(255,255,255,.04);border:1px solid rgba(232,184,109,.25);
+  border-radius:99px;padding:7px 12px;cursor:pointer;transition:all .2s}
+.amod:hover{border-color:var(--amber-lt);color:var(--amber-lt)}
+.amod.active{background:linear-gradient(180deg,rgba(196,149,106,.25),rgba(196,149,106,.1));border-color:var(--amber-lt);color:var(--cream)}
+
+/* DIÁRIO DE GESTOS */
+.diario{margin:22px var(--space) 8px;padding:18px 20px;
+  background:linear-gradient(180deg,#181830,#13102f);
+  border:1px solid rgba(232,184,109,.22);border-radius:14px}
+.diario .label{font-family:'Nunito';font-weight:900;font-size:.56rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold2);margin-bottom:6px}
+.diario h3{font-family:'Playfair Display',serif;font-weight:800;font-size:1.3rem;line-height:1.1;margin-bottom:4px}
+.diario .deck{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.9rem;color:var(--cream3);margin-bottom:14px}
+
+.big-count{display:flex;align-items:baseline;justify-content:center;gap:10px;padding:8px 0 12px}
+.big-count .n{font-family:'Playfair Display',serif;font-weight:900;font-size:3.4rem;line-height:.9;
+  background:linear-gradient(180deg,var(--gold3),var(--gold) 60%,var(--gold-deep));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.big-count .u{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:var(--cream2);line-height:1.2;max-width:140px}
+
+/* barras por categoria */
+.wbar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.wbar-name{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.82rem;color:var(--cream2);width:96px;flex-shrink:0}
+.wbar-track{flex:1;height:5px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden}
+.wbar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--amber),var(--amber-lt));transition:width 1.2s var(--ease-out)}
+.wbar-val{font-family:'Playfair Display',serif;font-weight:800;font-size:.72rem;color:var(--gold2);width:28px;text-align:right;flex-shrink:0}
+
+/* FIGURINHAS */
+.stickers-section{padding:8px var(--space) 4px}
+.stickers-section .label{font-family:'Nunito';font-weight:800;font-size:.56rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold2);margin-bottom:6px}
+.stickers-section h3{font-family:'Playfair Display',serif;font-weight:800;font-size:1.3rem;line-height:1.1;margin-bottom:2px}
+.stickers-section .deck{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.9rem;color:var(--cream3);margin-bottom:14px}
+
+.tgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.tstk{position:relative;padding:8px;background:linear-gradient(160deg,var(--cream),var(--cream2));
+  filter:drop-shadow(0 8px 18px rgba(0,0,0,.4));transition:transform .3s var(--ease-spring);
+  opacity:0;transform:translateY(20px);
+  -webkit-mask:
+    radial-gradient(circle 2.6px at 6px 6px,transparent 2.2px,#000 2.6px) top left/12px 12px repeat-x,
+    radial-gradient(circle 2.6px at 6px 6px,transparent 2.2px,#000 2.6px) bottom left/12px 12px repeat-x,
+    radial-gradient(circle 2.6px at 6px 6px,transparent 2.2px,#000 2.6px) top left/12px 12px repeat-y,
+    radial-gradient(circle 2.6px at 6px 6px,transparent 2.2px,#000 2.6px) top right/12px 12px repeat-y,
+    linear-gradient(#000,#000);
+          mask:
+    radial-gradient(circle 2.6px at 6px 6px,transparent 2.2px,#000 2.6px) top left/12px 12px repeat-x,
+    radial-gradient(circle 2.6px at 6px 6px,transparent 2.2px,#000 2.6px) bottom left/12px 12px repeat-x,
+    radial-gradient(circle 2.6px at 6px 6px,transparent 2.2px,#000 2.6px) top left/12px 12px repeat-y,
+    radial-gradient(circle 2.6px at 6px 6px,transparent 2.2px,#000 2.6px) top right/12px 12px repeat-y,
+    linear-gradient(#000,#000);
+  -webkit-mask-composite:source-over;mask-composite:add}
+.tstk.in{opacity:1;transform:translateY(0)}
+.tstk:hover{transform:translateY(-4px) rotate(-1.2deg)}
+.tstk:nth-child(even):hover{transform:translateY(-4px) rotate(1.2deg)}
+.tstk-inner{border:1.5px solid rgba(142,106,31,.5);border-radius:3px;padding:10px 10px 12px;position:relative;color:var(--ink2)}
+.tstk-star{position:absolute;top:6px;left:8px;color:var(--gold);font-size:.7rem;opacity:.85}
+.tstk-den{position:absolute;top:6px;right:8px;font-family:'Playfair Display',serif;font-weight:900;font-size:.62rem;color:var(--amber);letter-spacing:.5px}
+.slot{position:relative;border-radius:3px;overflow:hidden;
+  background:repeating-linear-gradient(45deg,rgba(196,149,106,.1),rgba(196,149,106,.1) 8px,rgba(232,184,109,.07) 8px,rgba(232,184,109,.07) 16px);
+  border:1.5px dashed rgba(100,70,20,.42);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;padding:14px 10px;aspect-ratio:1/1;cursor:pointer}
+.slot .stype{font-family:'Nunito';font-weight:900;font-size:.5rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-deep);background:rgba(232,184,109,.18);border:1px solid rgba(142,106,31,.4);padding:3px 8px;border-radius:99px}
+.slot .sname{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.78rem;color:var(--ink2);line-height:1.25}
+.slot .sdim{font-family:'Nunito';font-weight:700;font-size:.5rem;letter-spacing:1.2px;color:rgba(58,36,16,.55)}
+.slot .sico{font-size:1.5rem;opacity:.5}
+.slot .upload-hint{font-family:'Nunito';font-weight:800;font-size:.45rem;letter-spacing:1px;text-transform:uppercase;color:rgba(58,36,16,.55);
+  background:rgba(232,184,109,.18);border:1px solid rgba(142,106,31,.4);padding:3px 8px;border-radius:99px;margin-top:2px}
+.slot.has-media{padding:0;border-style:solid;border-color:rgba(196,149,106,.55);background:#000}
+.slot.has-media .sico,.slot.has-media .stype,.slot.has-media .sname,.slot.has-media .sdim,.slot.has-media .upload-hint{display:none}
+.slot .media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.slot .media-clear{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;border:none;cursor:pointer;
+  background:rgba(0,0,0,.55);color:#fff;font-size:.7rem;display:none;align-items:center;justify-content:center;line-height:1;z-index:3}
+.slot.has-media .media-clear{display:flex}
+.slot .media-clear:hover{background:rgba(196,149,106,.85)}
+.tstk-cap{font-family:'Dancing Script',cursive;font-size:1.1rem;color:var(--ink);text-align:center;margin-top:8px;line-height:1}
+.tstk-count{font-family:'Cormorant Garamond',serif;font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-deep);text-align:center;margin-top:3px;opacity:.85}
+.tstk-count b{color:var(--amber);font-weight:800}
+
+/* DIÁRIO — botão e modal */
+.diary-open{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:9px 16px;border-radius:99px;cursor:pointer;border:1px solid rgba(232,184,109,.35);
+  background:rgba(232,184,109,.06);color:var(--cream2);
+  font-family:'Nunito';font-weight:800;font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;transition:all .2s}
+.diary-open:hover,.diary-open:focus-visible{border-color:var(--gold2);color:var(--gold2);background:rgba(232,184,109,.12)}
+.diary-open .ic{font-size:.85rem}
+
+.diary-backdrop{position:fixed;inset:0;z-index:95;background:rgba(6,4,28,.78);backdrop-filter:blur(6px);
+  opacity:0;pointer-events:none;transition:opacity .35s var(--ease-out)}
+.diary-backdrop.on{opacity:1;pointer-events:auto}
+.diary-sheet{position:fixed;left:50%;top:50%;z-index:96;width:min(440px,92vw);max-height:84vh;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  transform:translate(-50%,-46%) scale(.96);opacity:0;pointer-events:none;
+  background:linear-gradient(180deg,#1a1830,#13102f);
+  border:1px solid rgba(232,184,109,.35);border-radius:18px;padding:22px 22px 20px;
+  box-shadow:0 24px 60px rgba(0,0,0,.6);
+  transition:opacity .4s var(--ease-out),transform .5s var(--ease-spring)}
+.diary-sheet.on{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto}
+.diary-sheet h3{font-family:'Playfair Display',serif;font-weight:800;font-size:1.3rem;color:var(--cream);margin-bottom:2px}
+.diary-sheet .ddeck{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.9rem;color:var(--cream3);margin-bottom:14px}
+.diary-close{position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;color:var(--cream3);font-size:1.4rem;line-height:1;padding:4px 8px;border-radius:6px}
+.diary-close:hover{color:var(--amber-lt);background:rgba(255,255,255,.05)}
+.diary-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.diary-list li{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;
+  background:rgba(255,255,255,.03);border:1px solid rgba(232,184,109,.15)}
+.diary-list .dico{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;
+  background:radial-gradient(circle at 35% 30%,var(--gold3) 0%,var(--amber) 60%,var(--amber-deep) 100%);
+  box-shadow:inset 0 -2px 6px rgba(80,50,10,.4),inset 0 2px 4px rgba(255,230,180,.3)}
+.diary-list .dtxt{flex:1;min-width:0}
+.diary-list .dtype{font-family:'Nunito';font-weight:900;font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--amber-lt)}
+.diary-list .dwhen{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.82rem;color:var(--cream3)}
+.diary-list .dwho{font-family:'Nunito';font-weight:700;font-size:.55rem;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold3);background:rgba(232,184,109,.12);padding:3px 8px;border-radius:99px}
+.diary-empty{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:var(--cream3);text-align:center;padding:24px 10px;opacity:.8}
+.diary-foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px dashed rgba(232,184,109,.25);
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.78rem;color:var(--cream3)}
+.diary-foot .syncdot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#4A6741;margin-right:6px;vertical-align:middle;box-shadow:0 0 8px rgba(123,160,107,.6)}
+.diary-foot .syncdot.off{background:#8B6B95;box-shadow:none}
+
+/* PULL QUOTE */
+.pull{margin:22px var(--space);padding:18px 20px 18px 26px;border-left:3px solid var(--amber);position:relative}
+.pull::before{content:'\201C';position:absolute;left:-2px;top:-12px;font-family:'Playfair Display',serif;font-weight:900;font-size:4rem;color:var(--amber-lt);opacity:.5;line-height:1}
+.pull p{font-family:'Playfair Display',serif;font-style:italic;font-weight:600;font-size:1.25rem;line-height:1.3;color:var(--cream)}
+.pull cite{font-family:'Dancing Script',cursive;font-style:normal;font-size:1.05rem;color:var(--amber-lt);display:block;margin-top:8px}
+
+.legend-aside{margin:14px var(--space) 0;padding:12px 14px;border:1px dashed rgba(232,184,109,.4);border-radius:10px;background:rgba(232,184,109,.04)}
+.legend-aside h4{font-family:'Nunito';font-weight:900;font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold2);margin-bottom:6px}
+.legend-aside li{list-style:none;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.78rem;color:var(--cream2);padding-left:14px;position:relative;line-height:1.4;margin-bottom:3px}
+.legend-aside li::before{content:'✦';position:absolute;left:0;color:var(--gold2);font-size:.55rem;top:3px}
+.legend-aside li b{font-family:'Nunito';font-weight:800;font-style:normal;color:var(--gold3);font-size:.72rem}
+
+.chapnav{margin:8px var(--space) 30px;display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+.nb{display:inline-flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;
+  background:none;border:1px solid rgba(232,184,109,.35);border-radius:99px;padding:11px 14px;cursor:pointer;color:var(--cream2);font-family:'Nunito';font-weight:800;font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;transition:all .2s}
+.nb:hover,.nb:focus-visible{border-color:var(--gold2);color:var(--gold2)}
+.nb.next{background:linear-gradient(180deg,var(--gold3),var(--gold) 60%,var(--gold-deep));color:var(--ink);border-color:transparent;box-shadow:0 4px 12px rgba(196,149,106,.35)}
+.nb.next:hover,.nb.next:focus-visible{color:var(--ink);transform:translateY(-1px);box-shadow:0 8px 18px rgba(196,149,106,.5)}
+.nb-mid{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.7rem;color:var(--cream3);background:none;border:none;cursor:pointer;padding:8px 10px}
+.nb-mid:hover,.nb-mid:focus-visible{color:var(--gold2)}
+
+/* overlay */
+.act-overlay{position:fixed;inset:0;z-index:90;pointer-events:none;opacity:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(196,149,106,.55) 0%,rgba(80,50,10,.85) 100%);
+  transition:opacity 1.1s var(--ease-out)}
+.act-overlay.on{opacity:1}
+.act-card{position:fixed;left:50%;top:50%;z-index:91;
+  transform:translate(-50%,-50%) scale(.8);opacity:0;pointer-events:none;
+  text-align:center;padding:30px 36px;border-radius:18px;
+  background:radial-gradient(ellipse at 50% 30%,rgba(244,220,168,.18),rgba(18,16,46,.92) 70%);
+  border:1px solid rgba(232,184,109,.5);box-shadow:0 20px 60px rgba(0,0,0,.6);
+  transition:opacity .6s var(--ease-out),transform .7s var(--ease-spring);max-width:300px}
+.act-card.on{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto}
+.act-card .ic{font-size:3rem;animation:bigBeat 1.6s ease-in-out infinite}
+.act-card .ttl{font-family:'Playfair Display',serif;font-weight:800;font-size:1.2rem;color:var(--cream);margin:8px 0 4px}
+.act-card .msg{font-family:'Dancing Script',cursive;font-size:1.4rem;color:var(--amber-lt);line-height:1.2}
+.act-card .from{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.85rem;color:var(--cream3);margin-top:8px;opacity:.85}
+.act-card .reply-btn{display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:12px 22px;border-radius:99px;cursor:pointer;border:none;
+  background:linear-gradient(180deg,var(--gold3),var(--gold) 60%,var(--gold-deep));color:var(--ink);
+  font-family:'Nunito';font-weight:900;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;
+  box-shadow:0 6px 18px rgba(196,149,106,.4),inset 0 1px 0 rgba(255,255,255,.4)}
+@keyframes bigBeat{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+
+.toast{position:fixed;top:24px;left:50%;z-index:100;transform:translateX(-50%) translateY(-20px);
+  background:linear-gradient(180deg,#3A2F10,#1E1808);color:var(--gold3);
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.8rem;letter-spacing:1.5px;padding:10px 22px;
+  border-radius:4px;border:1.5px solid var(--gold);box-shadow:0 8px 24px rgba(0,0,0,.5);
+  opacity:0;transition:all .4s}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001s!important;animation-delay:0s!important;transition-duration:.001s!important}
+  .sky-stars,.numeral{opacity:.85}
+  .tstk{opacity:1!important;transform:none!important}
+  .act-btn{animation:none}.act-btn::before{animation:none;opacity:.3}
+}
+@media (max-width:360px){.numeral{font-size:4rem}.act-btn{width:118px;height:118px}}
+</style>
+</head>
+<body>
+<div class="sky-bg"></div>
+<div class="sky-stars"></div>
+<div class="board">
+
+  <header class="chap-head">
+    <div class="chap-meta"><b>Capítulo IV</b> · de cinco · J &amp; G</div>
+    <div class="numeral">IV</div>
+    <h1><span class="w">Atos</span> <span class="w">de</span> <span class="w">Serviço</span></h1>
+    <div class="promise">amor que se prova na ação</div>
+    <p class="lede"><span class="drop">O</span> que você faz por mim fala mais alto que qualquer palavra. Cada gesto é uma declaração que não precisa de voz.</p>
+    <div class="folio">JG · CAP. IV · PÁG. 58</div>
+  </header>
+
+  <div class="hair"></div>
+
+  <section class="gesto-box">
+    <div class="label">o gesto</div>
+    <h3>Fiz algo por você hoje</h3>
+    <p>aperte o botão e registre que você agiu — ela recebe a notificação do outro lado</p>
+    <button class="act-btn" id="actBtn" aria-label="Registrar um ato de serviço">
+      <span class="ic">✨</span>
+      <span class="tx">fiz por você</span>
+    </button>
+    <div class="act-counter">
+      <b id="actCount">0</b> gestos desde o começo
+    </div>
+    <div class="act-modes" role="tablist" aria-label="Tipo de gesto">
+      <button class="amod active" data-mode="cuidei">cuidei</button>
+      <button class="amod" data-mode="resolvi">resolvi</button>
+      <button class="amod" data-mode="preparei">preparei</button>
+      <button class="amod" data-mode="organizei">organizei</button>
+    </div>
+  </section>
+
+  <section class="diario">
+    <div class="label">o diário dos gestos</div>
+    <h3>Tudo que foi feito</h3>
+    <p class="deck">cada ação conta · quanto mais feitas, mais real</p>
+    <div class="big-count">
+      <span class="n" id="totalAtos">0</span>
+      <span class="u">atos de serviço desde o começo</span>
+    </div>
+    <div class="wbar-row"><span class="wbar-name">cuidei</span><div class="wbar-track"><div class="wbar-fill" data-bar="cuidei" style="width:0%"></div></div><span class="wbar-val" data-bar-val="cuidei">0</span></div>
+    <div class="wbar-row"><span class="wbar-name">resolvi</span><div class="wbar-track"><div class="wbar-fill" data-bar="resolvi" style="width:0%"></div></div><span class="wbar-val" data-bar-val="resolvi">0</span></div>
+    <div class="wbar-row"><span class="wbar-name">preparei</span><div class="wbar-track"><div class="wbar-fill" data-bar="preparei" style="width:0%"></div></div><span class="wbar-val" data-bar-val="preparei">0</span></div>
+    <div class="wbar-row"><span class="wbar-name">organizei</span><div class="wbar-track"><div class="wbar-fill" data-bar="organizei" style="width:0%"></div></div><span class="wbar-val" data-bar-val="organizei">0</span></div>
+
+    <div style="text-align:center;margin-top:10px">
+      <button class="diary-open" id="diaryOpen" type="button" aria-haspopup="dialog" aria-controls="diarySheet">
+        <span class="ic">📖</span> abrir o diário dos gestos
+      </button>
+    </div>
+  </section>
+
+  <section class="stickers-section">
+    <div class="label">as figurinhas</div>
+    <h3>Tipos de gesto</h3>
+    <p class="deck">cada jeito de agir tem o seu peso · colecione os seus</p>
+    <div class="tgrid">
+      <div class="tstk reveal" data-mode="cuidei"><div class="tstk-inner">
+        <span class="tstk-star">✦</span><span class="tstk-den">J&amp;G</span>
+        <div class="slot upload-zone" data-uid="cap4_cuidado" tabindex="0" role="button" aria-label="Trocar arte do cuidado — toque para enviar foto, gif ou vídeo">
+          <span class="sico">🌿</span><span class="stype">slot · ilustração ou foto</span>
+          <span class="sname">o cuidado</span><span class="sdim">1:1 · foto, gif ou vídeo</span>
+          <span class="upload-hint">+ foto · gif · vídeo</span>
+          <button class="media-clear" type="button" aria-label="Remover mídia">✕</button>
+        </div>
+        <div class="tstk-cap">o cuidado</div><div class="tstk-count" data-count="cuidei"><b>0</b> vezes</div>
+      </div></div>
+      <div class="tstk reveal" data-mode="resolvi"><div class="tstk-inner">
+        <span class="tstk-star">✦</span><span class="tstk-den">♡</span>
+        <div class="slot upload-zone" data-uid="cap4_solucao" tabindex="0" role="button" aria-label="Trocar arte da solução — toque para enviar foto, gif ou vídeo">
+          <span class="sico">⚡</span><span class="stype">slot · ilustração ou foto</span>
+          <span class="sname">a solução</span><span class="sdim">1:1 · foto, gif ou vídeo</span>
+          <span class="upload-hint">+ foto · gif · vídeo</span>
+          <button class="media-clear" type="button" aria-label="Remover mídia">✕</button>
+        </div>
+        <div class="tstk-cap">a solução</div><div class="tstk-count" data-count="resolvi"><b>0</b> vezes</div>
+      </div></div>
+      <div class="tstk reveal" data-mode="preparei"><div class="tstk-inner">
+        <span class="tstk-star">✦</span><span class="tstk-den">∞</span>
+        <div class="slot upload-zone" data-uid="cap4_preparo" tabindex="0" role="button" aria-label="Trocar arte do preparo — toque para enviar foto, gif ou vídeo">
+          <span class="sico">🍽️</span><span class="stype">slot · ilustração ou foto</span>
+          <span class="sname">o preparo</span><span class="sdim">1:1 · foto, gif ou vídeo</span>
+          <span class="upload-hint">+ foto · gif · vídeo</span>
+          <button class="media-clear" type="button" aria-label="Remover mídia">✕</button>
+        </div>
+        <div class="tstk-cap">o preparo</div><div class="tstk-count" data-count="preparei"><b>0</b> vezes</div>
+      </div></div>
+      <div class="tstk reveal" data-mode="organizei"><div class="tstk-inner">
+        <span class="tstk-star">✦</span><span class="tstk-den">α</span>
+        <div class="slot upload-zone" data-uid="cap4_organizacao" tabindex="0" role="button" aria-label="Trocar arte da organização — toque para enviar foto, gif ou vídeo">
+          <span class="sico">📋</span><span class="stype">slot · ilustração ou foto</span>
+          <span class="sname">a organização</span><span class="sdim">1:1 · foto, gif ou vídeo</span>
+          <span class="upload-hint">+ foto · gif · vídeo</span>
+          <button class="media-clear" type="button" aria-label="Remover mídia">✕</button>
+        </div>
+        <div class="tstk-cap">a organização</div><div class="tstk-count" data-count="organizei"><b>0</b> vezes</div>
+      </div></div>
+    </div>
+  </section>
+
+  <blockquote class="pull">
+    <p>Quando eu faço algo por você, não é obrigação. É só a forma que o meu amor encontrou de aparecer.</p>
+    <cite>— para a Jussara, com amor, G</cite>
+  </blockquote>
+
+  <aside class="legend-aside">
+    <h4>✦ Onde colocar suas artes neste capítulo</h4>
+    <li><b>4 figurinhas · 1:1 quadrado</b> — cuidado, solução, preparo, organização. Foto, ilustração, gif ou vídeo.</li>
+    <li><b>Os contadores</b> sobem sozinhos pelo Firebase</li>
+  </aside>
+
+  <nav class="chapnav" aria-label="Navegação entre capítulos">
+    <a class="nb prev" href="capitulo3-toque.html" aria-label="Capítulo anterior: Toque Físico">← Cap. III</a>
+    <a class="nb-mid" href="index.html#sumario" aria-label="Voltar ao sumário">☰ sumário</a>
+    <a class="nb next" href="index.html#sumario" data-next="cap5" aria-label="Próximo capítulo: Presentes (em construção)">Cap. V →</a>
+  </nav>
+</div>
+
+<div class="act-overlay" id="actOverlay" aria-hidden="true"></div>
+<div class="act-card" id="actCard" role="dialog" aria-live="assertive">
+  <div class="ic">✨</div>
+  <div class="ttl">Ela fez algo por você</div>
+  <div class="msg" id="actMsg">G cuidou de você agora</div>
+  <div class="from" id="actFrom">agora mesmo</div>
+  <button class="reply-btn" onclick="fecharAct(true)">✨ reconhecer</button>
+</div>
+
+<!-- DIÁRIO DOS GESTOS -->
+<div class="diary-backdrop" id="diaryBackdrop" aria-hidden="true"></div>
+<aside class="diary-sheet" id="diarySheet" role="dialog" aria-modal="true" aria-labelledby="diaryTitle" aria-hidden="true">
+  <button class="diary-close" id="diaryClose" aria-label="Fechar diário">✕</button>
+  <h3 id="diaryTitle">Diário dos gestos</h3>
+  <p class="ddeck">cada ação fica registrada aqui · só nosso</p>
+  <ul class="diary-list" id="diaryList" aria-live="polite"></ul>
+  <p class="diary-empty" id="diaryEmpty" hidden>nenhum gesto registrado ainda — aperte o botão lá em cima e o primeiro fica aqui ✦</p>
+  <div class="diary-foot">
+    <span><span class="syncdot" id="syncDot"></span><span id="syncMsg">só neste aparelho</span></span>
+    <span id="diaryTotal">0 gestos</span>
+  </div>
+</aside>
+
+<!-- Firebase SDK — compartilha gestos, fotos, gifs e vídeos entre J e G -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const STORE_DIARY = 'jg-services-diary';
+  const STORE_MEDIA = 'jg-services-media';
+
+  const MODES = ['cuidei','resolvi','preparei','organizei'];
+  const MODE_ICONS = { cuidei:'🌿', resolvi:'⚡', preparei:'🍽️', organizei:'📋' };
+  const MODE_LABELS = { cuidei:'cuidei', resolvi:'resolvi', preparei:'preparei', organizei:'organizei' };
+  const MODE_MESSAGES = {
+    cuidei:    'G cuidou de você agora',
+    resolvi:   'G resolveu algo por você',
+    preparei:  'G preparou algo especial',
+    organizei: 'G organizou tudo pra você'
+  };
+  const VIBES = {
+    cuidei:    [60,40,120],
+    resolvi:   [40,30,40,30,160],
+    preparei:  [80,60,140],
+    organizei: [30,20,30,20,30,20,160]
+  };
+
+  /* ═══════ FIREBASE ═══════ */
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyD0-GBYHLsYc_mqqq3Ymhbq3ynpIdx2sMg",
+    authDomain: "album--jussara.firebaseapp.com",
+    projectId: "album--jussara",
+    storageBucket: "album--jussara.firebasestorage.app",
+    messagingSenderId: "732871382789",
+    appId: "1:732871382789:web:7d93bce8c431ba80bd496c",
+    measurementId: "G-50GSPDT1P9"
+  };
+  let _db = null, _stg = null;
+  const _FB_ON = (typeof firebase !== 'undefined');
+  if(_FB_ON){
+    try{
+      if(!firebase.apps || !firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+      _db = firebase.firestore();
+      try{ _db.settings({ experimentalAutoDetectLongPolling: true, merge: true }); }catch(e){}
+      if(typeof firebase.storage === 'function'){ try{ _stg = firebase.storage(); }catch(e){} }
+    }catch(e){ console.warn('Firebase off:', e); _db = null; }
+  }
+
+  const _CLIENT = (function(){
+    let c = null;
+    try{ c = localStorage.getItem('cosmoClientId'); }catch(e){}
+    if(!c){ c = 'c'+Math.random().toString(36).slice(2)+Date.now().toString(36); try{ localStorage.setItem('cosmoClientId', c); }catch(e){} }
+    return c;
+  })();
+
+  /* ═══════ ARMAZENAMENTO LOCAL ═══════ */
+  function loadDiary(){ try{ return JSON.parse(localStorage.getItem(STORE_DIARY) || '[]'); }catch(e){ return []; } }
+  function saveDiary(arr){ try{ localStorage.setItem(STORE_DIARY, JSON.stringify(arr.slice(-300))); }catch(e){} }
+  function loadMedia(){ try{ return JSON.parse(localStorage.getItem(STORE_MEDIA) || '{}'); }catch(e){ return {}; } }
+  function saveMedia(map){ try{ localStorage.setItem(STORE_MEDIA, JSON.stringify(map)); }catch(e){} }
+
+  let DIARY = loadDiary();
+  let MEDIA = loadMedia();
+
+  /* ═══════ CONTADORES + PINTURA ═══════ */
+  function totals(){
+    const t = { total:0, modes:{cuidei:0,resolvi:0,preparei:0,organizei:0} };
+    DIARY.forEach(e=>{ t.total++; if(t.modes[e.mode]!=null) t.modes[e.mode]++; });
+    return t;
+  }
+  function paintCounters(){
+    const t = totals();
+    document.getElementById('actCount').textContent = t.total;
+    document.getElementById('totalAtos').textContent = t.total;
+    const max = Math.max(1, t.modes.cuidei, t.modes.resolvi, t.modes.preparei, t.modes.organizei);
+    MODES.forEach(m=>{
+      const bar = document.querySelector('.wbar-fill[data-bar="'+m+'"]');
+      const val = document.querySelector('.wbar-val[data-bar-val="'+m+'"]');
+      if(bar) bar.style.width = Math.round((t.modes[m]/max)*100) + '%';
+      if(val) val.textContent = t.modes[m];
+    });
+    document.querySelectorAll('.tstk-count').forEach(el=>{
+      const mode = el.dataset.count;
+      const b = el.querySelector('b');
+      if(b && mode) b.textContent = t.modes[mode] || 0;
+    });
+    document.getElementById('diaryTotal').textContent = t.total + (t.total === 1 ? ' gesto' : ' gestos');
+  }
+
+  /* ═══════ MODO ATIVO ═══════ */
+  let currentMode = 'cuidei';
+  document.querySelectorAll('.amod').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      document.querySelectorAll('.amod').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      currentMode = b.dataset.mode;
+    });
+  });
+
+  /* ═══════ ENVIAR GESTO ═══════ */
+  const actBtn = document.getElementById('actBtn');
+  actBtn.addEventListener('click', ()=>{
+    actBtn.classList.add('sending');
+    if(navigator.vibrate) navigator.vibrate(VIBES[currentMode] || VIBES.cuidei);
+    const entry = { mode: currentMode, ts: Date.now(), by: _CLIENT };
+    addEntryLocal(entry);
+    if(_db){
+      _db.collection('services').add(entry)
+        .then(()=> flash('Registrado ✨'))
+        .catch(()=> flash('Salvo aqui — sem sinal ✨'));
+    } else {
+      flash('Registrado ✨');
+    }
+    setTimeout(()=>{
+      actBtn.classList.remove('sending');
+      actBtn.style.transform = '';
+      if(!_db) showAct(MODE_MESSAGES[currentMode], currentMode);
+    }, 900);
+  });
+
+  function addEntryLocal(entry){
+    if(DIARY.some(e=> e.ts === entry.ts && e.by === entry.by && e.mode === entry.mode)) return;
+    DIARY.push(entry); DIARY.sort((a,b)=> a.ts - b.ts); saveDiary(DIARY);
+    paintCounters(); paintDiaryList();
+  }
+
+  /* ═══════ OVERLAY "ELA FEZ ALGO POR VOCÊ" ═══════ */
+  const actOverlay = document.getElementById('actOverlay');
+  const actCard = document.getElementById('actCard');
+  function relTime(ms){
+    const s = Math.max(0, Math.round((Date.now()-ms)/1000));
+    if(s < 5) return 'agora mesmo';
+    if(s < 60) return 'há '+s+' segundos';
+    const m = Math.round(s/60); if(m < 60) return 'há '+m+' min';
+    const h = Math.round(m/60); if(h < 24) return 'há '+h+' h';
+    return 'há '+Math.round(h/24)+' dia(s)';
+  }
+  function showAct(msg, mode, ts){
+    document.getElementById('actMsg').textContent = msg || 'G fez algo por você';
+    document.getElementById('actFrom').textContent = ts ? relTime(ts) : 'agora mesmo';
+    actOverlay.classList.add('on');
+    if(navigator.vibrate) navigator.vibrate(VIBES[mode||'cuidei'] || VIBES.cuidei);
+    setTimeout(()=> actCard.classList.add('on'), 300);
+  }
+  function fecharAct(reconhecer){
+    actOverlay.classList.remove('on');
+    actCard.classList.remove('on');
+    if(reconhecer){
+      const entry = { mode: currentMode, ts: Date.now(), by: _CLIENT, kind: 'reconheci' };
+      addEntryLocal(entry);
+      if(_db) _db.collection('services').add(entry).catch(()=>{});
+      setTimeout(()=> flash('Reconhecido ✨ ✨'), 200);
+    }
+  }
+  document.addEventListener('keydown', e=>{
+    if(e.key === 'Escape'){
+      if(actOverlay.classList.contains('on')) fecharAct(false);
+      else if(document.getElementById('diarySheet').classList.contains('on')) closeDiary();
+    }
+  });
+  actOverlay.addEventListener('click', ()=> fecharAct(false));
+  window.fecharAct = fecharAct;
+
+  /* ═══════ DIÁRIO — MODAL ═══════ */
+  const diaryBackdrop = document.getElementById('diaryBackdrop');
+  const diarySheet = document.getElementById('diarySheet');
+  const diaryList = document.getElementById('diaryList');
+  const diaryEmpty = document.getElementById('diaryEmpty');
+  document.getElementById('diaryOpen').addEventListener('click', openDiary);
+  document.getElementById('diaryClose').addEventListener('click', closeDiary);
+  diaryBackdrop.addEventListener('click', closeDiary);
+  function openDiary(){
+    paintDiaryList();
+    diaryBackdrop.classList.add('on');
+    diarySheet.classList.add('on');
+    diarySheet.setAttribute('aria-hidden','false');
+  }
+  function closeDiary(){
+    diaryBackdrop.classList.remove('on');
+    diarySheet.classList.remove('on');
+    diarySheet.setAttribute('aria-hidden','true');
+  }
+  function fmtDate(ts){
+    const d = new Date(ts);
+    const today = new Date(); today.setHours(0,0,0,0);
+    const yest = new Date(today.getTime() - 86400000);
+    const dd = new Date(ts); dd.setHours(0,0,0,0);
+    const hm = d.getHours().toString().padStart(2,'0')+'h'+d.getMinutes().toString().padStart(2,'0');
+    if(dd.getTime() === today.getTime()) return 'hoje · '+hm;
+    if(dd.getTime() === yest.getTime()) return 'ontem · '+hm;
+    return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}) + ' · '+hm;
+  }
+  function paintDiaryList(){
+    const list = DIARY.slice().sort((a,b)=> b.ts - a.ts);
+    diaryList.innerHTML = '';
+    if(!list.length){
+      diaryEmpty.hidden = false;
+    } else {
+      diaryEmpty.hidden = true;
+      list.slice(0,80).forEach(e=>{
+        const li = document.createElement('li');
+        const ico = MODE_ICONS[e.mode] || '✨';
+        const lbl = e.kind === 'reconheci' ? 'reconheci' : (MODE_LABELS[e.mode] || e.mode);
+        const who = e.by === _CLIENT ? 'feito por você' : 'recebido';
+        li.innerHTML = '<div class="dico">'+ico+'</div>'
+          + '<div class="dtxt"><div class="dtype">'+lbl+'</div><div class="dwhen">'+fmtDate(e.ts)+'</div></div>'
+          + '<span class="dwho">'+who+'</span>';
+        diaryList.appendChild(li);
+      });
+    }
+    const t = totals();
+    document.getElementById('diaryTotal').textContent = t.total + (t.total === 1 ? ' gesto' : ' gestos');
+  }
+  (function paintSync(){
+    const dot = document.getElementById('syncDot');
+    const msg = document.getElementById('syncMsg');
+    if(_db){ dot.classList.remove('off'); msg.textContent = 'sincronizado entre J & G'; }
+    else { dot.classList.add('off'); msg.textContent = 'só neste aparelho (sem nuvem)'; }
+  })();
+
+  /* ═══════ SYNC EM TEMPO REAL ═══════ */
+  if(_db){
+    let firstSnap = true;
+    try{
+      _db.collection('services').orderBy('ts','desc').limit(300).onSnapshot(snap=>{
+        const incoming = [];
+        snap.docChanges().forEach(ch=>{
+          if(ch.type === 'removed') return;
+          const d = ch.doc.data();
+          if(!d || !d.ts || !d.mode) return;
+          if(!DIARY.some(e=> e.ts === d.ts && e.by === d.by && e.mode === d.mode)){
+            DIARY.push({ mode:d.mode, ts:d.ts, by:d.by||'', kind:d.kind || null });
+          }
+          if(!firstSnap && d.by && d.by !== _CLIENT && Date.now() - d.ts < 60000 && d.kind !== 'reconheci'){
+            incoming.push(d);
+          }
+        });
+        DIARY.sort((a,b)=> a.ts - b.ts);
+        saveDiary(DIARY);
+        paintCounters(); paintDiaryList();
+        if(incoming.length){
+          const newest = incoming.sort((a,b)=> b.ts - a.ts)[0];
+          showAct(MODE_MESSAGES[newest.mode] || MODE_MESSAGES.cuidei, newest.mode, newest.ts);
+        }
+        firstSnap = false;
+      }, err=>{ console.warn('Sync de gestos falhou:', err); });
+    }catch(e){ console.warn('onSnapshot services falhou:', e); }
+  }
+
+  /* ═══════ UPLOAD DE FOTO/GIF/VÍDEO NOS SLOTS ═══════ */
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = 'image/*,video/*';
+  fileInput.style.display = 'none';
+  document.body.appendChild(fileInput);
+  let activeZone = null;
+
+  function applyMedia(uid, src, kind){
+    const z = document.querySelector('.slot[data-uid="'+uid+'"]');
+    if(!z || !src) return;
+    z.querySelectorAll('img.media, video.media').forEach(n=> n.remove());
+    let el;
+    if(kind === 'video'){
+      el = document.createElement('video');
+      el.className = 'media';
+      el.src = src;
+      el.muted = true; el.loop = true; el.playsInline = true; el.autoplay = true;
+      el.setAttribute('webkit-playsinline','');
+      el.play().catch(()=>{});
+    } else {
+      el = document.createElement('img');
+      el.className = 'media';
+      el.src = src;
+      el.alt = 'arte enviada';
+    }
+    z.appendChild(el);
+    z.classList.add('has-media');
+  }
+
+  Object.keys(MEDIA).forEach(uid=>{
+    const m = MEDIA[uid];
+    if(m && m.src) applyMedia(uid, m.src, m.kind);
+  });
+
+  document.addEventListener('click', e=>{
+    const clearBtn = e.target.closest('.media-clear');
+    if(clearBtn){
+      e.stopPropagation();
+      const z = clearBtn.closest('.slot');
+      if(z){
+        const uid = z.dataset.uid;
+        z.querySelectorAll('img.media, video.media').forEach(n=> n.remove());
+        z.classList.remove('has-media');
+        delete MEDIA[uid]; saveMedia(MEDIA);
+        if(_db) _db.collection('serviceMedia').doc(uid).delete().catch(()=>{});
+        flash('Removido');
+      }
+      return;
+    }
+    const zone = e.target.closest('.slot.upload-zone');
+    if(!zone) return;
+    activeZone = zone;
+    fileInput.value = '';
+    fileInput.click();
+  });
+
+  document.addEventListener('keydown', e=>{
+    if((e.key === 'Enter' || e.key === ' ') && document.activeElement && document.activeElement.classList.contains('upload-zone')){
+      e.preventDefault();
+      activeZone = document.activeElement;
+      fileInput.value = ''; fileInput.click();
+    }
+  });
+
+  fileInput.addEventListener('change', ()=>{
+    const file = fileInput.files && fileInput.files[0];
+    if(!file || !activeZone) return;
+    const zone = activeZone; activeZone = null;
+    const uid = zone.dataset.uid;
+    const isVideo = file.type.startsWith('video/');
+    const isImg   = file.type.startsWith('image/');
+    if(!isVideo && !isImg){ flash('Tipo de arquivo não suportado'); return; }
+
+    const finishLocal = (src, kind)=>{
+      applyMedia(uid, src, kind);
+      MEDIA[uid] = { src, kind, ts: Date.now() };
+      try{ saveMedia(MEDIA); }catch(e){}
+      if(navigator.vibrate) navigator.vibrate(20);
+      flash('Mídia adicionada ✓');
+    };
+
+    const uploadToStorage = (blob, contentType, kind)=>{
+      if(!_stg){ readAsDataUrl(blob, kind); return; }
+      try{
+        const ext = contentType.indexOf('gif') >= 0 ? 'gif'
+                  : contentType.indexOf('png') >= 0 ? 'png'
+                  : contentType.indexOf('webp') >= 0 ? 'webp'
+                  : contentType.indexOf('mp4') >= 0 ? 'mp4'
+                  : contentType.indexOf('webm') >= 0 ? 'webm'
+                  : kind === 'video' ? 'mp4' : 'jpg';
+        const ref = _stg.ref().child('service-media/' + uid + '.' + ext);
+        flash('Enviando…');
+        const task = ref.put(blob, { contentType });
+        task.on('state_changed', null,
+          err=>{ console.warn('Storage falhou, caindo no base64:', err); readAsDataUrl(blob, kind); },
+          ()=>{
+            task.snapshot.ref.getDownloadURL().then(url=>{
+              finishLocal(url, kind);
+              if(_db){
+                _db.collection('serviceMedia').doc(uid).set({ src:url, kind, ts:Date.now(), by:_CLIENT }).catch(()=>{});
+              }
+            }).catch(err=>{ console.warn('URL falhou, caindo no base64:', err); readAsDataUrl(blob, kind); });
+          });
+      }catch(e){ console.warn('Storage exception:', e); readAsDataUrl(blob, kind); }
+    };
+
+    const readAsDataUrl = (blob, kind)=>{
+      const r = new FileReader();
+      r.onload = ev => {
+        const src = ev.target.result;
+        finishLocal(src, kind);
+        if(_db && (typeof src === 'string') && src.length < 900*1024){
+          _db.collection('serviceMedia').doc(uid).set({ src, kind, ts:Date.now(), by:_CLIENT }).catch(()=>{});
+        }
+      };
+      r.onerror = ()=> flash('Falha ao ler o arquivo');
+      r.readAsDataURL(blob);
+    };
+
+    if(isImg && !file.type.includes('gif')){
+      const reader = new FileReader();
+      reader.onload = ev => resizeImage(ev.target.result, 720, out=>{
+        if(_stg){
+          fetch(out).then(r=>r.blob()).then(b=> uploadToStorage(b, 'image/jpeg', 'image'))
+            .catch(()=> finishLocal(out, 'image'));
+        } else {
+          finishLocal(out, 'image');
+        }
+      });
+      reader.onerror = ()=> flash('Falha ao ler a foto');
+      reader.readAsDataURL(file);
+    } else {
+      uploadToStorage(file, file.type, isVideo ? 'video' : 'image');
+    }
+  });
+
+  function resizeImage(dataURL, maxDim, cb){
+    const img = new Image();
+    img.onload = ()=>{
+      let w = img.width, h = img.height;
+      if(Math.max(w,h) > maxDim){ const s = maxDim/Math.max(w,h); w = Math.round(w*s); h = Math.round(h*s); }
+      try{
+        const cv = document.createElement('canvas'); cv.width=w; cv.height=h;
+        cv.getContext('2d').drawImage(img,0,0,w,h);
+        cb(cv.toDataURL('image/jpeg',0.85));
+      }catch(e){ cb(dataURL); }
+    };
+    img.onerror = ()=> cb(dataURL);
+    img.src = dataURL;
+  }
+
+  if(_db){
+    try{
+      _db.collection('serviceMedia').onSnapshot(snap=>{
+        snap.docChanges().forEach(ch=>{
+          const uid = ch.doc.id;
+          if(ch.type === 'removed'){
+            const z = document.querySelector('.slot[data-uid="'+uid+'"]');
+            if(z){ z.querySelectorAll('img.media, video.media').forEach(n=> n.remove()); z.classList.remove('has-media'); }
+            delete MEDIA[uid]; saveMedia(MEDIA); return;
+          }
+          const d = ch.doc.data();
+          if(!d || !d.src) return;
+          applyMedia(uid, d.src, d.kind || 'image');
+          MEDIA[uid] = { src:d.src, kind:d.kind || 'image', ts: d.ts || Date.now() };
+          try{ saveMedia(MEDIA); }catch(e){}
+        });
+      }, err=>{ console.warn('Sync de mídias falhou:', err); });
+    }catch(e){ console.warn('onSnapshot serviceMedia falhou:', e); }
+  }
+
+  /* ═══════ FIGURINHAS REVEAL ═══════ */
+  if('IntersectionObserver' in window && !reduce){
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach((e,i)=>{
+        if(e.isIntersecting){
+          setTimeout(()=> e.target.classList.add('in'), Math.min(i*90, 360));
+          io.unobserve(e.target);
+        }
+      });
+    },{threshold:0.18, rootMargin:'0px 0px -8% 0px'});
+    document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
+  } else {
+    document.querySelectorAll('.reveal').forEach(el=> el.classList.add('in'));
+  }
+
+  /* ═══════ TOAST ═══════ */
+  function flash(msg){
+    const f = document.createElement('div');
+    f.className = 'toast'; f.textContent = msg;
+    document.body.appendChild(f);
+    requestAnimationFrame(()=>{ f.style.opacity='1'; f.style.transform='translateX(-50%) translateY(0)'; });
+    setTimeout(()=>{ f.style.opacity='0'; f.style.transform='translateX(-50%) translateY(-20px)'; setTimeout(()=>f.remove(),400); }, 1800);
+  }
+
+  /* ═══════ ARRANQUE ═══════ */
+  paintCounters();
+  paintDiaryList();
+</script>
+</body>
+</html>
