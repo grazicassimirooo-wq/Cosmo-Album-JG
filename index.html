@@ -784,14 +784,14 @@ img{max-width:100%}
         <h3>Cartas, bilhetes &amp; promessas</h3>
         <p class="jg-deck">cada palavra dita vira uma figurinha pra colar</p>
         <div class="jg-stickers">
-          <!-- SLOT 1: foto OU ilustração autoral · 4:5 · ~360 × 450 px · "a carta selada" -->
+          <!-- SLOT 1: carta selada — upload de foto da primeira carta com sync em tempo real -->
           <div class="jg-stk jg-reveal"><div class="jg-stk-inner">
             <span class="jg-stk-star">✦</span><span class="jg-stk-den">J&amp;G</span>
-            <div class="jg-slot ratio-photo">
+            <div class="jg-slot ratio-photo upload-zone nz jg-upload-photo" data-uid="cap1_carta">
               <span class="jg-sico">✒</span>
-              <span class="jg-stype">slot · ilustração ou foto</span>
+              <span class="jg-stype">tocar · subir foto</span>
               <span class="jg-sname">a carta selada</span>
-              <span class="jg-sdim">4:5 · ~360 × 450 px</span>
+              <span class="jg-sdim">foto da carta · sincroniza pra ela</span>
             </div>
             <div class="jg-stk-cap">primeira carta</div>
             <div class="jg-stk-date">jun · 2026</div>
@@ -840,11 +840,11 @@ img{max-width:100%}
       <section class="jg-spread jg-reveal">
         <div class="jg-frame">
           <span class="jg-corner tl"></span><span class="jg-corner tr"></span><span class="jg-corner bl"></span><span class="jg-corner br"></span>
-          <div class="jg-slot ratio-video">
+          <div class="jg-slot ratio-video jg-video-slot" data-uid="cap1_spread" onclick="_jgOpenVideoRec(event,'cap1_spread')">
             <span class="jg-sico">▶</span>
-            <span class="jg-stype">slot · vídeo ou animação autoral</span>
+            <span class="jg-stype">tocar · gravar ou subir vídeo</span>
             <span class="jg-sname">a sua voz lendo uma carta · ou uma animação sua</span>
-            <span class="jg-sdim">16:9 · ~720 × 405 px · mp4/webm ou Lottie .json</span>
+            <span class="jg-sdim">câmera ou arquivo do celular/PC</span>
           </div>
           <div class="jg-caption">
             <span class="jg-ct">a peça-chave do capítulo — uma voz, uma animação, um momento.</span>
@@ -866,11 +866,11 @@ img{max-width:100%}
   </div>
 </div>
 
-<!-- Modal de gravação de vídeo (cap I — frase do dia) -->
+<!-- Modal de gravação/upload de vídeo (cap I) -->
 <div class="vid-rec-modal" id="vidRecModal" aria-hidden="true">
   <div class="vid-rec-sheet">
-    <h3>Frase do dia em vídeo</h3>
-    <div class="vid-sub">grave uma frase curta — ela chega no celular dela na hora</div>
+    <h3 id="vidRecTitle">Vídeo</h3>
+    <div class="vid-sub">grave com a câmera ou suba um vídeo — chega no aparelho dela em tempo real</div>
     <div class="vid-rec-stage" id="vidRecStage">
       <video id="vidRecPreview" autoplay muted playsinline></video>
       <span class="rec-dot">GRAVANDO</span>
@@ -878,18 +878,21 @@ img{max-width:100%}
     </div>
     <div class="vid-rec-actions">
       <button class="vid-rec-btn ghost" id="vidRecCancel" onclick="_jgCloseVideoRec()">Fechar</button>
+      <button class="vid-rec-btn ghost" id="vidRecPick" onclick="_jgPickVideoFile()">📁 Subir vídeo</button>
       <button class="vid-rec-btn primary" id="vidRecStart" onclick="_jgStartRec()">● Gravar</button>
       <button class="vid-rec-btn danger" id="vidRecStop" onclick="_jgStopRec()" style="display:none">■ Parar</button>
       <button class="vid-rec-btn ghost" id="vidRecRetry" onclick="_jgRetryRec()" style="display:none">Refazer</button>
       <button class="vid-rec-btn primary" id="vidRecSend" onclick="_jgSendRec()" style="display:none">✦ Enviar</button>
     </div>
-    <div class="vid-rec-status" id="vidRecStatus">até 10 segundos · áudio + vídeo · será compartilhado em tempo real</div>
+    <input type="file" id="vidRecFile" accept="video/*" style="display:none">
+    <div class="vid-rec-status" id="vidRecStatus">grave até 10s ou suba um arquivo do celular/computador</div>
   </div>
 </div>
 
 <!-- Firebase (compartilha as fotos entre os aparelhos). Carrega antes do app. -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
 <script>
 /* ═══ SCRATCH ENGINE ═══ */
@@ -1531,10 +1534,27 @@ function _loadVideos(){ try{ return JSON.parse(localStorage.getItem(_VID_CACHE_K
 function _saveVideos(map){ try{ localStorage.setItem(_VID_CACHE_KEY, JSON.stringify(map)); }catch(e){} }
 
 let _vidStream = null, _vidRecorder = null, _vidChunks = [], _vidTimer = null, _vidStart = 0, _vidBlob = null, _vidDataUrl = null;
+let _vidActiveUid = 'cap1_frase';
 const _VID_MAX_SEC = 10;
+const _VID_TITLES = {
+  cap1_frase:  { title: 'Frase do dia em vídeo', sub: 'grave uma frase curta ou suba um vídeo curto · chega na hora pra ela' },
+  cap1_spread: { title: 'Vídeo ou animação autoral', sub: 'sua voz lendo uma carta, uma animação sua · grava ou sobe um arquivo' }
+};
 
-function _jgOpenVideoRec(ev){
+// Firebase Storage (vídeos grandes vão pra Storage; doc do Firestore guarda só a URL)
+let _stg = null;
+try{
+  if(_db && typeof firebase.storage === 'function'){ _stg = firebase.storage(); }
+}catch(e){ console.warn('Storage não disponível:', e); _stg = null; }
+
+function _jgOpenVideoRec(ev, uid){
   if(ev && ev.target && ev.target.closest('video')) return;
+  _vidActiveUid = (uid && _VID_TITLES[uid]) ? uid : 'cap1_frase';
+  const meta = _VID_TITLES[_vidActiveUid];
+  const titleEl = document.getElementById('vidRecTitle');
+  if(titleEl) titleEl.textContent = meta.title;
+  const subEl = document.querySelector('#vidRecModal .vid-sub');
+  if(subEl) subEl.textContent = meta.sub;
   const m = document.getElementById('vidRecModal');
   if(!m) return;
   m.classList.add('on');
@@ -1553,7 +1573,8 @@ function _jgResetRecUI(){
   document.getElementById('vidRecStop').style.display='none';
   document.getElementById('vidRecRetry').style.display='none';
   document.getElementById('vidRecSend').style.display='none';
-  document.getElementById('vidRecStatus').textContent='até 10 segundos · áudio + vídeo · será compartilhado em tempo real';
+  document.getElementById('vidRecPick').style.display='';
+  document.getElementById('vidRecStatus').textContent='grave até 10s ou suba um arquivo do celular/computador';
   document.getElementById('vidRecStage').classList.remove('recording','has-preview');
   document.getElementById('vidRecTimer').textContent='0s';
   const v = document.getElementById('vidRecPreview');
@@ -1641,33 +1662,94 @@ function _jgRetryRec(){
   _jgResetRecUI();
   _jgStartCamera();
 }
+
+// Subir vídeo do celular/computador
+function _jgPickVideoFile(){
+  const fi = document.getElementById('vidRecFile');
+  if(!fi) return;
+  fi.value = '';
+  fi.click();
+}
+(function bindVideoFilePicker(){
+  const fi = document.getElementById('vidRecFile');
+  if(!fi) return;
+  fi.addEventListener('change', ()=>{
+    const f = fi.files && fi.files[0];
+    if(!f) return;
+    _vidBlob = f;
+    _jgStopCamera();
+    const stage = document.getElementById('vidRecStage');
+    stage.classList.remove('recording');
+    stage.classList.add('has-preview');
+    const v = document.getElementById('vidRecPreview');
+    try{ v.srcObject = null; }catch(e){}
+    v.src = URL.createObjectURL(f);
+    v.muted = false; v.controls = true;
+    document.getElementById('vidRecStart').style.display='none';
+    document.getElementById('vidRecStop').style.display='none';
+    document.getElementById('vidRecPick').style.display='none';
+    document.getElementById('vidRecRetry').style.display='';
+    document.getElementById('vidRecSend').style.display='';
+    const mb = (f.size/1024/1024).toFixed(1);
+    document.getElementById('vidRecStatus').textContent = 'pré-visualização · ' + mb + ' MB · ' + (f.name||'arquivo');
+  });
+})();
+
+// Envia o vídeo: Storage para arquivos grandes, base64 inline como fallback
 function _jgSendRec(){
   if(!_vidBlob){ return; }
-  // Firestore: ~1MB por documento. Cap pra evitar erro.
-  const MAX_BYTES = 900 * 1024;
-  if(_vidBlob.size > MAX_BYTES){
-    document.getElementById('vidRecStatus').textContent = 'Vídeo grande demais (' + Math.round(_vidBlob.size/1024) + ' KB). Tente um mais curto.';
-    return;
-  }
   const status = document.getElementById('vidRecStatus');
+  const uid = _vidActiveUid || 'cap1_frase';
+  const mime = _vidBlob.type || 'video/webm';
+  const size = _vidBlob.size;
   status.textContent = 'Enviando…';
-  const reader = new FileReader();
-  reader.onload = ev=>{
-    const dataUrl = ev.target.result;
-    const uid = 'cap1_frase';
-    _applyVideo(uid, dataUrl);
-    const cache = _loadVideos(); cache[uid] = dataUrl; _saveVideos(cache);
+
+  // Pre-render local: gera URL temporária para o usuário ver feedback imediato
+  const tmpLocalUrl = URL.createObjectURL(_vidBlob);
+  _applyVideo(uid, tmpLocalUrl);
+
+  const finishOk = (saveUrl, saveDocData)=>{
+    const cache = _loadVideos(); cache[uid] = saveUrl; _saveVideos(cache);
+    _applyVideo(uid, saveUrl);
     if(_db){
-      _db.collection('videos').doc(uid).set({ video: dataUrl, ts: Date.now(), by: _CLIENT, mime: _vidBlob.type || 'video/webm' })
+      _db.collection('videos').doc(uid).set(Object.assign({ ts: Date.now(), by: _CLIENT, mime }, saveDocData))
         .then(()=>{ status.textContent = 'Enviado ✓'; if(navigator.vibrate) navigator.vibrate([10,40,10,40,80]); setTimeout(_jgCloseVideoRec, 800); })
-        .catch(err=>{ console.warn('Falha ao enviar vídeo:', err); status.textContent = 'Salvou aqui, mas falhou na nuvem: ' + (err.code||err.message); });
+        .catch(err=>{ console.warn('Falha ao salvar doc:', err); status.textContent = 'Vídeo enviado, mas falhou ao notificar: ' + (err.code||err.message); });
     } else {
       status.textContent = 'Salvo no aparelho (sem nuvem)';
       setTimeout(_jgCloseVideoRec, 800);
     }
   };
-  reader.onerror = ()=>{ status.textContent = 'Erro ao ler o vídeo.'; };
-  reader.readAsDataURL(_vidBlob);
+
+  const tryBase64Fallback = ()=>{
+    const MAX_BYTES = 900 * 1024; // limite seguro do Firestore
+    if(size > MAX_BYTES){
+      status.textContent = 'Vídeo grande demais para o caminho de emergência (' + Math.round(size/1024) + ' KB). Tente um mais curto.';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = ev=>{ finishOk(ev.target.result, { video: ev.target.result }); };
+    reader.onerror = ()=>{ status.textContent = 'Erro ao ler o vídeo.'; };
+    reader.readAsDataURL(_vidBlob);
+  };
+
+  if(_stg){
+    try{
+      const ext = (mime.indexOf('mp4') >= 0) ? 'mp4' : 'webm';
+      const ref = _stg.ref().child('videos/' + uid + '.' + ext);
+      const task = ref.put(_vidBlob, { contentType: mime });
+      task.on('state_changed',
+        s => { const pct = Math.round((s.bytesTransferred/s.totalBytes)*100); status.textContent = 'Enviando… ' + pct + '%'; },
+        err => { console.warn('Storage falhou, tentando base64:', err); tryBase64Fallback(); },
+        () => {
+          task.snapshot.ref.getDownloadURL().then(url => finishOk(url, { url, ext }))
+            .catch(err => { console.warn('Falha ao obter URL:', err); tryBase64Fallback(); });
+        }
+      );
+    }catch(e){ console.warn('Storage put falhou:', e); tryBase64Fallback(); }
+  } else {
+    tryBase64Fallback();
+  }
 }
 
 function _applyVideo(uid, dataUrl){
@@ -1704,9 +1786,11 @@ if(_db){
       snap.docChanges().forEach(ch=>{
         if(ch.type === 'removed') return;
         const d = ch.doc.data();
-        if(!d || !d.video) return;
-        _applyVideo(ch.doc.id, d.video);
-        cache[ch.doc.id] = d.video;
+        if(!d) return;
+        const src = d.url || d.video; // url = Firebase Storage; video = base64 legado/fallback
+        if(!src) return;
+        _applyVideo(ch.doc.id, src);
+        cache[ch.doc.id] = src;
         if(!_firstVideoSnap && d.by && d.by !== _CLIENT) notify = true;
       });
       _saveVideos(cache);
