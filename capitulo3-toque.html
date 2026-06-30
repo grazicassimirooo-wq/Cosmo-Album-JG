@@ -202,11 +202,14 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
 
 /* navegação inferior */
 .chapnav{margin:8px var(--space) 30px;display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
-.nb{background:none;border:1px solid rgba(232,184,109,.35);border-radius:99px;padding:11px 14px;cursor:pointer;color:var(--cream2);font-family:'Nunito';font-weight:800;font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;transition:all .2s}
-.nb:hover{border-color:var(--gold2);color:var(--gold2)}
+.nb{display:inline-flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;
+  background:none;border:1px solid rgba(232,184,109,.35);border-radius:99px;padding:11px 14px;cursor:pointer;color:var(--cream2);font-family:'Nunito';font-weight:800;font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;transition:all .2s}
+.nb:hover,.nb:focus-visible{border-color:var(--gold2);color:var(--gold2)}
 .nb.next{background:linear-gradient(180deg,var(--gold3),var(--gold) 60%,var(--gold-deep));color:var(--ink);border-color:transparent;box-shadow:0 4px 12px rgba(196,149,106,.35)}
-.nb-mid{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.7rem;color:var(--cream3);background:none;border:none;cursor:pointer}
-.nb-mid:hover{color:var(--gold2)}
+.nb.next:hover,.nb.next:focus-visible{color:var(--ink);transform:translateY(-1px);box-shadow:0 8px 18px rgba(196,149,106,.5)}
+.nb-mid{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.7rem;color:var(--cream3);background:none;border:none;cursor:pointer;padding:8px 10px}
+.nb-mid:hover,.nb-mid:focus-visible{color:var(--gold2)}
 
 .legend-aside{margin:14px var(--space) 0;padding:12px 14px;border:1px dashed rgba(232,184,109,.4);border-radius:10px;background:rgba(232,184,109,.04)}
 .legend-aside h4{font-family:'Nunito';font-weight:900;font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold2);margin-bottom:6px}
@@ -254,6 +257,63 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
   font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:1.5px;font-weight:600;padding:10px 22px;
   border-radius:4px;border:1.5px solid var(--gold);box-shadow:0 8px 24px rgba(0,0,0,.5);
   opacity:0;transition:all .4s}
+
+/* ════════ SLOT preenchido com mídia (foto / gif / vídeo) ════════ */
+.slot{cursor:pointer}
+.slot.has-media{padding:0;border-style:solid;border-color:rgba(196,149,106,.55);background:#000}
+.slot.has-media .sico,.slot.has-media .stype,.slot.has-media .sname,.slot.has-media .sdim{display:none}
+.slot .media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:2px;display:block}
+.slot .media-clear{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;border:none;cursor:pointer;
+  background:rgba(0,0,0,.55);color:#fff;font-size:.7rem;display:none;align-items:center;justify-content:center;line-height:1;z-index:3}
+.slot.has-media .media-clear{display:flex}
+.slot .media-clear:hover{background:rgba(212,115,110,.85)}
+.slot .upload-hint{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);
+  font-family:'Nunito';font-weight:800;font-size:.45rem;letter-spacing:1px;text-transform:uppercase;color:rgba(58,36,16,.55);
+  background:rgba(232,184,109,.18);border:1px solid rgba(142,106,31,.4);padding:3px 8px;border-radius:99px;white-space:nowrap}
+.slot.has-media .upload-hint{display:none}
+
+/* clicar no slot vibra discretamente */
+.tstk:focus-within{outline:2px solid var(--gold2);outline-offset:3px;border-radius:6px}
+
+/* ════════ DIÁRIO DO TOQUE — botão e modal ════════ */
+.diary-open{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:9px 16px;border-radius:99px;cursor:pointer;border:1px solid rgba(232,184,109,.35);
+  background:rgba(232,184,109,.06);color:var(--cream2);
+  font-family:'Nunito';font-weight:800;font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;transition:all .2s}
+.diary-open:hover,.diary-open:focus-visible{border-color:var(--gold2);color:var(--gold2);background:rgba(232,184,109,.12)}
+.diary-open .ic{font-size:.85rem}
+
+.diary-backdrop{position:fixed;inset:0;z-index:95;background:rgba(6,4,28,.78);backdrop-filter:blur(6px);
+  opacity:0;pointer-events:none;transition:opacity .35s var(--ease-out)}
+.diary-backdrop.on{opacity:1;pointer-events:auto}
+.diary-sheet{position:fixed;left:50%;top:50%;z-index:96;width:min(440px,92vw);max-height:84vh;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  transform:translate(-50%,-46%) scale(.96);opacity:0;pointer-events:none;
+  background:linear-gradient(180deg,#1a1640,#13102f);
+  border:1px solid rgba(232,184,109,.35);border-radius:18px;padding:22px 22px 20px;
+  box-shadow:0 24px 60px rgba(0,0,0,.6);
+  transition:opacity .4s var(--ease-out),transform .5s var(--ease-spring)}
+.diary-sheet.on{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto}
+.diary-sheet h3{font-family:'Playfair Display',serif;font-weight:800;font-size:1.3rem;color:var(--cream);margin-bottom:2px}
+.diary-sheet .ddeck{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.9rem;color:var(--cream3);margin-bottom:14px}
+.diary-close{position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;color:var(--cream3);font-size:1.4rem;line-height:1;padding:4px 8px;border-radius:6px}
+.diary-close:hover{color:var(--coral-lt);background:rgba(255,255,255,.05)}
+.diary-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.diary-list li{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;
+  background:rgba(255,255,255,.03);border:1px solid rgba(232,184,109,.15)}
+.diary-list .dico{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;
+  background:radial-gradient(circle at 35% 30%,#F4A0A4 0%,var(--coral) 60%,var(--coral-deep) 100%);
+  box-shadow:inset 0 -2px 6px rgba(78,17,24,.4),inset 0 2px 4px rgba(255,220,210,.3)}
+.diary-list .dtxt{flex:1;min-width:0}
+.diary-list .dtype{font-family:'Nunito';font-weight:900;font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--coral-lt)}
+.diary-list .dwhen{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.82rem;color:var(--cream3)}
+.diary-list .dwho{font-family:'Nunito';font-weight:700;font-size:.55rem;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold3);background:rgba(232,184,109,.12);padding:3px 8px;border-radius:99px}
+.diary-empty{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:var(--cream3);text-align:center;padding:24px 10px;opacity:.8}
+.diary-foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px dashed rgba(232,184,109,.25);
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.78rem;color:var(--cream3)}
+.diary-foot .syncdot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#4A6741;margin-right:6px;vertical-align:middle;box-shadow:0 0 8px rgba(123,160,107,.6)}
+.diary-foot .syncdot.off{background:#8B6B95;box-shadow:none}
+
+/* contador granulares de cada toque */
+.tstk-count{cursor:pointer}
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001s!important;animation-delay:0s!important;transition-duration:.001s!important}
@@ -332,6 +392,12 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
         <span class="mini h"></span> muito perto
       </span>
     </div>
+
+    <div style="text-align:center;margin-top:10px">
+      <button class="diary-open" id="diaryOpen" type="button" aria-haspopup="dialog" aria-controls="diarySheet">
+        <span class="ic">📖</span> abrir o diário do toque
+      </button>
+    </div>
   </section>
 
   <!-- ════════ FIGURINHAS DE TOQUE ════════ -->
@@ -343,55 +409,63 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     <div class="tgrid">
 
       <!-- SLOT 1: ilustração autoral · 1:1 · "abraço" -->
-      <div class="tstk reveal"><div class="tstk-inner">
+      <div class="tstk reveal" data-mode="abraco"><div class="tstk-inner">
         <span class="tstk-star">✦</span><span class="tstk-den">J&amp;G</span>
-        <div class="slot">
+        <div class="slot upload-zone" data-uid="cap3_abraco" tabindex="0" role="button" aria-label="Trocar arte do abraço — toque para enviar foto, gif ou vídeo">
           <span class="sico">🤗</span>
           <span class="stype">slot · ilustração ou foto</span>
           <span class="sname">o abraço</span>
-          <span class="sdim">1:1 · ~360 × 360 px</span>
+          <span class="sdim">1:1 · foto, gif ou vídeo</span>
+          <span class="upload-hint">+ foto · gif · vídeo</span>
+          <button class="media-clear" type="button" aria-label="Remover mídia">✕</button>
         </div>
         <div class="tstk-cap">o abraço</div>
-        <div class="tstk-count"><b>52</b> trocados</div>
+        <div class="tstk-count" data-count="abraco"><b>0</b> trocados</div>
       </div></div>
 
       <!-- SLOT 2: ilustração autoral · 1:1 · "beijo" -->
-      <div class="tstk reveal"><div class="tstk-inner">
+      <div class="tstk reveal" data-mode="beijo"><div class="tstk-inner">
         <span class="tstk-star">✦</span><span class="tstk-den">♡</span>
-        <div class="slot">
+        <div class="slot upload-zone" data-uid="cap3_beijo" tabindex="0" role="button" aria-label="Trocar arte do beijo — toque para enviar foto, gif ou vídeo">
           <span class="sico">💋</span>
           <span class="stype">slot · ilustração ou foto</span>
           <span class="sname">o beijo</span>
-          <span class="sdim">1:1 · ~360 × 360 px</span>
+          <span class="sdim">1:1 · foto, gif ou vídeo</span>
+          <span class="upload-hint">+ foto · gif · vídeo</span>
+          <button class="media-clear" type="button" aria-label="Remover mídia">✕</button>
         </div>
         <div class="tstk-cap">o beijo</div>
-        <div class="tstk-count"><b>41</b> trocados</div>
+        <div class="tstk-count" data-count="beijo"><b>0</b> trocados</div>
       </div></div>
 
       <!-- SLOT 3: ilustração autoral · 1:1 · "colo" -->
-      <div class="tstk reveal"><div class="tstk-inner">
+      <div class="tstk reveal" data-mode="colo"><div class="tstk-inner">
         <span class="tstk-star">✦</span><span class="tstk-den">∞</span>
-        <div class="slot">
+        <div class="slot upload-zone" data-uid="cap3_colo" tabindex="0" role="button" aria-label="Trocar arte do colo — toque para enviar foto, gif ou vídeo">
           <span class="sico">🌙</span>
           <span class="stype">slot · ilustração ou foto</span>
           <span class="sname">o colo</span>
-          <span class="sdim">1:1 · ~360 × 360 px</span>
+          <span class="sdim">1:1 · foto, gif ou vídeo</span>
+          <span class="upload-hint">+ foto · gif · vídeo</span>
+          <button class="media-clear" type="button" aria-label="Remover mídia">✕</button>
         </div>
         <div class="tstk-cap">o colo</div>
-        <div class="tstk-count"><b>28</b> noites</div>
+        <div class="tstk-count" data-count="colo"><b>0</b> noites</div>
       </div></div>
 
       <!-- SLOT 4: ilustração autoral · 1:1 · "cafuné" -->
-      <div class="tstk reveal"><div class="tstk-inner">
+      <div class="tstk reveal" data-mode="cabelo"><div class="tstk-inner">
         <span class="tstk-star">✦</span><span class="tstk-den">α</span>
-        <div class="slot">
+        <div class="slot upload-zone" data-uid="cap3_cafune" tabindex="0" role="button" aria-label="Trocar arte do cafuné — toque para enviar foto, gif ou vídeo">
           <span class="sico">✦</span>
           <span class="stype">slot · ilustração ou foto</span>
           <span class="sname">o cafuné</span>
-          <span class="sdim">1:1 · ~360 × 360 px</span>
+          <span class="sdim">1:1 · foto, gif ou vídeo</span>
+          <span class="upload-hint">+ foto · gif · vídeo</span>
+          <button class="media-clear" type="button" aria-label="Remover mídia">✕</button>
         </div>
         <div class="tstk-cap">o cafuné</div>
-        <div class="tstk-count"><b>16</b> trocados</div>
+        <div class="tstk-count" data-count="cabelo"><b>0</b> trocados</div>
       </div></div>
 
     </div>
@@ -412,11 +486,11 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
   </aside>
 
   <!-- NAV INFERIOR -->
-  <div class="chapnav">
-    <button class="nb" onclick="alert('voltar Cap. II')">← Cap. II</button>
-    <button class="nb-mid" onclick="alert('sumário')">☰ sumário</button>
-    <button class="nb next" onclick="alert('Cap. IV em construção')">Cap. IV →</button>
-  </div>
+  <nav class="chapnav" aria-label="Navegação entre capítulos">
+    <a class="nb prev" href="capitulo5-tempo.html" aria-label="Capítulo anterior: Tempo de Qualidade">← Cap. II</a>
+    <a class="nb-mid" href="index.html#sumario" aria-label="Voltar ao sumário">☰ sumário</a>
+    <a class="nb next" href="index.html#sumario" data-next="cap4" aria-label="Próximo capítulo: Atos de Serviço (em construção)">Cap. IV →</a>
+  </nav>
 
 </div>
 
@@ -426,21 +500,146 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
   <div class="heart">♥</div>
   <div class="ttl">Você recebeu um abraço</div>
   <div class="msg" id="warmthMsg">G está pensando em você agora</div>
-  <div class="from">há 2 segundos</div>
+  <div class="from" id="warmthFrom">agora mesmo</div>
   <button class="reply" onclick="closeWarmth(true)">♥ retribuir</button>
 </div>
 
+<!-- ════════ DIÁRIO DO TOQUE ════════ -->
+<div class="diary-backdrop" id="diaryBackdrop" aria-hidden="true"></div>
+<aside class="diary-sheet" id="diarySheet" role="dialog" aria-modal="true" aria-labelledby="diaryTitle" aria-hidden="true">
+  <button class="diary-close" id="diaryClose" aria-label="Fechar diário">✕</button>
+  <h3 id="diaryTitle">Diário do toque</h3>
+  <p class="ddeck">cada carinho fica registrado aqui · só nosso</p>
+  <ul class="diary-list" id="diaryList" aria-live="polite"></ul>
+  <p class="diary-empty" id="diaryEmpty" hidden>ainda não houve toques registrados — aperte o coração ali em cima e o primeiro fica aqui ✦</p>
+  <div class="diary-foot">
+    <span><span class="syncdot" id="syncDot"></span><span id="syncMsg">só neste aparelho</span></span>
+    <span id="diaryTotal">0 toques</span>
+  </div>
+</aside>
+
+<!-- Firebase SDK — compartilha toques, fotos, gifs e vídeos entre J e G -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+
 <script>
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const STORE = 'jg-hugs';
+  const STORE_HUGS = 'jg-hugs-v2';
+  const STORE_DIARY = 'jg-touch-diary';
+  const STORE_MEDIA = 'jg-touch-media';
 
-  /* ───── CONTADOR ───── */
-  function getHugs(){ try{ return JSON.parse(localStorage.getItem(STORE) || '{"total":137,"modes":{"abraco":52,"beijo":41,"colo":28,"cabelo":16}}'); }catch(e){ return {total:137,modes:{}}; } }
-  function setHugs(h){ localStorage.setItem(STORE, JSON.stringify(h)); }
-  function paintCounter(){ document.getElementById('hugCount').textContent = getHugs().total; }
-  paintCounter();
+  const MODES = ['abraco','beijo','colo','cabelo'];
+  const MODE_ICONS = { abraco:'🤗', beijo:'💋', colo:'🌙', cabelo:'✦' };
+  const MODE_LABELS = { abraco:'abraço', beijo:'beijo', colo:'colo', cabelo:'cafuné' };
+  const MODE_MESSAGES = {
+    abraco: 'G está te abraçando agora',
+    beijo:  'G mandou um beijo pra você',
+    colo:   'G está com você no colo',
+    cabelo: 'G está fazendo cafuné em você'
+  };
+  const VIBES = {
+    abraco: [90,80,90,180,180,120,180],
+    beijo:  [40,40,40,40,140],
+    colo:   [240,160,240],
+    cabelo: [25,30,25,30,25,30,25,30,80]
+  };
 
-  /* ───── MODO DE TOQUE ───── */
+  /* ═══════ FIREBASE ═══════ */
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyD0-GBYHLsYc_mqqq3Ymhbq3ynpIdx2sMg",
+    authDomain: "album--jussara.firebaseapp.com",
+    projectId: "album--jussara",
+    storageBucket: "album--jussara.firebasestorage.app",
+    messagingSenderId: "732871382789",
+    appId: "1:732871382789:web:7d93bce8c431ba80bd496c",
+    measurementId: "G-50GSPDT1P9"
+  };
+  let _db = null, _stg = null;
+  const _FB_ON = (typeof firebase !== 'undefined');
+  if(_FB_ON){
+    try{
+      // initializeApp pode falhar se já houver app (cenário de SPA)
+      if(!firebase.apps || !firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+      _db = firebase.firestore();
+      try{ _db.settings({ experimentalAutoDetectLongPolling: true, merge: true }); }catch(e){}
+      if(typeof firebase.storage === 'function'){ try{ _stg = firebase.storage(); }catch(e){} }
+    }catch(e){ console.warn('Firebase off:', e); _db = null; }
+  }
+
+  // id único deste aparelho (pra não notificar você dos seus próprios toques)
+  const _CLIENT = (function(){
+    let c = null;
+    try{ c = localStorage.getItem('cosmoClientId'); }catch(e){}
+    if(!c){ c = 'c'+Math.random().toString(36).slice(2)+Date.now().toString(36); try{ localStorage.setItem('cosmoClientId', c); }catch(e){} }
+    return c;
+  })();
+
+  /* ═══════ ARMAZENAMENTO LOCAL ═══════ */
+  function loadDiary(){ try{ return JSON.parse(localStorage.getItem(STORE_DIARY) || '[]'); }catch(e){ return []; } }
+  function saveDiary(arr){ try{ localStorage.setItem(STORE_DIARY, JSON.stringify(arr.slice(-200))); }catch(e){} }
+  function loadMedia(){ try{ return JSON.parse(localStorage.getItem(STORE_MEDIA) || '{}'); }catch(e){ return {}; } }
+  function saveMedia(map){ try{ localStorage.setItem(STORE_MEDIA, JSON.stringify(map)); }catch(e){} }
+
+  let DIARY = loadDiary();
+  let MEDIA = loadMedia();
+
+  /* ═══════ CONTADOR + PINTURA ═══════ */
+  function totals(){
+    const t = { total:0, modes:{abraco:0,beijo:0,colo:0,cabelo:0} };
+    DIARY.forEach(e=>{ t.total++; if(t.modes[e.mode]!=null) t.modes[e.mode]++; });
+    return t;
+  }
+  function lastTouchTs(){
+    if(!DIARY.length) return null;
+    return DIARY.reduce((m,e)=> Math.max(m, e.ts||0), 0);
+  }
+  function daysSinceLast(){
+    const ts = lastTouchTs();
+    if(!ts) return '∞';
+    const ms = Date.now() - ts;
+    const d = Math.floor(ms / 86400000);
+    return d;
+  }
+  function paintCounters(){
+    const t = totals();
+    document.getElementById('hugCount').textContent = t.total;
+    document.querySelectorAll('.tstk-count').forEach(el=>{
+      const mode = el.dataset.count;
+      const b = el.querySelector('b');
+      if(b && mode) b.textContent = t.modes[mode] || 0;
+    });
+    const since = document.querySelector('.big-since .n');
+    if(since){
+      const d = daysSinceLast();
+      since.textContent = (d === '∞' || d > 99) ? '∞' : d;
+    }
+    const diaryTotal = document.getElementById('diaryTotal');
+    if(diaryTotal) diaryTotal.textContent = t.total + (t.total === 1 ? ' toque' : ' toques');
+  }
+
+  /* ═══════ CALENDÁRIO (21 dias, a partir do diário real) ═══════ */
+  function paintCalendar(){
+    const cal = document.getElementById('cal');
+    cal.innerHTML = '';
+    const today = new Date(); today.setHours(0,0,0,0);
+    const counts = new Array(21).fill(0);
+    DIARY.forEach(e=>{
+      if(!e.ts) return;
+      const d = new Date(e.ts); d.setHours(0,0,0,0);
+      const diff = Math.round((today - d) / 86400000);
+      if(diff >= 0 && diff < 21) counts[20 - diff]++; // posição 20 = hoje
+    });
+    counts.forEach((c,i)=>{
+      const div = document.createElement('div');
+      const level = c >= 3 ? 'hot' : c >= 1 ? 'warm' : 'cold';
+      div.className = 'cdot ' + level + (i === 20 ? ' today' : '');
+      div.title = (i===20?'hoje':'há '+(20-i)+' dia(s)') + ' · ' + c + (c===1?' toque':' toques');
+      cal.appendChild(div);
+    });
+  }
+
+  /* ═══════ MODO DE TOQUE ═══════ */
   let currentMode = 'abraco';
   document.querySelectorAll('.hmod').forEach(b=>{
     b.addEventListener('click', ()=>{
@@ -450,83 +649,361 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     });
   });
 
-  /* ───── ENVIAR ABRAÇO ───── */
+  /* ═══════ ENVIAR ABRAÇO ═══════ */
   const hugBtn = document.getElementById('hugBtn');
-  const modeMessages = {
-    abraco: 'G está te abraçando agora',
-    beijo:  'G mandou um beijo pra você',
-    colo:   'G está com você no colo',
-    cabelo: 'G está fazendo cafuné em você'
-  };
-
   hugBtn.addEventListener('click', ()=>{
     hugBtn.classList.add('sending');
-    // padrão de coração: dois batimentos
-    if(navigator.vibrate) navigator.vibrate([90,80,90,180,180,120,180]);
-
-    // atualiza contadores
-    const h = getHugs();
-    h.total = (h.total||0) + 1;
-    h.modes = h.modes || {};
-    h.modes[currentMode] = (h.modes[currentMode]||0) + 1;
-    setHugs(h);
-    paintCounter();
-
-    // após a animação do botão, mostra o "calor recebido" (simulando o lado dela)
+    if(navigator.vibrate) navigator.vibrate(VIBES[currentMode] || VIBES.abraco);
+    const entry = { mode: currentMode, ts: Date.now(), by: _CLIENT };
+    addEntryLocal(entry);
+    // grava online — quem está do outro lado vai ver o "calor"
+    if(_db){
+      _db.collection('touches').add(entry)
+        .then(()=> flash('Enviado ♥'))
+        .catch(()=> flash('Salvo aqui — sem sinal ♥'));
+    } else {
+      flash('Enviado ♥');
+    }
     setTimeout(()=>{
       hugBtn.classList.remove('sending');
       hugBtn.style.transform = '';
-      showWarmth(modeMessages[currentMode]);
+      // sem firebase → simulamos o "lado dela" mostrando o calor de retorno
+      if(!_db) showWarmth(MODE_MESSAGES[currentMode], currentMode);
     }, 1400);
-
-    flash('Enviado ♥');
   });
 
-  /* ───── CALOR QUE SE ESPALHA ───── */
+  function addEntryLocal(entry){
+    if(DIARY.some(e=> e.ts === entry.ts && e.by === entry.by && e.mode === entry.mode)) return;
+    DIARY.push(entry); DIARY.sort((a,b)=> a.ts - b.ts); saveDiary(DIARY);
+    paintCounters(); paintCalendar(); paintDiaryList();
+  }
+
+  /* ═══════ CALOR QUE SE ESPALHA ═══════ */
   const warmth = document.getElementById('warmth');
   const warmthCard = document.getElementById('warmthCard');
-
-  function showWarmth(msg){
+  function relTime(ms){
+    const s = Math.max(0, Math.round((Date.now()-ms)/1000));
+    if(s < 5) return 'agora mesmo';
+    if(s < 60) return 'há '+s+' segundos';
+    const m = Math.round(s/60); if(m < 60) return 'há '+m+' min';
+    const h = Math.round(m/60); if(h < 24) return 'há '+h+' h';
+    return 'há '+Math.round(h/24)+' dia(s)';
+  }
+  function showWarmth(msg, mode, ts){
     document.getElementById('warmthMsg').textContent = msg || 'G está pensando em você agora';
+    document.getElementById('warmthFrom').textContent = ts ? relTime(ts) : 'agora mesmo';
     warmth.classList.add('on');
-    if(navigator.vibrate) navigator.vibrate([90,80,90,180,180,120,180]);
+    if(navigator.vibrate) navigator.vibrate(VIBES[mode||'abraco'] || VIBES.abraco);
     setTimeout(()=> warmthCard.classList.add('on'), 300);
   }
   function closeWarmth(retrib){
     warmth.classList.remove('on');
     warmthCard.classList.remove('on');
-    if(retrib){ setTimeout(()=> flash('Retribuído ♥ ♥'), 200); }
+    if(retrib){
+      const entry = { mode: currentMode, ts: Date.now(), by: _CLIENT };
+      addEntryLocal(entry);
+      if(_db) _db.collection('touches').add(entry).catch(()=>{});
+      setTimeout(()=> flash('Retribuído ♥ ♥'), 200);
+    }
   }
-  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && warmth.classList.contains('on')) closeWarmth(false); });
+  document.addEventListener('keydown', e=>{
+    if(e.key === 'Escape'){
+      if(warmth.classList.contains('on')) closeWarmth(false);
+      else if(document.getElementById('diarySheet').classList.contains('on')) closeDiary();
+    }
+  });
   warmth.addEventListener('click', ()=>closeWarmth(false));
+  window.closeWarmth = closeWarmth;
 
-  /* ───── CALENDÁRIO DE PROXIMIDADE (21 dias) ───── */
-  // 0=frio · 1=morno · 2=quente · hoje marcado separado
-  const days = [0,1,0,2,2,1,0, 1,2,1,0,2,2,2, 0,1,2,2,1,2,2];
-  const cal = document.getElementById('cal');
-  days.forEach((v,i)=>{
-    const d = document.createElement('div');
-    d.className = 'cdot ' + (v===2?'hot':v===1?'warm':'cold') + (i===days.length-1?' today':'');
-    d.title = 'há '+(days.length-1-i)+' dia(s)';
-    cal.appendChild(d);
+  /* ═══════ DIÁRIO — MODAL ═══════ */
+  const diaryBackdrop = document.getElementById('diaryBackdrop');
+  const diarySheet = document.getElementById('diarySheet');
+  const diaryList = document.getElementById('diaryList');
+  const diaryEmpty = document.getElementById('diaryEmpty');
+  document.getElementById('diaryOpen').addEventListener('click', openDiary);
+  document.getElementById('diaryClose').addEventListener('click', closeDiary);
+  diaryBackdrop.addEventListener('click', closeDiary);
+  function openDiary(){
+    paintDiaryList();
+    diaryBackdrop.classList.add('on');
+    diarySheet.classList.add('on');
+    diarySheet.setAttribute('aria-hidden','false');
+  }
+  function closeDiary(){
+    diaryBackdrop.classList.remove('on');
+    diarySheet.classList.remove('on');
+    diarySheet.setAttribute('aria-hidden','true');
+  }
+  function fmtDate(ts){
+    const d = new Date(ts);
+    const today = new Date(); today.setHours(0,0,0,0);
+    const yest = new Date(today.getTime() - 86400000);
+    const dd = new Date(ts); dd.setHours(0,0,0,0);
+    const hm = d.getHours().toString().padStart(2,'0')+'h'+d.getMinutes().toString().padStart(2,'0');
+    if(dd.getTime() === today.getTime()) return 'hoje · '+hm;
+    if(dd.getTime() === yest.getTime()) return 'ontem · '+hm;
+    return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}) + ' · '+hm;
+  }
+  function paintDiaryList(){
+    const list = DIARY.slice().sort((a,b)=> b.ts - a.ts);
+    diaryList.innerHTML = '';
+    if(!list.length){
+      diaryEmpty.hidden = false;
+    } else {
+      diaryEmpty.hidden = true;
+      list.slice(0,60).forEach(e=>{
+        const li = document.createElement('li');
+        const ico = MODE_ICONS[e.mode] || '♥';
+        const lbl = MODE_LABELS[e.mode] || e.mode;
+        const who = e.by === _CLIENT ? 'enviado por você' : 'recebido';
+        li.innerHTML = '<div class="dico">'+ico+'</div>'
+          + '<div class="dtxt"><div class="dtype">'+lbl+'</div><div class="dwhen">'+fmtDate(e.ts)+'</div></div>'
+          + '<span class="dwho">'+who+'</span>';
+        diaryList.appendChild(li);
+      });
+    }
+    const t = totals();
+    document.getElementById('diaryTotal').textContent = t.total + (t.total === 1 ? ' toque' : ' toques');
+  }
+  // status do sync
+  (function paintSync(){
+    const dot = document.getElementById('syncDot');
+    const msg = document.getElementById('syncMsg');
+    if(_db){ dot.classList.remove('off'); msg.textContent = 'sincronizado entre J & G'; }
+    else { dot.classList.add('off'); msg.textContent = 'só neste aparelho (sem nuvem)'; }
+  })();
+
+  /* ═══════ SYNC EM TEMPO REAL ═══════ */
+  if(_db){
+    let firstSnap = true;
+    try{
+      _db.collection('touches').orderBy('ts','desc').limit(200).onSnapshot(snap=>{
+        const incoming = [];
+        snap.docChanges().forEach(ch=>{
+          if(ch.type === 'removed') return;
+          const d = ch.doc.data();
+          if(!d || !d.ts || !d.mode) return;
+          // evita duplicatas
+          if(!DIARY.some(e=> e.ts === d.ts && e.by === d.by && e.mode === d.mode)){
+            DIARY.push({ mode:d.mode, ts:d.ts, by:d.by||'' });
+          }
+          if(!firstSnap && d.by && d.by !== _CLIENT && Date.now() - d.ts < 60000){
+            incoming.push(d);
+          }
+        });
+        DIARY.sort((a,b)=> a.ts - b.ts);
+        saveDiary(DIARY);
+        paintCounters(); paintCalendar(); paintDiaryList();
+        // se chegou um toque novo do outro lado, aciona o "calor"
+        if(incoming.length){
+          const newest = incoming.sort((a,b)=> b.ts - a.ts)[0];
+          showWarmth(MODE_MESSAGES[newest.mode] || MODE_MESSAGES.abraco, newest.mode, newest.ts);
+        }
+        firstSnap = false;
+      }, err=>{ console.warn('Sync de toques falhou:', err); });
+    }catch(e){ console.warn('onSnapshot touches falhou:', e); }
+  }
+
+  /* ═══════ UPLOAD DE FOTO/GIF/VÍDEO NOS SLOTS ═══════ */
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = 'image/*,video/*';
+  fileInput.style.display = 'none';
+  document.body.appendChild(fileInput);
+  let activeZone = null;
+
+  function applyMedia(uid, src, kind){
+    const z = document.querySelector('.slot[data-uid="'+uid+'"]');
+    if(!z || !src) return;
+    // remove qualquer mídia anterior
+    z.querySelectorAll('img.media, video.media').forEach(n=> n.remove());
+    let el;
+    if(kind === 'video'){
+      el = document.createElement('video');
+      el.className = 'media';
+      el.src = src;
+      el.muted = true; el.loop = true; el.playsInline = true; el.autoplay = true;
+      el.setAttribute('webkit-playsinline','');
+      el.play().catch(()=>{});
+    } else {
+      el = document.createElement('img');
+      el.className = 'media';
+      el.src = src;
+      el.alt = 'arte enviada';
+    }
+    z.appendChild(el);
+    z.classList.add('has-media');
+  }
+
+  function restoreMedia(){
+    Object.keys(MEDIA).forEach(uid=>{
+      const m = MEDIA[uid];
+      if(m && m.src) applyMedia(uid, m.src, m.kind);
+    });
+  }
+  restoreMedia();
+
+  // delegação de clique nos slots
+  document.addEventListener('click', e=>{
+    const clearBtn = e.target.closest('.media-clear');
+    if(clearBtn){
+      e.stopPropagation();
+      const z = clearBtn.closest('.slot');
+      if(z){
+        const uid = z.dataset.uid;
+        z.querySelectorAll('img.media, video.media').forEach(n=> n.remove());
+        z.classList.remove('has-media');
+        delete MEDIA[uid]; saveMedia(MEDIA);
+        if(_db) _db.collection('touchMedia').doc(uid).delete().catch(()=>{});
+        flash('Removido');
+      }
+      return;
+    }
+    const zone = e.target.closest('.slot.upload-zone');
+    if(!zone) return;
+    activeZone = zone;
+    fileInput.value = '';
+    fileInput.click();
   });
 
-  /* ───── FIGURINHAS REVEAL ───── */
+  // teclado: enter/space no slot abre o picker
+  document.addEventListener('keydown', e=>{
+    if((e.key === 'Enter' || e.key === ' ') && document.activeElement && document.activeElement.classList.contains('upload-zone')){
+      e.preventDefault();
+      activeZone = document.activeElement;
+      fileInput.value = ''; fileInput.click();
+    }
+  });
+
+  fileInput.addEventListener('change', ()=>{
+    const file = fileInput.files && fileInput.files[0];
+    if(!file || !activeZone) return;
+    const zone = activeZone; activeZone = null;
+    const uid = zone.dataset.uid;
+    const isVideo = file.type.startsWith('video/');
+    const isImg   = file.type.startsWith('image/');
+    if(!isVideo && !isImg){ flash('Tipo de arquivo não suportado'); return; }
+
+    const finishLocal = (src, kind)=>{
+      applyMedia(uid, src, kind);
+      MEDIA[uid] = { src, kind, ts: Date.now() };
+      try{ saveMedia(MEDIA); }
+      catch(e){ /* localStorage cheio - segue só na sessão */ }
+      if(navigator.vibrate) navigator.vibrate(20);
+      flash('Mídia adicionada ✓');
+    };
+
+    const uploadToStorage = (blob, contentType, kind)=>{
+      if(!_stg){ readAsDataUrl(blob, kind); return; }
+      try{
+        const ext = contentType.indexOf('gif') >= 0 ? 'gif'
+                  : contentType.indexOf('png') >= 0 ? 'png'
+                  : contentType.indexOf('webp') >= 0 ? 'webp'
+                  : contentType.indexOf('mp4') >= 0 ? 'mp4'
+                  : contentType.indexOf('webm') >= 0 ? 'webm'
+                  : kind === 'video' ? 'mp4' : 'jpg';
+        const ref = _stg.ref().child('touch-media/' + uid + '.' + ext);
+        flash('Enviando…');
+        const task = ref.put(blob, { contentType });
+        task.on('state_changed', null,
+          err=>{ console.warn('Storage falhou, caindo no base64:', err); readAsDataUrl(blob, kind); },
+          ()=>{
+            task.snapshot.ref.getDownloadURL().then(url=>{
+              finishLocal(url, kind);
+              if(_db){
+                _db.collection('touchMedia').doc(uid).set({ src:url, kind, ts:Date.now(), by:_CLIENT })
+                  .catch(()=>{});
+              }
+            }).catch(err=>{ console.warn('URL falhou, caindo no base64:', err); readAsDataUrl(blob, kind); });
+          });
+      }catch(e){ console.warn('Storage exception:', e); readAsDataUrl(blob, kind); }
+    };
+
+    const readAsDataUrl = (blob, kind)=>{
+      const r = new FileReader();
+      r.onload = ev => {
+        const src = ev.target.result;
+        finishLocal(src, kind);
+        // tenta gravar no Firestore só se for pequeno (Firestore limita ~1MB por doc)
+        if(_db && (typeof src === 'string') && src.length < 900*1024){
+          _db.collection('touchMedia').doc(uid).set({ src, kind, ts:Date.now(), by:_CLIENT }).catch(()=>{});
+        }
+      };
+      r.onerror = ()=> flash('Falha ao ler o arquivo');
+      r.readAsDataURL(blob);
+    };
+
+    if(isImg && !file.type.includes('gif')){
+      // reduz fotos comuns para caber e ser rápido
+      const reader = new FileReader();
+      reader.onload = ev => resizeImage(ev.target.result, 720, out=>{
+        if(_stg){
+          fetch(out).then(r=>r.blob()).then(b=> uploadToStorage(b, 'image/jpeg', 'image'))
+            .catch(()=> finishLocal(out, 'image'));
+        } else {
+          finishLocal(out, 'image');
+        }
+      });
+      reader.onerror = ()=> flash('Falha ao ler a foto');
+      reader.readAsDataURL(file);
+    } else {
+      // gif ou vídeo: mantém original
+      uploadToStorage(file, file.type, isVideo ? 'video' : 'image');
+    }
+  });
+
+  function resizeImage(dataURL, maxDim, cb){
+    const img = new Image();
+    img.onload = ()=>{
+      let w = img.width, h = img.height;
+      if(Math.max(w,h) > maxDim){ const s = maxDim/Math.max(w,h); w = Math.round(w*s); h = Math.round(h*s); }
+      try{
+        const cv = document.createElement('canvas'); cv.width=w; cv.height=h;
+        cv.getContext('2d').drawImage(img,0,0,w,h);
+        cb(cv.toDataURL('image/jpeg',0.85));
+      }catch(e){ cb(dataURL); }
+    };
+    img.onerror = ()=> cb(dataURL);
+    img.src = dataURL;
+  }
+
+  // sync de mídias dos slots em tempo real
+  if(_db){
+    try{
+      _db.collection('touchMedia').onSnapshot(snap=>{
+        snap.docChanges().forEach(ch=>{
+          const uid = ch.doc.id;
+          if(ch.type === 'removed'){
+            const z = document.querySelector('.slot[data-uid="'+uid+'"]');
+            if(z){ z.querySelectorAll('img.media, video.media').forEach(n=> n.remove()); z.classList.remove('has-media'); }
+            delete MEDIA[uid]; saveMedia(MEDIA); return;
+          }
+          const d = ch.doc.data();
+          if(!d || !d.src) return;
+          applyMedia(uid, d.src, d.kind || 'image');
+          MEDIA[uid] = { src:d.src, kind:d.kind || 'image', ts: d.ts || Date.now() };
+          try{ saveMedia(MEDIA); }catch(e){}
+        });
+      }, err=>{ console.warn('Sync de mídias falhou:', err); });
+    }catch(e){ console.warn('onSnapshot touchMedia falhou:', e); }
+  }
+
+  /* ═══════ FIGURINHAS REVEAL ═══════ */
   if('IntersectionObserver' in window && !reduce){
     const io = new IntersectionObserver((entries)=>{
       entries.forEach((e,i)=>{
         if(e.isIntersecting){
-          setTimeout(()=>e.target.classList.add('in'), Math.min(i*90,360));
+          setTimeout(()=> e.target.classList.add('in'), Math.min(i*90, 360));
           io.unobserve(e.target);
         }
       });
-    },{threshold:0.18,rootMargin:'0px 0px -8% 0px'});
-    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+    },{threshold:0.18, rootMargin:'0px 0px -8% 0px'});
+    document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
   } else {
-    document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+    document.querySelectorAll('.reveal').forEach(el=> el.classList.add('in'));
   }
 
-  /* toast */
+  /* ═══════ TOAST ═══════ */
   function flash(msg){
     const f = document.createElement('div');
     f.className = 'toast'; f.textContent = msg;
@@ -534,6 +1011,11 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     requestAnimationFrame(()=>{ f.style.opacity='1'; f.style.transform='translateX(-50%) translateY(0)'; });
     setTimeout(()=>{ f.style.opacity='0'; f.style.transform='translateX(-50%) translateY(-20px)'; setTimeout(()=>f.remove(),400); }, 1800);
   }
+
+  /* ═══════ ARRANQUE ═══════ */
+  paintCounters();
+  paintCalendar();
+  paintDiaryList();
 </script>
 </body>
 </html>
