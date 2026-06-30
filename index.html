@@ -419,7 +419,38 @@ img{max-width:100%}
 .v-upload{position:absolute;left:6px;right:6px;top:6px;bottom:6px;border-radius:10px;z-index:2;pointer-events:none}
 .v-upload.filled{background-image:var(--uimg);background-size:cover;background-position:center;box-shadow:inset 0 0 0 2px rgba(196,149,106,.7),inset 0 0 0 4px rgba(10,8,32,.5),inset 0 0 0 5px rgba(196,149,106,.4)}
 .v-upload.filled ~ .v-in .v-emoji,.v-upload.filled ~ .v-in .v-title,.v-upload.filled ~ .v-in .v-sub{opacity:0}
-</style>
+
+/* ═══ CAP 1 — bilhete (foto) e frase do dia (vídeo) ═══ */
+.jg-slot.upload-zone{cursor:pointer}
+.jg-slot.upload-zone.filled{background-image:var(--uimg)!important;background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important;border-style:solid;border-color:rgba(196,149,106,.55)}
+.jg-slot.upload-zone.filled .jg-sico,.jg-slot.upload-zone.filled .jg-stype,.jg-slot.upload-zone.filled .jg-sname,.jg-slot.upload-zone.filled .jg-sdim{opacity:0!important;visibility:hidden}
+.jg-slot.jg-video-slot{cursor:pointer;overflow:hidden}
+.jg-slot.jg-video-slot.has-video{padding:0;border-style:solid;border-color:rgba(196,149,106,.55)}
+.jg-slot.jg-video-slot.has-video .jg-sico,.jg-slot.jg-video-slot.has-video .jg-stype,.jg-slot.jg-video-slot.has-video .jg-sname,.jg-slot.jg-video-slot.has-video .jg-sdim{display:none}
+.jg-slot.jg-video-slot.has-video video{width:100%;height:100%;object-fit:cover;border-radius:2px;background:#000;display:block}
+
+/* ═══ MODAL DE GRAVAÇÃO DE VÍDEO ═══ */
+.vid-rec-modal{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;background:rgba(6,4,28,.86);backdrop-filter:blur(6px);padding:20px}
+.vid-rec-modal.on{display:flex}
+.vid-rec-sheet{width:100%;max-width:380px;background:linear-gradient(180deg,#1a1640,#0E0B36);border:1.5px solid rgba(232,184,109,.45);border-radius:16px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.6);color:#F0DFC0;font-family:'Nunito',sans-serif}
+.vid-rec-sheet h3{font-family:'Playfair Display',serif;font-weight:800;font-size:1.15rem;text-align:center;margin-bottom:4px;color:#F4DA8A}
+.vid-rec-sheet .vid-sub{text-align:center;font-style:italic;font-size:.78rem;color:rgba(240,223,192,.7);margin-bottom:12px}
+.vid-rec-stage{position:relative;width:100%;aspect-ratio:1/1;background:#000;border-radius:10px;overflow:hidden;border:1px solid rgba(232,184,109,.35);margin-bottom:12px}
+.vid-rec-stage video{width:100%;height:100%;object-fit:cover;display:block}
+.vid-rec-stage .rec-dot{position:absolute;top:10px;left:10px;display:none;align-items:center;gap:6px;background:rgba(0,0,0,.55);padding:4px 10px;border-radius:99px;font-size:.62rem;font-weight:800;letter-spacing:1.2px;color:#fff;text-transform:uppercase}
+.vid-rec-stage .rec-dot::before{content:'';width:7px;height:7px;border-radius:50%;background:#E36870;box-shadow:0 0 8px #E36870;animation:recBlink 1s ease-in-out infinite}
+.vid-rec-stage.recording .rec-dot{display:inline-flex}
+.vid-rec-stage .timer{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.55);padding:4px 10px;border-radius:99px;font-size:.62rem;font-weight:800;letter-spacing:1.2px;color:#F4DA8A;display:none}
+.vid-rec-stage.recording .timer,.vid-rec-stage.has-preview .timer{display:inline-block}
+@keyframes recBlink{50%{opacity:.4}}
+.vid-rec-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.vid-rec-btn{flex:1;min-width:110px;padding:10px 14px;border-radius:99px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:900;font-size:.7rem;letter-spacing:1.4px;text-transform:uppercase;transition:transform .2s,opacity .2s}
+.vid-rec-btn:active{transform:scale(.96)}
+.vid-rec-btn[disabled]{opacity:.4;cursor:not-allowed}
+.vid-rec-btn.primary{background:linear-gradient(180deg,#F4DCA8,#C4956A 60%,#8E6A1F);color:#2A2540;box-shadow:0 4px 14px rgba(196,149,106,.4)}
+.vid-rec-btn.danger{background:linear-gradient(180deg,#E36870,#7A2530);color:#fff}
+.vid-rec-btn.ghost{background:transparent;border:1.5px solid rgba(232,184,109,.45);color:#E8B86D}
+.vid-rec-status{margin-top:10px;text-align:center;font-size:.7rem;color:rgba(240,223,192,.6);font-style:italic;min-height:1.2em}
 </head>
 <body>
 
@@ -765,27 +796,27 @@ img{max-width:100%}
             <div class="jg-stk-date">jun · 2026</div>
             <span class="jg-stk-wax"></span>
           </div></div>
-          <!-- SLOT 2: foto autoral · 4:5 · ~360 × 450 px · "o bilhete da geladeira" -->
+          <!-- SLOT 2: bilhete na mão dela — upload de imagem com sync em tempo real -->
           <div class="jg-stk jg-reveal"><div class="jg-stk-inner">
             <span class="jg-stk-star">✦</span><span class="jg-stk-den">♡</span>
-            <div class="jg-slot ratio-photo">
+            <div class="jg-slot ratio-photo upload-zone nz jg-upload-photo" data-uid="cap1_bilhete">
               <span class="jg-sico">📝</span>
-              <span class="jg-stype">slot · foto autoral</span>
+              <span class="jg-stype">tocar · subir foto</span>
               <span class="jg-sname">um bilhete na mão dela</span>
-              <span class="jg-sdim">4:5 · ~360 × 450 px</span>
+              <span class="jg-sdim">aparece pra ela no mesmo segundo</span>
             </div>
             <div class="jg-stk-cap">o bilhete da geladeira</div>
             <div class="jg-stk-date">mai · 2026</div>
             <span class="jg-stk-wax"></span>
           </div></div>
-          <!-- SLOT 3: Lottie / GIF / SVG · 1:1 · ~360 × 360 px · "a frase do dia" -->
+          <!-- SLOT 3: frase do dia — gravar vídeo curto com a câmera do celular -->
           <div class="jg-stk jg-reveal"><div class="jg-stk-inner">
             <span class="jg-stk-star">✦</span><span class="jg-stk-den">α</span>
-            <div class="jg-slot ratio-square">
-              <span class="jg-sico">✨</span>
-              <span class="jg-stype">slot · animação (Lottie/GIF)</span>
-              <span class="jg-sname">frase brilhando</span>
-              <span class="jg-sdim">1:1 · ~360 × 360 px</span>
+            <div class="jg-slot ratio-square jg-video-slot" data-uid="cap1_frase" onclick="_jgOpenVideoRec(event)">
+              <span class="jg-sico">🎥</span>
+              <span class="jg-stype">tocar · gravar vídeo</span>
+              <span class="jg-sname">a frase brilhando · em vídeo</span>
+              <span class="jg-sdim">a câmera abre · ela recebe na hora</span>
             </div>
             <div class="jg-stk-cap">a frase do dia</div>
             <div class="jg-stk-date">diária</div>
@@ -831,6 +862,27 @@ img{max-width:100%}
         <button class="jg-nb next" onclick="alert('Capítulo II em construção')">próximo →</button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Modal de gravação de vídeo (cap I — frase do dia) -->
+<div class="vid-rec-modal" id="vidRecModal" aria-hidden="true">
+  <div class="vid-rec-sheet">
+    <h3>Frase do dia em vídeo</h3>
+    <div class="vid-sub">grave uma frase curta — ela chega no celular dela na hora</div>
+    <div class="vid-rec-stage" id="vidRecStage">
+      <video id="vidRecPreview" autoplay muted playsinline></video>
+      <span class="rec-dot">GRAVANDO</span>
+      <span class="timer" id="vidRecTimer">0s</span>
+    </div>
+    <div class="vid-rec-actions">
+      <button class="vid-rec-btn ghost" id="vidRecCancel" onclick="_jgCloseVideoRec()">Fechar</button>
+      <button class="vid-rec-btn primary" id="vidRecStart" onclick="_jgStartRec()">● Gravar</button>
+      <button class="vid-rec-btn danger" id="vidRecStop" onclick="_jgStopRec()" style="display:none">■ Parar</button>
+      <button class="vid-rec-btn ghost" id="vidRecRetry" onclick="_jgRetryRec()" style="display:none">Refazer</button>
+      <button class="vid-rec-btn primary" id="vidRecSend" onclick="_jgSendRec()" style="display:none">✦ Enviar</button>
+    </div>
+    <div class="vid-rec-status" id="vidRecStatus">até 10 segundos · áudio + vídeo · será compartilhado em tempo real</div>
   </div>
 </div>
 
@@ -1470,6 +1522,199 @@ if(_db){
 // Se a permissão já foi concedida antes, ativa o push agora (sem precisar reabrir)
 if(_db && 'Notification' in window && Notification.permission === 'granted'){ _initFCM(); }
 
+/* ═══════════════════════════════════════════════════════════
+   CAP I — Frase do dia · gravação de vídeo + sync em tempo real
+   ═══════════════════════════════════════════════════════════ */
+const _VID_CACHE_KEY = 'cosmoVideos';
+function _loadVideos(){ try{ return JSON.parse(localStorage.getItem(_VID_CACHE_KEY)||'{}'); }catch(e){ return {}; } }
+function _saveVideos(map){ try{ localStorage.setItem(_VID_CACHE_KEY, JSON.stringify(map)); }catch(e){} }
+
+let _vidStream = null, _vidRecorder = null, _vidChunks = [], _vidTimer = null, _vidStart = 0, _vidBlob = null, _vidDataUrl = null;
+const _VID_MAX_SEC = 10;
+
+function _jgOpenVideoRec(ev){
+  if(ev && ev.target && ev.target.closest('video')) return;
+  const m = document.getElementById('vidRecModal');
+  if(!m) return;
+  m.classList.add('on');
+  _jgResetRecUI();
+  _jgStartCamera();
+}
+function _jgCloseVideoRec(){
+  const m = document.getElementById('vidRecModal');
+  if(!m) return;
+  m.classList.remove('on');
+  _jgStopCamera();
+  _vidBlob = null; _vidDataUrl = null; _vidChunks = [];
+}
+function _jgResetRecUI(){
+  document.getElementById('vidRecStart').style.display='';
+  document.getElementById('vidRecStop').style.display='none';
+  document.getElementById('vidRecRetry').style.display='none';
+  document.getElementById('vidRecSend').style.display='none';
+  document.getElementById('vidRecStatus').textContent='até 10 segundos · áudio + vídeo · será compartilhado em tempo real';
+  document.getElementById('vidRecStage').classList.remove('recording','has-preview');
+  document.getElementById('vidRecTimer').textContent='0s';
+  const v = document.getElementById('vidRecPreview');
+  v.muted = true; v.controls = false; v.removeAttribute('src');
+}
+async function _jgStartCamera(){
+  try{
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+      document.getElementById('vidRecStatus').textContent='Este aparelho não permite gravar vídeo aqui.';
+      document.getElementById('vidRecStart').disabled = true;
+      return;
+    }
+    _vidStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 480 }, height: { ideal: 480 } },
+      audio: true
+    });
+    const v = document.getElementById('vidRecPreview');
+    v.srcObject = _vidStream;
+    v.muted = true;
+    v.play().catch(()=>{});
+  }catch(e){
+    console.warn('Câmera negada:', e);
+    document.getElementById('vidRecStatus').textContent='Permita acesso à câmera e ao microfone para gravar.';
+    document.getElementById('vidRecStart').disabled = true;
+  }
+}
+function _jgStopCamera(){
+  try{
+    if(_vidStream){ _vidStream.getTracks().forEach(t=>t.stop()); _vidStream = null; }
+    if(_vidRecorder && _vidRecorder.state !== 'inactive'){ try{ _vidRecorder.stop(); }catch(e){} }
+    if(_vidTimer){ clearInterval(_vidTimer); _vidTimer = null; }
+  }catch(e){}
+}
+function _jgPickMime(){
+  if(typeof MediaRecorder === 'undefined') return null;
+  const cands = ['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm','video/mp4'];
+  for(const m of cands){ try{ if(MediaRecorder.isTypeSupported(m)) return m; }catch(e){} }
+  return '';
+}
+function _jgStartRec(){
+  if(!_vidStream){ _jgStartCamera(); return; }
+  const mime = _jgPickMime();
+  if(mime === null){ document.getElementById('vidRecStatus').textContent='Gravação não suportada neste navegador.'; return; }
+  _vidChunks = [];
+  try{
+    _vidRecorder = new MediaRecorder(_vidStream, mime ? { mimeType: mime, videoBitsPerSecond: 500000, audioBitsPerSecond: 64000 } : { videoBitsPerSecond: 500000, audioBitsPerSecond: 64000 });
+  }catch(e){
+    try{ _vidRecorder = new MediaRecorder(_vidStream); }catch(e2){ document.getElementById('vidRecStatus').textContent='Erro: '+(e2.message||e2); return; }
+  }
+  _vidRecorder.ondataavailable = ev=>{ if(ev.data && ev.data.size) _vidChunks.push(ev.data); };
+  _vidRecorder.onstop = ()=>{
+    const type = _vidRecorder.mimeType || 'video/webm';
+    _vidBlob = new Blob(_vidChunks, { type });
+    const v = document.getElementById('vidRecPreview');
+    try{ v.srcObject = null; }catch(e){}
+    v.src = URL.createObjectURL(_vidBlob);
+    v.muted = false; v.controls = true;
+    document.getElementById('vidRecStage').classList.remove('recording');
+    document.getElementById('vidRecStage').classList.add('has-preview');
+    document.getElementById('vidRecStart').style.display='none';
+    document.getElementById('vidRecStop').style.display='none';
+    document.getElementById('vidRecRetry').style.display='';
+    document.getElementById('vidRecSend').style.display='';
+    const kb = Math.round(_vidBlob.size/1024);
+    document.getElementById('vidRecStatus').textContent = 'pré-visualização · ' + kb + ' KB';
+  };
+  _vidRecorder.start(250);
+  _vidStart = Date.now();
+  document.getElementById('vidRecStage').classList.add('recording');
+  document.getElementById('vidRecStart').style.display='none';
+  document.getElementById('vidRecStop').style.display='';
+  document.getElementById('vidRecStatus').textContent='gravando…';
+  _vidTimer = setInterval(()=>{
+    const s = Math.floor((Date.now()-_vidStart)/1000);
+    document.getElementById('vidRecTimer').textContent = s + 's';
+    if(s >= _VID_MAX_SEC) _jgStopRec();
+  }, 200);
+}
+function _jgStopRec(){
+  if(_vidTimer){ clearInterval(_vidTimer); _vidTimer = null; }
+  if(_vidRecorder && _vidRecorder.state !== 'inactive'){ try{ _vidRecorder.stop(); }catch(e){} }
+}
+function _jgRetryRec(){
+  _vidBlob = null; _vidDataUrl = null; _vidChunks = [];
+  _jgResetRecUI();
+  _jgStartCamera();
+}
+function _jgSendRec(){
+  if(!_vidBlob){ return; }
+  // Firestore: ~1MB por documento. Cap pra evitar erro.
+  const MAX_BYTES = 900 * 1024;
+  if(_vidBlob.size > MAX_BYTES){
+    document.getElementById('vidRecStatus').textContent = 'Vídeo grande demais (' + Math.round(_vidBlob.size/1024) + ' KB). Tente um mais curto.';
+    return;
+  }
+  const status = document.getElementById('vidRecStatus');
+  status.textContent = 'Enviando…';
+  const reader = new FileReader();
+  reader.onload = ev=>{
+    const dataUrl = ev.target.result;
+    const uid = 'cap1_frase';
+    _applyVideo(uid, dataUrl);
+    const cache = _loadVideos(); cache[uid] = dataUrl; _saveVideos(cache);
+    if(_db){
+      _db.collection('videos').doc(uid).set({ video: dataUrl, ts: Date.now(), by: _CLIENT, mime: _vidBlob.type || 'video/webm' })
+        .then(()=>{ status.textContent = 'Enviado ✓'; if(navigator.vibrate) navigator.vibrate([10,40,10,40,80]); setTimeout(_jgCloseVideoRec, 800); })
+        .catch(err=>{ console.warn('Falha ao enviar vídeo:', err); status.textContent = 'Salvou aqui, mas falhou na nuvem: ' + (err.code||err.message); });
+    } else {
+      status.textContent = 'Salvo no aparelho (sem nuvem)';
+      setTimeout(_jgCloseVideoRec, 800);
+    }
+  };
+  reader.onerror = ()=>{ status.textContent = 'Erro ao ler o vídeo.'; };
+  reader.readAsDataURL(_vidBlob);
+}
+
+function _applyVideo(uid, dataUrl){
+  const slot = document.querySelector('.jg-video-slot[data-uid="'+uid+'"]');
+  if(!slot || !dataUrl) return;
+  let v = slot.querySelector('video.jg-vplay');
+  if(!v){
+    v = document.createElement('video');
+    v.className = 'jg-vplay';
+    v.controls = true; v.playsInline = true; v.preload = 'metadata';
+    slot.appendChild(v);
+  }
+  if(v.src !== dataUrl) v.src = dataUrl;
+  slot.classList.add('has-video');
+}
+
+// Restaura vídeos do cache local
+(function initVideos(){
+  const cache = _loadVideos();
+  Object.keys(cache).forEach(k => _applyVideo(k, cache[k]));
+  const modal = document.getElementById('vidRecModal');
+  if(modal){
+    modal.addEventListener('click', e=>{ if(e.target.id === 'vidRecModal') _jgCloseVideoRec(); });
+  }
+})();
+
+// Sincroniza vídeos em tempo real entre os aparelhos
+let _firstVideoSnap = true;
+if(_db){
+  try{
+    _db.collection('videos').onSnapshot(snap=>{
+      const cache = _loadVideos();
+      let notify = false;
+      snap.docChanges().forEach(ch=>{
+        if(ch.type === 'removed') return;
+        const d = ch.doc.data();
+        if(!d || !d.video) return;
+        _applyVideo(ch.doc.id, d.video);
+        cache[ch.doc.id] = d.video;
+        if(!_firstVideoSnap && d.by && d.by !== _CLIENT) notify = true;
+      });
+      _saveVideos(cache);
+      _firstVideoSnap = false;
+      if(notify) _toast('Chegou um vídeo novo ✦', true);
+    }, err=>{ console.warn('Falha ao sincronizar vídeos:', err); });
+  }catch(e){ console.warn('onSnapshot vídeos falhou:', e); }
+}
+
 // Reduz a imagem antes de salvar para caber no armazenamento do navegador
 function _resizeImage(dataURL, maxDim, cb){
   const img = new Image();
@@ -1489,7 +1734,7 @@ function _resizeImage(dataURL, maxDim, cb){
 // Delegated click: open picker for upload zones (photo slots, pet photos)
 document.addEventListener('click', e=>{
   // 1) Direct upload zones (Jussara photo slots, pet photos)
-  let zone = e.target.closest('.photo-slot.upload-zone, .pet-photo.upload-zone');
+  let zone = e.target.closest('.photo-slot.upload-zone, .pet-photo.upload-zone, .jg-slot.upload-zone');
   // 2) Figurinha: clicar numa figurinha JÁ RASPADA libera o upload
   if(!zone){
     const card = e.target.closest('.stk');
