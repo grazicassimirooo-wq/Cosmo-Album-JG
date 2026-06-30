@@ -641,6 +641,18 @@ body{
   margin-bottom:4px;
 }
 .cartas-sub{text-align:center;font-style:italic;color:var(--gold2);opacity:.7;font-size:.85rem;margin-bottom:16px}
+.cartas-tabs{display:flex;gap:8px;margin-bottom:14px;border-bottom:1px solid rgba(232,184,109,.25);padding-bottom:0}
+.cartas-tab{flex:1;background:none;border:none;cursor:pointer;color:var(--gold2);opacity:.55;font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:1.5px;font-weight:700;padding:10px 6px;text-transform:uppercase;position:relative;border-bottom:2px solid transparent;transition:opacity .2s,border-color .2s}
+.cartas-tab.active{opacity:1;border-bottom-color:var(--gold2)}
+.cartas-tab .badge{display:inline-block;min-width:18px;height:18px;line-height:18px;border-radius:99px;background:var(--rose);color:#fff;font-family:'Nunito',sans-serif;font-size:.6rem;letter-spacing:0;padding:0 6px;margin-left:6px;vertical-align:middle}
+.cartas-tab .badge:empty,.cartas-tab .badge[data-n="0"]{display:none}
+.carta-item.recebida{background:linear-gradient(180deg,rgba(232,184,109,.94),rgba(196,149,106,.94))}
+.carta-item .ci-from{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:1.5px;color:var(--gold-deep);text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.carta-item .ci-from .dot{width:6px;height:6px;border-radius:50%;background:var(--rose);display:inline-block}
+.carta-item.recebida .ci-from .dot{background:var(--leaf2)}
+.archive-link .new-pill{display:none;margin-left:6px;padding:2px 8px;border-radius:99px;background:var(--rose);color:#fff;font-family:'Nunito',sans-serif;font-size:.6rem;letter-spacing:.5px;font-weight:900;vertical-align:middle}
+.archive-link .new-pill.on{display:inline-block;animation:pulseB 1.4s ease-in-out infinite}
+@keyframes pulseB{50%{transform:scale(1.08)}}
 .carta-item{
   background:linear-gradient(180deg,rgba(241,224,189,.97),rgba(217,190,131,.97));
   color:var(--ink);border-radius:6px;padding:14px 16px;margin-bottom:12px;
@@ -764,7 +776,7 @@ body{
         </div>
 
         <button type="button" class="archive-link" onclick="abrirCartas()">
-          ✦ VER CARTAS ENVIADAS <span id="count-pill">(0)</span> ✦
+          ✦ VER CARTAS <span id="count-pill">(0)</span> <span class="new-pill" id="newPill">nova ✦</span>
         </button>
       </form>
     </div>
@@ -838,21 +850,57 @@ body{
   <div class="seal-msg">CARTA SELADA &amp; GUARDADA ✦</div>
 </div>
 
-<!-- modal de cartas enviadas -->
+<!-- modal de cartas enviadas + recebidas -->
 <div class="cartas-modal" id="cartasModal" aria-hidden="true">
   <div class="cartas-sheet">
     <h2>Cartas Seladas</h2>
     <div class="cartas-sub">cada palavra guardada nas estrelas</div>
+    <div class="cartas-tabs">
+      <button class="cartas-tab active" data-tab="recebidas" onclick="trocarTab('recebidas')">Recebidas <span class="badge" id="badgeRec" data-n="0"></span></button>
+      <button class="cartas-tab" data-tab="enviadas" onclick="trocarTab('enviadas')">Enviadas</button>
+    </div>
     <div id="cartasList"></div>
     <button class="cartas-close" onclick="fecharCartas()">FECHAR ✦</button>
   </div>
 </div>
 
+<!-- Firebase (sincroniza as cartas em tempo real entre os dois aparelhos) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
   const DRAFT = 'jg-letter-draft';
   const SENT  = 'jg-cartas-enviadas';
+  const RECV  = 'jg-cartas-recebidas';
+  const SEEN  = 'jg-cartas-vistas-ts';
   const $ = id => document.getElementById(id);
   const ta = $('letter');
+
+  /* ---- Firebase ---- */
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyD0-GBYHLsYc_mqqq3Ymhbq3ynpIdx2sMg",
+    authDomain: "album--jussara.firebaseapp.com",
+    projectId: "album--jussara",
+    storageBucket: "album--jussara.firebasestorage.app",
+    messagingSenderId: "732871382789",
+    appId: "1:732871382789:web:7d93bce8c431ba80bd496c",
+    measurementId: "G-50GSPDT1P9"
+  };
+  let _db = null;
+  try{
+    if(typeof firebase !== 'undefined'){
+      firebase.initializeApp(FIREBASE_CONFIG);
+      _db = firebase.firestore();
+      try{ _db.settings({ experimentalAutoDetectLongPolling: true, merge: true }); }catch(e){}
+    }
+  }catch(e){ console.warn('Firebase não iniciou:', e); _db = null; }
+
+  /* id único deste aparelho — compartilhado com o app principal */
+  const _CLIENT = (function(){
+    let c = null;
+    try{ c = localStorage.getItem('cosmoClientId'); }catch(e){}
+    if(!c){ c = 'c' + Math.random().toString(36).slice(2) + Date.now().toString(36); try{ localStorage.setItem('cosmoClientId', c); }catch(e){} }
+    return c;
+  })();
 
   /* ---- auto-grow do textarea (cresce com o conteúdo) ---- */
   function autoGrow(){
@@ -882,10 +930,34 @@ body{
     setTimeout(()=>ta.scrollIntoView({behavior:'smooth', block:'center'}), 300);
   });
 
-  /* ---- contador de cartas enviadas ---- */
-  function getCartas(){ try{ return JSON.parse(localStorage.getItem(SENT)||'[]'); }catch(e){ return []; } }
-  function atualizarContador(){ $('count-pill').textContent = '(' + getCartas().length + ')'; }
-  atualizarContador();
+  /* ---- caches locais (funciona offline e enquanto o Firestore carrega) ---- */
+  function getEnviadas(){ try{ return JSON.parse(localStorage.getItem(SENT)||'[]'); }catch(e){ return []; } }
+  function getRecebidas(){ try{ return JSON.parse(localStorage.getItem(RECV)||'[]'); }catch(e){ return []; } }
+  function saveEnviadas(arr){ try{ localStorage.setItem(SENT, JSON.stringify(arr)); }catch(e){} }
+  function saveRecebidas(arr){ try{ localStorage.setItem(RECV, JSON.stringify(arr)); }catch(e){} }
+  function getSeenTs(){ try{ return parseInt(localStorage.getItem(SEEN)||'0',10) || 0; }catch(e){ return 0; } }
+  function setSeenTs(ts){ try{ localStorage.setItem(SEEN, String(ts)); }catch(e){} }
+
+  /* ---- estado ---- */
+  let _tabAtiva = 'recebidas';
+  let _firstSnap = true;
+
+  function totalCartas(){ return getEnviadas().length + getRecebidas().length; }
+  function naoLidas(){
+    const seen = getSeenTs();
+    return getRecebidas().filter(c => (c.ts || 0) > seen).length;
+  }
+
+  function atualizarContador(){
+    $('count-pill').textContent = '(' + totalCartas() + ')';
+    const n = naoLidas();
+    const pill = $('newPill');
+    pill.classList.toggle('on', n > 0);
+    pill.textContent = n > 0 ? (n + ' nova' + (n>1?'s':'') + ' ✦') : '';
+    const badge = $('badgeRec');
+    badge.dataset.n = n;
+    badge.textContent = n > 0 ? n : '';
+  }
 
   /* ---- salvar rascunho ---- */
   function salvar(){
@@ -895,20 +967,21 @@ body{
     flash('Rascunho guardado ✒');
   }
 
-  /* ---- enviar: GUARDA a carta (não apaga mais) ---- */
+  /* ---- enviar: salva local + manda em tempo real pela nuvem ---- */
   function enviar(){
     const body = ta.value.trim();
     const dest = ($('dest').value.trim() || 'meu amor');
     if(!body){ flash('A carta está em branco…'); return; }
 
-    const cartas = getCartas();
-    cartas.unshift({ dest, body, ts: Date.now() });
-    localStorage.setItem(SENT, JSON.stringify(cartas));
+    const carta = { dest, body, ts: Date.now(), by: _CLIENT };
+    const enviadas = getEnviadas();
+    enviadas.unshift(carta);
+    saveEnviadas(enviadas);
     atualizarContador();
 
     if(navigator.vibrate) navigator.vibrate([10,40,10,40,90]);
 
-    // animação do selo de cera
+    // anima o selo de cera
     const stage = $('sealStage');
     stage.classList.add('on');
     setTimeout(()=>{
@@ -916,34 +989,110 @@ body{
       ta.value = '';
       autoGrow();
       localStorage.removeItem(DRAFT);
-      flash('Enviada ao céu para ' + dest + ' ✈');
+      if(_db){
+        flash('Enviada para ' + dest + ' ✈');
+      } else {
+        flash('Salva no aparelho · sem conexão ✒');
+      }
     }, 1700);
+
+    // sincroniza com a nuvem para a outra pessoa receber em tempo real
+    if(_db){
+      _db.collection('letters').add(carta)
+        .catch(err=>{ console.warn('Falha ao enviar carta:', err); flash('Salva aqui, mas falhou a sincronização ✒'); });
+    }
   }
+
+  /* ---- escuta cartas em tempo real ---- */
+  if(_db){
+    try{
+      _db.collection('letters').onSnapshot(snap=>{
+        const enviadas = [];
+        const recebidas = [];
+        snap.forEach(doc=>{
+          const c = doc.data();
+          if(!c || !c.body) return;
+          const item = { id: doc.id, dest: c.dest||'', body: c.body, ts: c.ts||0, by: c.by||'' };
+          if(c.by === _CLIENT) enviadas.push(item);
+          else recebidas.push(item);
+        });
+        enviadas.sort((a,b)=>b.ts-a.ts);
+        recebidas.sort((a,b)=>b.ts-a.ts);
+        saveEnviadas(enviadas);
+        saveRecebidas(recebidas);
+        // notifica se chegou carta nova de quem não sou eu
+        if(!_firstSnap){
+          const novas = snap.docChanges().filter(ch=> ch.type==='added' && ch.doc.data().by && ch.doc.data().by !== _CLIENT);
+          if(novas.length){
+            flash('Uma carta nova chegou ✦');
+            if(navigator.vibrate) navigator.vibrate([15,40,15,40,80]);
+          }
+        }
+        _firstSnap = false;
+        atualizarContador();
+        if($('cartasModal').classList.contains('on')) renderCartas();
+      }, err=>{ console.warn('Falha ao sincronizar cartas:', err); });
+    }catch(e){ console.warn('onSnapshot falhou:', e); }
+  }
+
+  atualizarContador();
 
   /* ---- modal de cartas ---- */
   function fmtData(ts){
     try{ return new Date(ts).toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}); }
     catch(e){ return ''; }
   }
+  function trocarTab(t){
+    _tabAtiva = t;
+    document.querySelectorAll('.cartas-tab').forEach(b=> b.classList.toggle('active', b.dataset.tab === t));
+    if(t === 'recebidas'){
+      // marca como visto agora
+      const all = getRecebidas();
+      const maxTs = all.reduce((m,c)=> Math.max(m, c.ts||0), 0);
+      if(maxTs > getSeenTs()) setSeenTs(maxTs);
+      atualizarContador();
+    }
+    renderCartas();
+  }
   function renderCartas(){
     const list = $('cartasList');
-    const cartas = getCartas();
-    if(!cartas.length){ list.innerHTML = '<div class="cartas-empty">Ainda não há cartas seladas.<br>Escreva a primeira ✦</div>'; return; }
+    const cartas = _tabAtiva === 'recebidas' ? getRecebidas() : getEnviadas();
+    if(!cartas.length){
+      list.innerHTML = '<div class="cartas-empty">' + (
+        _tabAtiva === 'recebidas'
+          ? 'Nenhuma carta recebida ainda.<br>Quando ela escrever, aparece aqui ✦'
+          : 'Você ainda não enviou nenhuma carta.<br>Escreva a primeira ✦'
+      ) + '</div>';
+      return;
+    }
+    const recebida = _tabAtiva === 'recebidas';
     list.innerHTML = cartas.map((c,i)=>`
-      <div class="carta-item">
-        <button class="ci-del" onclick="apagarCarta(${i})" aria-label="Apagar">✕</button>
-        <div class="ci-dest">Querida ${escapeHtml(c.dest)},</div>
+      <div class="carta-item${recebida?' recebida':''}">
+        ${recebida ? '<div class="ci-from"><span class="dot"></span>Recebida</div>' : '<button class="ci-del" onclick="apagarCarta(' + i + ')" aria-label="Apagar">✕</button><div class="ci-from"><span class="dot"></span>Enviada por você</div>'}
+        <div class="ci-dest">Querida ${escapeHtml(c.dest||'meu amor')},</div>
         <div class="ci-body">${escapeHtml(c.body)}</div>
-        <div class="ci-date">${fmtData(c.ts)} · com amor, G</div>
+        <div class="ci-date">${fmtData(c.ts)}${recebida?'':' · com amor, G'}</div>
       </div>`).join('');
   }
   function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-  function abrirCartas(){ renderCartas(); $('cartasModal').classList.add('on'); }
+  function abrirCartas(){
+    // se há recebidas não lidas, abre primeiro na aba "recebidas"; senão, nas enviadas
+    _tabAtiva = naoLidas() > 0 || getRecebidas().length >= getEnviadas().length ? 'recebidas' : 'enviadas';
+    document.querySelectorAll('.cartas-tab').forEach(b=> b.classList.toggle('active', b.dataset.tab === _tabAtiva));
+    if(_tabAtiva === 'recebidas'){
+      const maxTs = getRecebidas().reduce((m,c)=> Math.max(m, c.ts||0), 0);
+      if(maxTs > getSeenTs()) setSeenTs(maxTs);
+      atualizarContador();
+    }
+    renderCartas();
+    $('cartasModal').classList.add('on');
+  }
   function fecharCartas(){ $('cartasModal').classList.remove('on'); }
   function apagarCarta(i){
-    const cartas = getCartas();
-    cartas.splice(i,1);
-    localStorage.setItem(SENT, JSON.stringify(cartas));
+    // só apaga do cache local de enviadas (a cópia da nuvem fica preservada)
+    const enviadas = getEnviadas();
+    enviadas.splice(i,1);
+    saveEnviadas(enviadas);
     atualizarContador(); renderCartas();
   }
   $('cartasModal').addEventListener('click', e=>{ if(e.target.id==='cartasModal') fecharCartas(); });
