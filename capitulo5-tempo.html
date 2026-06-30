@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Capítulo V · Tempo de Qualidade · J&G</title>
+<title>Capítulo II · Tempo de Qualidade · J&G</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Dancing+Script:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
@@ -273,6 +273,91 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
   .big-since .n{font-size:2.8rem}
   .here-btn{width:118px;height:118px}
 }
+
+/* ═══════════════════════════════════════════════════════════
+   ADDITIONS — realtime, upload, emoji, places, perfil, quiz
+   ═══════════════════════════════════════════════════════════ */
+
+/* status do gesto (qual modo a outra pessoa está) */
+.status-pill{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:7px 14px;border-radius:99px;background:rgba(46,139,124,.18);border:1px solid rgba(91,191,176,.4);font-family:'Nunito';font-weight:800;font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--mint)}
+.status-pill .dot{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 8px var(--mint);animation:dotBeat 1.6s ease-in-out infinite}
+@keyframes dotBeat{50%{transform:scale(1.35);opacity:.6}}
+
+/* barra de emoji reactions */
+.emoji-bar{margin:14px var(--space) 8px;padding:14px 16px;border-radius:14px;background:linear-gradient(180deg,#111d2a,#0c1820);border:1px solid rgba(91,191,176,.22);text-align:center}
+.emoji-bar h4{font-family:'Nunito';font-weight:800;font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--teal-lt);margin-bottom:8px}
+.emoji-bar .sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.78rem;color:var(--cream3);margin-bottom:10px}
+.emoji-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.emoji-btn{background:rgba(255,255,255,.05);border:1px solid rgba(91,191,176,.18);border-radius:14px;padding:8px 12px;cursor:pointer;font-size:1.6rem;line-height:1;transition:transform .2s,background .2s}
+.emoji-btn:hover{background:rgba(91,191,176,.15);transform:translateY(-2px)}
+.emoji-btn:active{transform:scale(.94)}
+.emoji-fly{position:fixed;left:50%;bottom:30vh;font-size:3rem;pointer-events:none;z-index:95;animation:emojiUp 1.8s cubic-bezier(.2,.7,.2,1) forwards}
+@keyframes emojiUp{0%{opacity:0;transform:translate(-50%,30px) scale(.3)}20%{opacity:1;transform:translate(-50%,0) scale(1.2)}100%{opacity:0;transform:translate(-50%,-220px) scale(.9)}}
+
+/* cdot clicável */
+.cdot{cursor:pointer;transition:transform .2s,box-shadow .2s}
+.cdot:hover{transform:scale(1.18);box-shadow:0 0 10px rgba(91,191,176,.45)}
+
+/* upload-zone para .slot das figurinhas */
+.slot.upload-zone{cursor:pointer}
+.slot.upload-zone.filled{background-image:var(--uimg)!important;background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important;border-style:solid;border-color:rgba(46,139,124,.5)}
+.slot.upload-zone.filled .sico,.slot.upload-zone.filled .stype,.slot.upload-zone.filled .sname,.slot.upload-zone.filled .sdim{opacity:0!important;visibility:hidden}
+
+/* constelação de lugares */
+.places{margin:22px var(--space) 8px;padding:18px 20px;background:linear-gradient(180deg,#111d2a,#0c1820);border:1px solid rgba(232,184,109,.22);border-radius:14px;position:relative}
+.places .label{font-family:'Nunito';font-weight:900;font-size:.56rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold2);margin-bottom:6px}
+.places h3{font-family:'Playfair Display',serif;font-weight:800;font-size:1.3rem;line-height:1.1;margin-bottom:4px}
+.places .deck{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.9rem;color:var(--cream3);margin-bottom:14px}
+.places-map{position:relative;width:100%;aspect-ratio:5/3;border-radius:12px;background:
+  radial-gradient(ellipse 70% 50% at 30% 20%,rgba(46,139,124,.22),transparent 60%),
+  radial-gradient(ellipse 60% 40% at 75% 75%,rgba(232,184,109,.16),transparent 60%),
+  linear-gradient(180deg,#0a1722,#06101a);
+  border:1px solid rgba(91,191,176,.18);overflow:hidden}
+.places-map .pstar{position:absolute;display:flex;flex-direction:column;align-items:center;gap:3px;transform:translate(-50%,-50%);cursor:default}
+.places-map .pstar .pdot{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--gold3),var(--gold) 60%);box-shadow:0 0 12px rgba(232,184,109,.55);animation:pstarPulse 2.6s ease-in-out infinite}
+.places-map .pstar .pname{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.7rem;color:var(--cream2);background:rgba(10,20,28,.78);padding:2px 7px;border-radius:99px;white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis}
+.places-map .pstar .pemoji{font-size:1rem}
+@keyframes pstarPulse{50%{transform:scale(1.25);box-shadow:0 0 18px rgba(232,184,109,.8)}}
+.places-add{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:9px 16px;border-radius:99px;border:1.5px solid rgba(232,184,109,.45);background:transparent;color:var(--gold2);font-family:'Nunito';font-weight:900;font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.places-add:hover{border-color:var(--gold2);background:rgba(232,184,109,.06)}
+.places-empty{text-align:center;color:rgba(240,223,192,.45);font-family:'Cormorant Garamond',serif;font-style:italic;padding:24px;font-size:.85rem}
+
+/* perfil + quiz */
+.profile-section,.quiz-section{margin:22px var(--space) 8px;padding:18px 20px;background:linear-gradient(180deg,#111d2a,#0c1820);border:1px solid rgba(232,184,109,.22);border-radius:14px}
+.profile-section .label,.quiz-section .label{font-family:'Nunito';font-weight:900;font-size:.56rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold2);margin-bottom:6px}
+.profile-section h3,.quiz-section h3{font-family:'Playfair Display',serif;font-weight:800;font-size:1.3rem;line-height:1.1;margin-bottom:4px}
+.profile-section .deck,.quiz-section .deck{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.9rem;color:var(--cream3);margin-bottom:14px}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.profile-card{padding:12px;border-radius:12px;background:rgba(10,20,28,.55);border:1px solid rgba(91,191,176,.2);display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center}
+.profile-card.me{border-color:rgba(232,184,109,.5)}
+.profile-card .who{font-family:'Nunito';font-weight:900;font-size:.55rem;letter-spacing:1.8px;text-transform:uppercase;color:var(--teal-lt)}
+.profile-card.me .who{color:var(--gold2)}
+.profile-card .emoji-pick{font-size:2.2rem;cursor:pointer;line-height:1}
+.profile-card input,.profile-card select{width:100%;padding:7px 10px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(91,191,176,.25);color:var(--cream);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.85rem;text-align:center;outline:none}
+.profile-card .static{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--cream2);font-size:.85rem;min-height:1.2em}
+.profile-card .static.empty{color:rgba(240,223,192,.4)}
+.profile-save{display:block;width:100%;margin-top:12px;padding:10px;border-radius:99px;border:none;cursor:pointer;background:linear-gradient(180deg,var(--gold3),var(--gold) 60%,var(--gold-deep));color:var(--ink);font-family:'Nunito';font-weight:900;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase}
+
+.quiz-question{padding:12px;border-radius:12px;background:rgba(10,20,28,.55);border:1px solid rgba(91,191,176,.2);margin-bottom:10px}
+.quiz-q{font-family:'Playfair Display',serif;font-weight:800;font-size:.95rem;margin-bottom:8px;color:var(--cream)}
+.quiz-opts{display:flex;flex-wrap:wrap;gap:6px}
+.quiz-opt{background:rgba(255,255,255,.05);border:1px solid rgba(91,191,176,.22);border-radius:99px;padding:6px 12px;cursor:pointer;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.82rem;color:var(--cream2);transition:all .2s}
+.quiz-opt:hover{border-color:var(--teal-lt)}
+.quiz-opt.mine{background:rgba(232,184,109,.18);border-color:var(--gold2);color:var(--gold2)}
+.quiz-opt.theirs{outline:1.5px dashed var(--teal-lt);outline-offset:1px}
+.quiz-opt .badge{display:inline-block;margin-left:6px;font-size:.6rem;letter-spacing:1px;font-weight:800;color:var(--teal-lt)}
+.quiz-summary{margin-top:8px;padding:10px 12px;border-radius:10px;background:rgba(46,139,124,.12);border:1px solid rgba(91,191,176,.3);font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--cream2);font-size:.85rem;text-align:center}
+
+/* modal genérico pra adicionar lugar */
+.mini-modal{position:fixed;inset:0;display:none;z-index:120;align-items:center;justify-content:center;background:rgba(6,4,28,.86);backdrop-filter:blur(6px);padding:20px}
+.mini-modal.on{display:flex}
+.mini-sheet{width:100%;max-width:340px;background:linear-gradient(180deg,#1a1640,#0E0B36);border:1.5px solid rgba(91,191,176,.45);border-radius:14px;padding:18px;color:var(--cream)}
+.mini-sheet h3{font-family:'Playfair Display',serif;font-weight:800;font-size:1.05rem;text-align:center;margin-bottom:10px;color:var(--mint)}
+.mini-sheet input{width:100%;padding:10px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(91,191,176,.25);color:var(--cream);font-family:'Cormorant Garamond',serif;font-size:.95rem;margin-bottom:10px;outline:none}
+.mini-actions{display:flex;gap:8px;justify-content:flex-end}
+.mini-btn{padding:9px 14px;border-radius:99px;border:none;cursor:pointer;font-family:'Nunito';font-weight:800;font-size:.65rem;letter-spacing:1.4px;text-transform:uppercase}
+.mini-btn.primary{background:linear-gradient(180deg,var(--gold3),var(--gold) 60%,var(--gold-deep));color:var(--ink)}
+.mini-btn.ghost{background:transparent;color:var(--mint);border:1px solid rgba(91,191,176,.4)}
 </style>
 </head>
 <body>
@@ -284,14 +369,14 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
 
   <!-- ── HEADER ── -->
   <header class="chap-head">
-    <div class="chap-meta"><b>Capítulo V</b> · de cinco · J &amp; G</div>
-    <div class="numeral">V</div>
+    <div class="chap-meta"><b>Capítulo II</b> · de cinco · J &amp; G</div>
+    <div class="numeral">II</div>
     <h1>
       <span class="w">Tempo</span> <span class="w">de</span> <span class="w">Qualidade</span>
     </h1>
     <div class="promise">o melhor lugar do mundo é do seu lado</div>
     <p class="lede"><span class="drop">N</span>ão é o tempo que conta — é o que a gente faz dele. Cada minuto junto é um lugar que não some.</p>
-    <div class="folio">JG · CAP. V · PÁG. 72</div>
+    <div class="folio">JG · CAP. II · PÁG. 24</div>
   </header>
 
   <div class="hair"></div>
@@ -331,6 +416,26 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
       <button class="pmod" data-mode="passeio">passeio</button>
       <button class="pmod" data-mode="silencio">em silêncio</button>
     </div>
+
+    <div class="status-pill" id="theirStatus" style="display:none">
+      <span class="dot"></span><span id="theirStatusText">ela está em silêncio</span>
+    </div>
+  </section>
+
+  <!-- ════════ EMOJI REACTIONS (presença rapidinha) ════════ -->
+  <section class="emoji-bar">
+    <h4>✦ um emoji rapidinho ✦</h4>
+    <div class="sub">toque um emoji — ela sente do outro lado na hora</div>
+    <div class="emoji-row" id="emojiRow">
+      <button class="emoji-btn" data-em="💛">💛</button>
+      <button class="emoji-btn" data-em="☕">☕</button>
+      <button class="emoji-btn" data-em="🌿">🌿</button>
+      <button class="emoji-btn" data-em="🌙">🌙</button>
+      <button class="emoji-btn" data-em="🌸">🌸</button>
+      <button class="emoji-btn" data-em="✨">✨</button>
+      <button class="emoji-btn" data-em="🎬">🎬</button>
+      <button class="emoji-btn" data-em="😘">😘</button>
+    </div>
   </section>
 
   <!-- ════════ CALENDÁRIO DE MOMENTOS ════════ -->
@@ -367,56 +472,105 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
       <!-- SLOT 1 · cafézinho -->
       <div class="tstk reveal"><div class="tstk-inner">
         <span class="tstk-star">✦</span><span class="tstk-den">J&amp;G</span>
-        <div class="slot">
+        <div class="slot upload-zone" data-uid="cap2_cafe">
           <span class="sico">☕</span>
-          <span class="stype">slot · ilustração ou foto</span>
+          <span class="stype">tocar · subir foto</span>
           <span class="sname">o cafézinho</span>
-          <span class="sdim">1:1 · ~360 × 360 px</span>
+          <span class="sdim">aparece pra ela na hora</span>
         </div>
         <div class="tstk-cap">o cafézinho</div>
-        <div class="tstk-count"><b>91</b> tomados</div>
+        <div class="tstk-count"><b id="cnt-cafe">0</b> tomados</div>
       </div></div>
 
       <!-- SLOT 2 · filme -->
       <div class="tstk reveal"><div class="tstk-inner">
         <span class="tstk-star">✦</span><span class="tstk-den">♡</span>
-        <div class="slot">
+        <div class="slot upload-zone" data-uid="cap2_filme">
           <span class="sico">🎬</span>
-          <span class="stype">slot · ilustração ou foto</span>
+          <span class="stype">tocar · subir foto</span>
           <span class="sname">o filme</span>
-          <span class="sdim">1:1 · ~360 × 360 px</span>
+          <span class="sdim">aparece pra ela na hora</span>
         </div>
         <div class="tstk-cap">o filme</div>
-        <div class="tstk-count"><b>74</b> assistidos</div>
+        <div class="tstk-count"><b id="cnt-filme">0</b> assistidos</div>
       </div></div>
 
       <!-- SLOT 3 · passeio -->
       <div class="tstk reveal"><div class="tstk-inner">
         <span class="tstk-star">✦</span><span class="tstk-den">∞</span>
-        <div class="slot">
+        <div class="slot upload-zone" data-uid="cap2_passeio">
           <span class="sico">🌿</span>
-          <span class="stype">slot · ilustração ou foto</span>
+          <span class="stype">tocar · subir foto</span>
           <span class="sname">o passeio</span>
-          <span class="sdim">1:1 · ~360 × 360 px</span>
+          <span class="sdim">aparece pra ela na hora</span>
         </div>
         <div class="tstk-cap">o passeio</div>
-        <div class="tstk-count"><b>58</b> feitos</div>
+        <div class="tstk-count"><b id="cnt-passeio">0</b> feitos</div>
       </div></div>
 
       <!-- SLOT 4 · silêncio -->
       <div class="tstk reveal"><div class="tstk-inner">
         <span class="tstk-star">✦</span><span class="tstk-den">α</span>
-        <div class="slot">
+        <div class="slot upload-zone" data-uid="cap2_silencio">
           <span class="sico">🌙</span>
-          <span class="stype">slot · ilustração ou foto</span>
+          <span class="stype">tocar · subir foto</span>
           <span class="sname">o silêncio</span>
-          <span class="sdim">1:1 · ~360 × 360 px</span>
+          <span class="sdim">aparece pra ela na hora</span>
         </div>
         <div class="tstk-cap">o silêncio</div>
-        <div class="tstk-count"><b>89</b> compartilhados</div>
+        <div class="tstk-count"><b id="cnt-silencio">0</b> compartilhados</div>
       </div></div>
 
     </div>
+  </section>
+
+  <!-- ════════ CONSTELAÇÃO DE LUGARES ════════ -->
+  <section class="places reveal" id="s-places">
+    <div class="label">a constelação</div>
+    <h3>Lugares nossos</h3>
+    <p class="deck">cada lugar vira uma estrela · as duas podem adicionar e os pontos sincronizam</p>
+    <div class="places-map" id="placesMap">
+      <div class="places-empty" id="placesEmpty">nenhuma estrela ainda · toque "adicionar" pra criar a primeira</div>
+    </div>
+    <button class="places-add" type="button" onclick="openAddPlace()">✦ adicionar lugar</button>
+  </section>
+
+  <!-- ════════ PERFIL ════════ -->
+  <section class="profile-section reveal" id="s-perfil">
+    <div class="label">o perfil</div>
+    <h3>Quem é cada uma</h3>
+    <p class="deck">cada uma escolhe o emoji, o nome e a linguagem principal · vai sincronizando</p>
+    <div class="profile-grid">
+      <div class="profile-card me" id="profMe">
+        <span class="who">você</span>
+        <span class="emoji-pick" id="meEmoji" title="tocar para mudar">🌸</span>
+        <input id="meName" type="text" placeholder="seu nome" maxlength="24">
+        <select id="meLang">
+          <option value="">linguagem principal…</option>
+          <option value="palavras">Palavras de afirmação</option>
+          <option value="tempo">Tempo de qualidade</option>
+          <option value="toque">Toque físico</option>
+          <option value="presentes">Presentes</option>
+          <option value="atos">Atos de serviço</option>
+        </select>
+      </div>
+      <div class="profile-card" id="profOther">
+        <span class="who">a outra</span>
+        <span class="emoji-pick" id="otherEmoji">🌿</span>
+        <div class="static empty" id="otherName">— ainda não cadastrou —</div>
+        <div class="static empty" id="otherLang"></div>
+      </div>
+    </div>
+    <button class="profile-save" type="button" onclick="saveProfile()">salvar e sincronizar ✦</button>
+  </section>
+
+  <!-- ════════ QUIZ ════════ -->
+  <section class="quiz-section reveal" id="s-quiz">
+    <div class="label">o quiz das duas</div>
+    <h3>Como a gente se ama hoje?</h3>
+    <p class="deck">cada uma marca a sua resposta · a outra vê em tempo real</p>
+    <div id="quizList"></div>
+    <div class="quiz-summary" id="quizSummary">marque pelo menos uma resposta pra começar</div>
   </section>
 
   <!-- PULL QUOTE -->
@@ -435,12 +589,28 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
 
   <!-- NAV INFERIOR -->
   <div class="chapnav">
-    <button class="nb" onclick="alert('voltar Cap. IV')">← Cap. IV</button>
-    <button class="nb-mid" onclick="alert('sumário')">☰ sumário</button>
-    <button class="nb next" onclick="alert('quiz de perfil')">Quiz →</button>
+    <a class="nb" href="index.html#cap1">← Cap. I</a>
+    <a class="nb-mid" href="index.html#sumario">☰ sumário</a>
+    <button class="nb next" type="button" onclick="document.getElementById('s-quiz').scrollIntoView({behavior:'smooth'})">Quiz ↓</button>
   </div>
 
 </div>
+
+<!-- modal de adicionar lugar -->
+<div class="mini-modal" id="addPlaceModal" aria-hidden="true">
+  <div class="mini-sheet">
+    <h3>✦ nova estrela no mapa ✦</h3>
+    <input id="placeEmoji" type="text" placeholder="emoji (1)" maxlength="2" value="✦">
+    <input id="placeName" type="text" placeholder="nome do lugar (ex. nosso café)" maxlength="40">
+    <div class="mini-actions">
+      <button type="button" class="mini-btn ghost" onclick="closeAddPlace()">cancelar</button>
+      <button type="button" class="mini-btn primary" onclick="savePlace()">salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- input invisível pro upload das figurinhas -->
+<input type="file" id="figFileInput" accept="image/*" style="display:none">
 
 <!-- overlay de presença recebida -->
 <div class="presence-overlay" id="presenceOverlay" aria-hidden="true"></div>
@@ -452,9 +622,37 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
   <button class="reply-btn" onclick="closePresence(true)">🌿 retribuir presença</button>
 </div>
 
+<!-- Firebase (sincroniza cap. II entre os dois aparelhos) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const STORE  = 'jg-moments-v';
+
+  /* ── Firebase ── */
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyD0-GBYHLsYc_mqqq3Ymhbq3ynpIdx2sMg",
+    authDomain: "album--jussara.firebaseapp.com",
+    projectId: "album--jussara",
+    storageBucket: "album--jussara.firebasestorage.app",
+    messagingSenderId: "732871382789",
+    appId: "1:732871382789:web:7d93bce8c431ba80bd496c",
+    measurementId: "G-50GSPDT1P9"
+  };
+  let _db = null;
+  try{
+    if(typeof firebase !== 'undefined'){
+      firebase.initializeApp(FIREBASE_CONFIG);
+      _db = firebase.firestore();
+      try{ _db.settings({ experimentalAutoDetectLongPolling: true, merge: true }); }catch(e){}
+    }
+  }catch(e){ console.warn('Firebase não iniciou:', e); _db = null; }
+
+  const _CLIENT = (function(){
+    let c = null;
+    try{ c = localStorage.getItem('cosmoClientId'); }catch(e){}
+    if(!c){ c = 'c' + Math.random().toString(36).slice(2) + Date.now().toString(36); try{ localStorage.setItem('cosmoClientId', c); }catch(e){} }
+    return c;
+  })();
 
   /* ── RELÓGIO ANALÓGICO ── */
   (function buildClock(){
@@ -475,52 +673,74 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     function tick(){
       const now = new Date();
       const s = now.getSeconds(), m = now.getMinutes(), h = now.getHours()%12;
-      const sdeg = s*6;
-      const mdeg = m*6 + s*0.1;
-      const hdeg = h*30 + m*0.5;
-      document.getElementById('handSec').style.transform = `rotate(${sdeg}deg)`;
-      document.getElementById('handMin').style.transform = `rotate(${mdeg}deg)`;
-      document.getElementById('handHour').style.transform = `rotate(${hdeg}deg)`;
+      document.getElementById('handSec').style.transform = `rotate(${s*6}deg)`;
+      document.getElementById('handMin').style.transform = `rotate(${m*6 + s*0.1}deg)`;
+      document.getElementById('handHour').style.transform = `rotate(${h*30 + m*0.5}deg)`;
     }
     tick();
     setInterval(tick, 1000);
   })();
 
-  /* ── CONTADOR ── */
-  function getMoments(){ try{ return JSON.parse(localStorage.getItem(STORE)||'{"total":312,"modes":{"cafe":91,"filme":74,"passeio":58,"silencio":89}}'); }catch(e){ return {total:312,modes:{}}; } }
-  function setMoments(m){ localStorage.setItem(STORE, JSON.stringify(m)); }
-  function paintCounter(){ document.getElementById('hereCount').textContent = getMoments().total; }
-  paintCounter();
-
   /* ── MODO DE PRESENÇA ── */
   let currentMode = 'cafe';
+  const modeLabels = { cafe:'cafézinho', filme:'um filme', passeio:'um passeio', silencio:'em silêncio' };
   const modeMessages = {
-    cafe:     'G está tomando um café pensando em você',
-    filme:    'G quer assistir um filme com você agora',
-    passeio:  'G está dando um passeio imaginando você do lado',
-    silencio: 'G está em silêncio, mas pensa em você'
+    cafe:     'ela está tomando um café pensando em você',
+    filme:    'ela quer assistir um filme com você agora',
+    passeio:  'ela está dando um passeio imaginando você do lado',
+    silencio: 'ela está em silêncio, mas pensa em você'
   };
   document.querySelectorAll('.pmod').forEach(b=>{
     b.addEventListener('click',()=>{
       document.querySelectorAll('.pmod').forEach(x=>x.classList.remove('active'));
       b.classList.add('active');
       currentMode = b.dataset.mode;
+      if(navigator.vibrate) navigator.vibrate(15);
     });
   });
 
-  /* ── BOTÃO ESTOU AQUI ── */
+  /* ── CONTADOR DE PRESENÇAS (Firestore counters) ── */
+  function paintCounter(n){ document.getElementById('hereCount').textContent = n; }
+  if(_db){
+    _db.collection('counters').doc('presence').onSnapshot(s=>{
+      const v = (s.data() && s.data().total) || 0;
+      paintCounter(v);
+    }, err=>{ console.warn('counter err', err); });
+  }
+
+  /* ── ESTOU AQUI: realtime + vibração nos dois ── */
   const hereBtn = document.getElementById('hereBtn');
+  let _firstPresenceSnap = true;
   hereBtn.addEventListener('click',()=>{
     if(navigator.vibrate) navigator.vibrate([60,50,100,80,60]);
-    const d = getMoments();
-    d.total = (d.total||0) + 1;
-    d.modes = d.modes||{};
-    d.modes[currentMode] = (d.modes[currentMode]||0) + 1;
-    setMoments(d);
-    paintCounter();
-    setTimeout(()=> showPresence(modeMessages[currentMode]), 800);
     flash('Presença enviada 🌿');
+    if(!_db) return;
+    _db.collection('presence').add({ mode: currentMode, by: _CLIENT, ts: Date.now() })
+      .catch(err=>console.warn('presence err', err));
+    _db.collection('counters').doc('presence').set({ total: firebase.firestore.FieldValue.increment(1) }, { merge: true })
+      .catch(()=>{});
   });
+  if(_db){
+    _db.collection('presence').orderBy('ts','desc').limit(1).onSnapshot(snap=>{
+      snap.docChanges().forEach(ch=>{
+        if(ch.type !== 'added') return;
+        const d = ch.doc.data();
+        if(!d) return;
+        // status pill: sempre atualiza
+        const pill = document.getElementById('theirStatus');
+        const txt = document.getElementById('theirStatusText');
+        if(d.by && d.by !== _CLIENT){
+          pill.style.display = 'inline-flex';
+          txt.textContent = 'ela está ' + (modeLabels[d.mode] || 'aqui');
+          if(!_firstPresenceSnap){
+            if(navigator.vibrate) navigator.vibrate([60,50,100,80,60]);
+            showPresence(modeMessages[d.mode] || 'ela está aqui com você');
+          }
+        }
+      });
+      _firstPresenceSnap = false;
+    }, err=>console.warn('presence sub err', err));
+  }
 
   /* ── OVERLAY ── */
   const presenceOverlay = document.getElementById('presenceOverlay');
@@ -528,28 +748,364 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
   function showPresence(msg){
     document.getElementById('presenceMsg').textContent = msg;
     presenceOverlay.classList.add('on');
-    if(navigator.vibrate) navigator.vibrate([60,50,100,80,60]);
     setTimeout(()=> presenceCard.classList.add('on'), 300);
   }
   function closePresence(retrib){
     presenceOverlay.classList.remove('on');
     presenceCard.classList.remove('on');
-    if(retrib){ setTimeout(()=> flash('Retribuído 🌿 🌿'),200); }
+    if(retrib){
+      if(navigator.vibrate) navigator.vibrate([60,50,100,80,60]);
+      if(_db) _db.collection('presence').add({ mode: currentMode, by: _CLIENT, ts: Date.now(), retrib:true }).catch(()=>{});
+      setTimeout(()=> flash('Retribuído 🌿 🌿'), 200);
+    }
   }
+  window.closePresence = closePresence;
   document.addEventListener('keydown', e=>{ if(e.key==='Escape') closePresence(false); });
   presenceOverlay.addEventListener('click', ()=>closePresence(false));
 
-  /* ── CALENDÁRIO (21 dias) ── */
-  const days = [0,1,2,1,0,2,2, 1,0,2,2,1,0,2, 2,1,2,0,2,2,1];
-  const cal  = document.getElementById('cal');
-  days.forEach((v,i)=>{
-    const d = document.createElement('div');
-    d.className = 'cdot '+(v===2?'hot':v===1?'warm':'cold')+(i===days.length-1?' today':'');
-    d.title = 'há '+(days.length-1-i)+' dia(s)';
-    cal.appendChild(d);
+  /* ── EMOJI REACTIONS ── */
+  let _firstEmojiSnap = true;
+  document.querySelectorAll('.emoji-btn').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const em = b.dataset.em;
+      if(navigator.vibrate) navigator.vibrate(20);
+      _flyEmoji(em);
+      if(_db) _db.collection('reactions').add({ emoji: em, by: _CLIENT, ts: Date.now() }).catch(()=>{});
+    });
+  });
+  function _flyEmoji(em){
+    const s = document.createElement('div');
+    s.className = 'emoji-fly'; s.textContent = em;
+    document.body.appendChild(s);
+    setTimeout(()=> s.remove(), 1900);
+  }
+  if(_db){
+    _db.collection('reactions').orderBy('ts','desc').limit(1).onSnapshot(snap=>{
+      snap.docChanges().forEach(ch=>{
+        if(ch.type !== 'added') return;
+        const d = ch.doc.data();
+        if(!d || d.by === _CLIENT) return;
+        if(!_firstEmojiSnap){
+          _flyEmoji(d.emoji || '💛');
+          if(navigator.vibrate) navigator.vibrate([20,40,20]);
+        }
+      });
+      _firstEmojiSnap = false;
+    }, err=>console.warn('reactions sub err', err));
+  }
+
+  /* ── DIÁRIO DO TEMPO (21 dias clicáveis, realtime) ── */
+  const cal = document.getElementById('cal');
+  function _isoDate(offsetFromToday){
+    const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() + offsetFromToday);
+    return d.toISOString().slice(0,10);
+  }
+  function _dayLabel(off){
+    if(off===0) return 'hoje';
+    if(off===-1) return 'ontem';
+    return 'há '+Math.abs(off)+' dia(s)';
+  }
+  const STATES = ['cold','warm','hot'];
+  function _nextState(s){
+    const i = STATES.indexOf(s);
+    return STATES[(i+1) % STATES.length];
+  }
+  let _diario = {};
+  function paintCal(){
+    cal.innerHTML = '';
+    for(let off = -20; off <= 0; off++){
+      const iso = _isoDate(off);
+      const st = _diario[iso] || 'cold';
+      const d = document.createElement('button');
+      d.type = 'button';
+      d.className = 'cdot ' + st + (off === 0 ? ' today' : '');
+      d.title = _dayLabel(off) + ' · ' + (st === 'hot' ? 'juntas' : st === 'warm' ? 'perto' : 'longe');
+      d.dataset.iso = iso;
+      d.addEventListener('click', ()=>{
+        const cur = _diario[iso] || 'cold';
+        const nxt = _nextState(cur);
+        _diario[iso] = nxt;
+        d.className = 'cdot ' + nxt + (off === 0 ? ' today' : '');
+        d.title = _dayLabel(off) + ' · ' + (nxt === 'hot' ? 'juntas' : nxt === 'warm' ? 'perto' : 'longe');
+        if(navigator.vibrate) navigator.vibrate(15);
+        if(_db) _db.collection('tempo-diario').doc('main').set({ dates: { [iso]: nxt }, by: _CLIENT, ts: Date.now() }, { merge: true }).catch(()=>{});
+      });
+      cal.appendChild(d);
+    }
+    // recalcula "dias desde a última vez juntas"
+    const sinceEl = document.querySelector('.big-since .n');
+    let since = '∞';
+    for(let off = 0; off >= -20; off--){
+      if(_diario[_isoDate(off)] === 'hot'){ since = Math.abs(off); break; }
+    }
+    if(sinceEl) sinceEl.textContent = since;
+  }
+  paintCal();
+  if(_db){
+    _db.collection('tempo-diario').doc('main').onSnapshot(s=>{
+      _diario = (s.data() && s.data().dates) || {};
+      paintCal();
+    }, err=>console.warn('diario err', err));
+  }
+
+  /* ── FIGURINHAS: upload de foto (mesma pipeline do cap I) ── */
+  const _PHOTO_KEY = 'cosmoAlbumPhotos';
+  function _loadPhotos(){ try{ return JSON.parse(localStorage.getItem(_PHOTO_KEY)||'{}'); }catch(e){ return {}; } }
+  function _savePhotos(m){ try{ localStorage.setItem(_PHOTO_KEY, JSON.stringify(m)); }catch(e){} }
+  function _applyPhoto(uid, img){
+    const z = document.querySelector('.slot.upload-zone[data-uid="'+uid+'"]');
+    if(!z || !img) return;
+    z.style.setProperty('--uimg', `url("${img}")`);
+    z.classList.add('filled');
+  }
+  // restaura cache local
+  (function(){ const c = _loadPhotos(); Object.keys(c).forEach(k=> _applyPhoto(k, c[k])); })();
+  // sync via Firestore
+  if(_db){
+    _db.collection('photos').onSnapshot(snap=>{
+      const cache = _loadPhotos();
+      snap.docChanges().forEach(ch=>{
+        if(ch.type === 'removed') return;
+        const d = ch.doc.data(); if(!d || !d.img) return;
+        _applyPhoto(ch.doc.id, d.img); cache[ch.doc.id] = d.img;
+      });
+      _savePhotos(cache);
+    }, err=>console.warn('photos err', err));
+  }
+  // contadores das figurinhas (cada upload incrementa)
+  const _figCounters = { cafe:'cnt-cafe', filme:'cnt-filme', passeio:'cnt-passeio', silencio:'cnt-silencio' };
+  if(_db){
+    _db.collection('counters').doc('figurinhas').onSnapshot(s=>{
+      const v = (s.data()) || {};
+      Object.keys(_figCounters).forEach(k=>{
+        const el = document.getElementById(_figCounters[k]);
+        if(el) el.textContent = v[k] || 0;
+      });
+    }, err=>console.warn('fig counters err', err));
+  }
+  // click → file picker
+  const _figInput = document.getElementById('figFileInput');
+  let _figActiveZone = null;
+  document.querySelectorAll('.slot.upload-zone').forEach(z=>{
+    z.addEventListener('click', ()=>{ _figActiveZone = z; _figInput.value = ''; _figInput.click(); });
+  });
+  _figInput.addEventListener('change', ()=>{
+    const f = _figInput.files && _figInput.files[0];
+    if(!f || !_figActiveZone) return;
+    const uid = _figActiveZone.dataset.uid;
+    const reader = new FileReader();
+    reader.onload = ev=>{
+      _resizeImage(ev.target.result, 900, out=>{
+        _applyPhoto(uid, out);
+        const cache = _loadPhotos(); cache[uid] = out; _savePhotos(cache);
+        if(navigator.vibrate) navigator.vibrate(20);
+        if(_db){
+          _db.collection('photos').doc(uid).set({ img: out, ts: Date.now(), by: _CLIENT })
+            .then(()=>{
+              // incrementa contador correspondente
+              const key = uid.replace('cap2_','');
+              _db.collection('counters').doc('figurinhas').set({ [key]: firebase.firestore.FieldValue.increment(1) }, { merge: true }).catch(()=>{});
+              flash('Foto compartilhada ✓');
+            })
+            .catch(err=>flash('Salvou aqui, falhou online'));
+        }
+      });
+    };
+    reader.readAsDataURL(f);
+    _figActiveZone = null;
+  });
+  function _resizeImage(dataURL, maxDim, cb){
+    const img = new Image();
+    img.onload = ()=>{
+      let w = img.width, h = img.height;
+      if(Math.max(w,h) > maxDim){ const s = maxDim/Math.max(w,h); w = Math.round(w*s); h = Math.round(h*s); }
+      try{
+        const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+        cv.getContext('2d').drawImage(img,0,0,w,h);
+        cb(cv.toDataURL('image/jpeg',0.85));
+      }catch(e){ cb(dataURL); }
+    };
+    img.onerror = ()=> cb(dataURL);
+    img.src = dataURL;
+  }
+
+  /* ── CONSTELAÇÃO DE LUGARES ── */
+  const mapEl = document.getElementById('placesMap');
+  const emptyEl = document.getElementById('placesEmpty');
+  let _places = [];
+  function _hashPos(s){
+    let h = 0; for(let i=0;i<s.length;i++) h = (h*31 + s.charCodeAt(i))|0;
+    const x = (Math.abs(h)%80) + 10;       // 10–90 %
+    const y = (Math.abs(h>>3)%70) + 15;    // 15–85 %
+    return { x, y };
+  }
+  function paintPlaces(){
+    mapEl.querySelectorAll('.pstar').forEach(n=>n.remove());
+    if(!_places.length){ emptyEl.style.display = 'block'; return; }
+    emptyEl.style.display = 'none';
+    _places.forEach(p=>{
+      const pos = _hashPos(p.id || p.name);
+      const star = document.createElement('div');
+      star.className = 'pstar';
+      star.style.left = pos.x + '%'; star.style.top = pos.y + '%';
+      star.innerHTML = `<span class="pemoji">${p.emoji||'✦'}</span><span class="pdot"></span><span class="pname">${escapeHtml(p.name)}</span>`;
+      mapEl.appendChild(star);
+    });
+  }
+  function escapeHtml(s){ return (s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+  function openAddPlace(){ document.getElementById('addPlaceModal').classList.add('on'); document.getElementById('placeName').focus(); }
+  function closeAddPlace(){ document.getElementById('addPlaceModal').classList.remove('on'); }
+  function savePlace(){
+    const em = (document.getElementById('placeEmoji').value || '✦').slice(0,2);
+    const nm = (document.getElementById('placeName').value || '').trim();
+    if(!nm){ flash('Dá um nome pro lugar ✦'); return; }
+    const id = 'p_' + Date.now().toString(36) + Math.random().toString(36).slice(2,5);
+    if(_db){
+      _db.collection('places').doc(id).set({ id, emoji: em, name: nm, by: _CLIENT, ts: Date.now() })
+        .then(()=>{ flash('Estrela acesa ✦'); closeAddPlace(); document.getElementById('placeName').value=''; })
+        .catch(err=>flash('Falhou ao salvar lugar'));
+    } else {
+      _places.unshift({ id, emoji: em, name: nm });
+      paintPlaces(); closeAddPlace();
+    }
+  }
+  window.openAddPlace = openAddPlace;
+  window.closeAddPlace = closeAddPlace;
+  window.savePlace = savePlace;
+  if(_db){
+    _db.collection('places').orderBy('ts','asc').onSnapshot(snap=>{
+      _places = snap.docs.map(d=>d.data());
+      paintPlaces();
+    }, err=>console.warn('places err', err));
+  } else {
+    paintPlaces();
+  }
+  document.getElementById('addPlaceModal').addEventListener('click', e=>{
+    if(e.target.id === 'addPlaceModal') closeAddPlace();
   });
 
-  /* ── REVEAL DAS FIGURINHAS ── */
+  /* ── PERFIL ── */
+  const profEmojiPool = ['🌸','🌿','💛','✨','🌙','☕','🦋','🪷','🌟','💫'];
+  function cyclePickEmoji(elId, baseKey){
+    const el = document.getElementById(elId);
+    let idx = parseInt(localStorage.getItem(baseKey)||'0',10);
+    el.addEventListener('click', ()=>{ idx = (idx+1) % profEmojiPool.length; el.textContent = profEmojiPool[idx]; localStorage.setItem(baseKey, String(idx)); });
+    el.textContent = profEmojiPool[idx % profEmojiPool.length];
+  }
+  cyclePickEmoji('meEmoji','jg-prof-me-emoji-idx');
+  // restaura input local
+  try{
+    const me = JSON.parse(localStorage.getItem('jg-profile-me')||'null');
+    if(me){
+      if(me.name) document.getElementById('meName').value = me.name;
+      if(me.lang) document.getElementById('meLang').value = me.lang;
+      if(me.emoji) document.getElementById('meEmoji').textContent = me.emoji;
+    }
+  }catch(e){}
+  function saveProfile(){
+    const payload = {
+      name: document.getElementById('meName').value.trim(),
+      lang: document.getElementById('meLang').value,
+      emoji: document.getElementById('meEmoji').textContent,
+      by: _CLIENT, ts: Date.now()
+    };
+    try{ localStorage.setItem('jg-profile-me', JSON.stringify(payload)); }catch(e){}
+    if(_db){
+      _db.collection('profiles').doc(_CLIENT).set(payload)
+        .then(()=> flash('Perfil salvo ✦'))
+        .catch(err=> flash('Salvou aqui, falhou online'));
+    } else {
+      flash('Salvo no aparelho ✦');
+    }
+  }
+  window.saveProfile = saveProfile;
+  if(_db){
+    _db.collection('profiles').onSnapshot(snap=>{
+      snap.forEach(doc=>{
+        const d = doc.data();
+        if(!d) return;
+        if(d.by && d.by !== _CLIENT){
+          document.getElementById('otherEmoji').textContent = d.emoji || '🌿';
+          const nm = document.getElementById('otherName');
+          nm.textContent = d.name || '— sem nome —';
+          nm.classList.toggle('empty', !d.name);
+          const lg = document.getElementById('otherLang');
+          const langLabel = { palavras:'Palavras de afirmação', tempo:'Tempo de qualidade', toque:'Toque físico', presentes:'Presentes', atos:'Atos de serviço' }[d.lang];
+          lg.textContent = langLabel ? ('linguagem: '+langLabel) : '';
+          lg.classList.toggle('empty', !langLabel);
+        }
+      });
+    }, err=>console.warn('profiles err', err));
+  }
+
+  /* ── QUIZ DOS DOIS ── */
+  const QUIZ = [
+    { id:'q1', q:'Como a gente prefere se ver?',          opts:['filme em casa','passeio','jantar','silêncio juntas'] },
+    { id:'q2', q:'O que faz seu dia melhor?',             opts:['um café','um abraço','uma mensagem','uma surpresa'] },
+    { id:'q3', q:'Sua linguagem do amor de hoje?',        opts:['palavras','tempo','toque','presentes','atos'] },
+    { id:'q4', q:'Um emoji pra hoje?',                    opts:['🌸','💛','🌿','🌙','✨'] },
+    { id:'q5', q:'Pra onde a gente foge juntas?',         opts:['praia','montanha','cidade','casa'] }
+  ];
+  const quizList = document.getElementById('quizList');
+  const quizState = { me:{}, other:{} };
+  function renderQuiz(){
+    quizList.innerHTML = '';
+    QUIZ.forEach(q=>{
+      const qDiv = document.createElement('div');
+      qDiv.className = 'quiz-question';
+      const opts = q.opts.map(o=>{
+        const mine = quizState.me[q.id] === o;
+        const theirs = quizState.other[q.id] === o;
+        return `<button type="button" class="quiz-opt${mine?' mine':''}${theirs?' theirs':''}" data-q="${q.id}" data-o="${escapeHtml(o)}">${escapeHtml(o)}${theirs?'<span class="badge">ela</span>':''}</button>`;
+      }).join('');
+      qDiv.innerHTML = `<div class="quiz-q">${escapeHtml(q.q)}</div><div class="quiz-opts">${opts}</div>`;
+      quizList.appendChild(qDiv);
+    });
+    quizList.querySelectorAll('.quiz-opt').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        const qid = b.dataset.q, opt = b.dataset.o;
+        quizState.me[qid] = opt;
+        try{ localStorage.setItem('jg-quiz-me', JSON.stringify(quizState.me)); }catch(e){}
+        if(_db) _db.collection('quiz').doc(_CLIENT).set({ answers: quizState.me, by: _CLIENT, ts: Date.now() }, { merge: true }).catch(()=>{});
+        renderQuiz(); updateQuizSummary();
+      });
+    });
+  }
+  function updateQuizSummary(){
+    const mineCnt = Object.keys(quizState.me).length;
+    const otherCnt = Object.keys(quizState.other).length;
+    if(mineCnt === 0 && otherCnt === 0){
+      document.getElementById('quizSummary').textContent = 'marque pelo menos uma resposta pra começar';
+      return;
+    }
+    let match = 0, both = 0;
+    QUIZ.forEach(q=>{
+      if(quizState.me[q.id] && quizState.other[q.id]){
+        both++;
+        if(quizState.me[q.id] === quizState.other[q.id]) match++;
+      }
+    });
+    if(both === 0){
+      document.getElementById('quizSummary').textContent = mineCnt + ' resposta(s) sua(s) · esperando ela...';
+    } else {
+      document.getElementById('quizSummary').textContent = `${match} de ${both} respostas em comum ✦`;
+    }
+  }
+  // restaura quiz local
+  try{ const m = JSON.parse(localStorage.getItem('jg-quiz-me')||'{}'); Object.assign(quizState.me, m); }catch(e){}
+  renderQuiz(); updateQuizSummary();
+  if(_db){
+    _db.collection('quiz').onSnapshot(snap=>{
+      snap.forEach(doc=>{
+        const d = doc.data();
+        if(!d) return;
+        if(d.by && d.by !== _CLIENT && d.answers) Object.assign(quizState.other, d.answers);
+      });
+      renderQuiz(); updateQuizSummary();
+    }, err=>console.warn('quiz err', err));
+  }
+
+  /* ── REVEAL DAS SEÇÕES ── */
   if('IntersectionObserver' in window && !reduce){
     const io = new IntersectionObserver((entries)=>{
       entries.forEach((e,i)=>{

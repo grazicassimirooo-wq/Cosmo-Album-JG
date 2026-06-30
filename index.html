@@ -735,14 +735,14 @@ img{max-width:100%}
       </nav>
       <p class="jg-howto"><b>Modo misto</b><br>toque numa linha para abrir um capítulo, ou comece pelo primeiro e folheie em sequência</p>
       <section class="jg-cross jg-reveal" id="jg-cross">
-        <button class="jg-btn" onclick="alert('Perfil — em construção')">
+        <a class="jg-btn" href="capitulo5-tempo.html#s-perfil">
           <span class="jg-lab">a quem ler</span><span class="jg-nm">Perfil</span>
           <span class="jg-dk">a linguagem principal dela</span>
-        </button>
-        <button class="jg-btn primary" onclick="alert('Mandar um doce — em construção')">
-          <span class="jg-lab">surpresa</span><span class="jg-nm">Mandar um doce</span>
-          <span class="jg-dk">um carinho-relâmpago no aparelho dela</span>
-        </button>
+        </a>
+        <a class="jg-btn primary" href="capitulo5-tempo.html#s-quiz">
+          <span class="jg-lab">surpresa</span><span class="jg-nm">Quiz dos dois</span>
+          <span class="jg-dk">descobre o que a outra escolheu</span>
+        </a>
       </section>
       <footer class="jg-foot">
         <div class="jg-folio">JG · sumário</div>
@@ -860,7 +860,7 @@ img{max-width:100%}
       <div class="jg-chapnav">
         <button class="jg-nb" disabled>← anterior</button>
         <button class="jg-nb-mid" onclick="goSumario()">☰ sumário</button>
-        <button class="jg-nb next" onclick="alert('Capítulo II em construção')">próximo →</button>
+        <a class="jg-nb next" href="capitulo5-tempo.html">próximo →</a>
       </div>
     </div>
   </div>
@@ -979,7 +979,18 @@ function goPack(){
   if(_jgPackOpenedToday()){ _jgShowRevealInstant(); return; }
   _hideAllScreens(); document.getElementById('s-pack').classList.add('active'); window.scrollTo({top:0,behavior:'instant'});
 }
-document.addEventListener('DOMContentLoaded',()=>{ if(_jgPackOpenedToday()) _jgShowRevealInstant(); });
+function _jgHashRoute(){
+  const h = (location.hash||'').replace(/^#/,'');
+  if(h === 'sumario'){ goSumario(); return true; }
+  const m = h.match(/^cap(\d+)$/);
+  if(m){ goCap(parseInt(m[1],10)); return true; }
+  return false;
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  if(_jgHashRoute()) return;
+  if(_jgPackOpenedToday()) _jgShowRevealInstant();
+});
+window.addEventListener('hashchange', _jgHashRoute);
 
 /* marca de leitura */
 const _JG_KEY = 'jg-read-chapters';
