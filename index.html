@@ -779,9 +779,9 @@ img{max-width:100%}
       </nav>
       <p class="jg-howto"><b>Modo misto</b><br>toque numa linha para abrir um capítulo, ou comece pelo primeiro e folheie em sequência</p>
       <section class="jg-cross jg-reveal" id="jg-cross">
-        <a class="jg-btn" href="capitulo5-tempo.html#s-perfil">
-          <span class="jg-lab">a quem ler</span><span class="jg-nm">Perfil</span>
-          <span class="jg-dk">a linguagem principal dela</span>
+        <a class="jg-btn" href="#" onclick="goMeuPerfil();return false">
+          <span class="jg-lab">a quem ler</span><span class="jg-nm">Perfil Cósmico</span>
+          <span class="jg-dk">signo, lua e ascendente</span>
         </a>
         <a class="jg-btn primary" href="quiz-linguagem.html">
           <span class="jg-lab">o quiz das duas</span><span class="jg-nm">Linguagem do amor</span>
@@ -1041,13 +1041,15 @@ function goMeuPerfil(){
 function _jgHashRoute(){
   const h = (location.hash||'').replace(/^#/,'');
   if(h === 'sumario'){ goSumario(); return true; }
+  if(h === 'perfil'){ goMeuPerfil(); return true; }
   const m = h.match(/^cap(\d+)$/);
   if(m){ goCap(parseInt(m[1],10)); return true; }
   return false;
 }
 document.addEventListener('DOMContentLoaded',()=>{
   if(_jgHashRoute()) return;
-  if(_jgPackOpenedToday()) _jgShowRevealInstant();
+  // temporário: abre direto no Perfil Cósmico pra conferência dos dados
+  goMeuPerfil();
 });
 window.addEventListener('hashchange', _jgHashRoute);
 
@@ -1397,6 +1399,7 @@ AL.forEach((pg,i)=>{
     <div class="pt"><div class="pt-n">${pg.num}</div><h2 class="pt-h">${pg.title}</h2><div class="pt-s">${pg.sub}</div><div class="pt-d">${pg.deco}</div></div>
     <div class="ed">${pg.html}</div>
     ${PSYCH_FOOTER}
+    <div style="text-align:center;margin:4px 0 10px"><button class="nb" style="font-size:.6rem;padding:6px 14px" onclick="goSumario()">☰ sumário</button></div>
     <div class="nav"><button class="nb" onclick="goP(${i-1})">← Voltar</button><div class="dots" id="d-${i}"></div>
     <button class="nb go" onclick="goP(${i+1})">Próxima →</button></div></div>`;
 

@@ -806,7 +806,7 @@ body{
         <textarea id="letter" class="letter-body" rows="1"
           placeholder="Cada estrela do céu sabe o teu nome. Hoje escrevo do silêncio do universo só para te dizer que…"></textarea>
 
-        <span class="letter-sign">com amor, G ✦</span>
+        <span class="letter-sign" id="letter-sign">com amor, G ✦</span>
 
         <div class="letter-rule">❦</div>
 
@@ -948,6 +948,8 @@ body{
     if(!c){ c = 'c' + Math.random().toString(36).slice(2) + Date.now().toString(36); try{ localStorage.setItem('cosmoClientId', c); }catch(e){} }
     return c;
   })();
+  const _THEIR_NAME = (_CLIENT === 'grazi') ? 'Jussara' : (_CLIENT === 'jussara') ? 'Grazi' : 'meu amor';
+  const _MY_INITIAL = (_CLIENT === 'grazi') ? 'G' : (_CLIENT === 'jussara') ? 'J' : '♡';
 
   /* ---- auto-grow do textarea (cresce com o conteúdo) ---- */
   function autoGrow(){
@@ -960,6 +962,9 @@ body{
     const d = JSON.parse(localStorage.getItem(DRAFT) || 'null');
     if(d){ if(d.dest) $('dest').value = d.dest; if(d.body) ta.value = d.body; }
   }catch(e){}
+  $('dest').value = _THEIR_NAME;
+  const _signEl = document.getElementById('letter-sign');
+  if(_signEl) _signEl.textContent = 'com amor, ' + _MY_INITIAL + ' ✦';
   autoGrow();
 
   /* ---- auto-save do rascunho ---- */
@@ -1118,7 +1123,7 @@ body{
         ${recebida ? '<div class="ci-from"><span class="dot"></span>Recebida</div>' : '<button class="ci-del" onclick="apagarCarta(' + i + ')" aria-label="Apagar">✕</button><div class="ci-from"><span class="dot"></span>Enviada por você</div>'}
         <div class="ci-dest">Querida ${escapeHtml(c.dest||'meu amor')},</div>
         <div class="ci-body">${escapeHtml(c.body)}</div>
-        <div class="ci-date">${fmtData(c.ts)}${recebida?'':' · com amor, G'}</div>
+        <div class="ci-date">${fmtData(c.ts)}${recebida?'':' · com amor, ' + _MY_INITIAL}</div>
       </div>`).join('');
   }
   function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
