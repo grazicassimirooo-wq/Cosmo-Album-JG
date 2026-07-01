@@ -451,9 +451,53 @@ img{max-width:100%}
 .vid-rec-btn.danger{background:linear-gradient(180deg,#E36870,#7A2530);color:#fff}
 .vid-rec-btn.ghost{background:transparent;border:1.5px solid rgba(232,184,109,.45);color:#E8B86D}
 .vid-rec-status{margin-top:10px;text-align:center;font-size:.7rem;color:rgba(240,223,192,.6);font-style:italic;min-height:1.2em}
+
+/* ══ COSMO LOGIN GATE — "quem é você?" ══ */
+.cosmo-login-gate{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:24px;
+  background:radial-gradient(ellipse at 50% 20%,rgba(124,91,173,.15),transparent 55%),linear-gradient(170deg,#100E28,#181440,#12102A);}
+.cosmo-login-gate.show{display:flex}
+.clg-card{max-width:340px;width:100%;text-align:center;font-family:'Nunito',sans-serif}
+.clg-deco{font-size:1rem;color:#C4956A;opacity:.6;letter-spacing:4px;margin-bottom:10px}
+.clg-card h2{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;color:#F0DFC0;margin-bottom:6px}
+.clg-card p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:rgba(240,223,192,.6);margin-bottom:26px}
+.clg-options{display:flex;flex-direction:column;gap:14px}
+.clg-opt{display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;
+  background:rgba(240,223,192,.04);border:1px solid rgba(240,223,192,.12);
+  color:#F0DFC0;font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;letter-spacing:.5px;
+  cursor:pointer;transition:.2s;text-align:left}
+.clg-opt:active{background:rgba(240,223,192,.1);transform:scale(.98)}
+.clg-ico{font-size:1.6rem}
 </style>
 </head>
 <body>
+<div class="cosmo-login-gate" id="cosmoLoginGate" aria-hidden="true">
+  <div class="clg-card">
+    <div class="clg-deco">✦ ✧ ✦</div>
+    <h2>Quem é você?</h2>
+    <p>Escolha seu perfil pra personalizar o álbum</p>
+    <div class="clg-options">
+      <button type="button" class="clg-opt" data-user="jussara"><span class="clg-ico">🌼</span><span>Jussara</span></button>
+      <button type="button" class="clg-opt" data-user="grazi"><span class="clg-ico">🌻</span><span>Grazi</span></button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var u=null; try{ u = localStorage.getItem('cosmoUser'); }catch(e){}
+  if(u) return;
+  document.addEventListener('DOMContentLoaded', function(){
+    var gate = document.getElementById('cosmoLoginGate');
+    if(!gate) return;
+    gate.classList.add('show');
+    gate.querySelectorAll('.clg-opt').forEach(function(b){
+      b.addEventListener('click', function(){
+        try{ localStorage.setItem('cosmoUser', b.dataset.user); }catch(e){}
+        location.reload();
+      });
+    });
+  });
+})();
+</script>
 
 <!-- ═══ SCREEN 0: PACK ═══ -->
 <div class="screen pack-screen active" id="s-pack">
@@ -743,6 +787,10 @@ img{max-width:100%}
           <span class="jg-lab">o quiz das duas</span><span class="jg-nm">Linguagem do amor</span>
           <span class="jg-dk">12 perguntas · descobre como cada uma ama</span>
         </a>
+        <a class="jg-btn" href="#" onclick="goMeuPerfil();return false" style="grid-column:1/-1">
+          <span class="jg-lab">seu signo, sua lua, seu ascendente</span><span class="jg-nm">✦ Ver meu Perfil Cósmico</span>
+          <span class="jg-dk">a página é diferente pra cada uma — a sua abre sozinha aqui</span>
+        </a>
       </section>
       <footer class="jg-foot">
         <div class="jg-folio">JG · sumário</div>
@@ -979,6 +1027,17 @@ function goPack(){
   if(_jgPackOpenedToday()){ _jgShowRevealInstant(); return; }
   _hideAllScreens(); document.getElementById('s-pack').classList.add('active'); window.scrollTo({top:0,behavior:'instant'});
 }
+function goMeuPerfil(){
+  let u = null; try{ u = localStorage.getItem('cosmoUser'); }catch(e){}
+  const nameMap = { jussara:'Jussara', grazi:'Grazi' };
+  const wanted = nameMap[u];
+  let idx = AL.findIndex(p=>p.type==='editorial' && p.title===wanted);
+  if(idx < 0) idx = AL.findIndex(p=>p.type==='editorial');
+  _hideAllScreens();
+  document.getElementById('s-book').classList.add('active');
+  goP(idx);
+  window.scrollTo({top:0,behavior:'instant'});
+}
 function _jgHashRoute(){
   const h = (location.hash||'').replace(/^#/,'');
   if(h === 'sumario'){ goSumario(); return true; }
@@ -1056,7 +1115,18 @@ const AL=[
 
   // ═══ PAGE II — JUSSARA: EDIÇÃO LIMITADA (editorial) ═══
   {type:'editorial',num:'✦ Edição Limitada ✦',title:'Jussara',sub:'Perfil Cósmico Exclusivo',deco:'♑ ♐ ♊',cn:'🌼',vine:'🌼✦🌸✦🌼',
-   bg:'radial-gradient(ellipse at 50% 20%,rgba(139,107,149,.1),transparent 50%),radial-gradient(ellipse at 30% 80%,rgba(74,103,65,.06),transparent 45%),linear-gradient(170deg,#121030,#181540,#141035,#0E0C28)'},
+   bg:'radial-gradient(ellipse at 50% 20%,rgba(139,107,149,.1),transparent 50%),radial-gradient(ellipse at 30% 80%,rgba(74,103,65,.06),transparent 45%),linear-gradient(170deg,#121030,#181540,#141035,#0E0C28)',
+   html:null},
+
+  // ═══ PAGE II-B — GRAZI: EDIÇÃO LIMITADA (editorial) ═══
+  {type:'editorial',num:'✦ Edição Limitada ✦',title:'Grazi',sub:'Perfil Cósmico Exclusivo',deco:'♐ ♏ ♈',cn:'🌻',vine:'🌻✦🔥✦🌻',
+   bg:'radial-gradient(ellipse at 50% 20%,rgba(212,115,110,.1),transparent 50%),radial-gradient(ellipse at 30% 80%,rgba(196,149,106,.07),transparent 45%),linear-gradient(170deg,#1E1420,#241530,#1A1428,#120E22)',
+   html:null},
+
+  // ═══ PAGE II-C — CONSTELAÇÃO A DOIS (compatibilidade) ═══
+  {type:'editorial',num:'✦ Duas Estrelas ✦',title:'Constelação a Dois',sub:'Terra e Fogo — onde vocês se cruzam',deco:'♑ ✦ ♐',cn:'✨',vine:'✨♑✦♐✨',
+   bg:'radial-gradient(ellipse at 50% 20%,rgba(124,91,173,.1),transparent 50%),radial-gradient(ellipse at 30% 80%,rgba(74,103,65,.07),transparent 45%),linear-gradient(170deg,#121228,#181432,#141030,#0E0C20)',
+   html:null},
 
   {type:'sticker',num:'Página III',title:'Descobrindo Você',sub:'Cada detalhe que me encanta',deco:'🌸 ✿ ❀ ✿ 🌸',cn:'🌺',vine:'🌺🌸🌷🌺🌸',sc:'sc-bl',sb:'sb-bl',si:'🌸',stamp:'💜 Capítulo completo — você é incrível',bg:'radial-gradient(ellipse at 60% 30%,rgba(139,107,149,.12),transparent 50%),radial-gradient(ellipse at 30% 70%,rgba(212,115,110,.08),transparent 45%),linear-gradient(170deg,#161030,#1C1440,#181035,#121028)',
    s:[{e:'😍',t:'Esse Sorriso',d:'Ilumina qualquer lugar',ph:1},{e:'🧠',t:'Sua Inteligência',d:'Me impressiona todo dia',ph:0},{e:'💪',t:'Sua Força',d:'Guerreira da vida real',ph:1},{e:'🤗',t:'Seu Carinho',d:'Me faz sentir em casa',ph:0}]},
@@ -1179,7 +1249,123 @@ const PSYCH_FOOTER = `<div class="psych-footer">
   <div class="psych-icons">🌌 🌼 🐾</div>
 </div>`;
 
+/* ═══ GRAZI EDITORIAL HTML ═══ */
+const GRAZI_HTML = `
+<div class="ed-hero">
+  <div class="photo-slot upload-zone" data-uid="g0" style="height:220px;max-width:280px;margin:0 auto">${CARD_FRAME}<span class="ps-icon">📸</span><span class="uz-label">Espaço para foto da Grazi</span><span class="uz-hint">toque pra adicionar foto</span></div>
+  <div class="ed-hero-cap">nascida sob o fogo duplo de Sagitário ✦ 06/12/1988, 5h55</div>
+</div>
+
+<div class="ed-quote">
+  <p>Tem gente que mede as palavras antes de falar. E tem gente que chega dizendo a verdade inteira, de uma vez, porque acha que esconder não vale a pena.</p>
+</div>
+
+<div class="sign-card" data-glyph="♐">
+  <span class="sign-symbol">♐</span>
+  <div class="sign-name" style="color:var(--coral-lt)">Sol e Ascendente em Sagitário</div>
+  <div class="sign-role">A CHAMA QUE NÃO PARA DE EXPANDIR</div>
+  <div class="sign-text">Grazi fala o que pensa, sem rodeio — sinceridade é o jeito dela de cuidar. Vive com sede de horizonte: viagem marcada, ideia nova, risada alta. Otimista quase por teimosia, prefere rir de um problema a se afundar nele. É desse jeito, direto e caloroso, que ela chega antes mesmo de entrar na sala.</div>
+  <div class="stat">
+    <div class="stat-row"><span class="stat-label">⭐ Sinceridade</span><div class="stat-track"><div class="stat-fill" style="width:100%;background:linear-gradient(90deg,var(--coral),var(--gold2))"></div></div><span class="stat-val">100</span></div>
+    <div class="stat-row"><span class="stat-label">⭐ Otimismo</span><div class="stat-track"><div class="stat-fill" style="width:100%;background:linear-gradient(90deg,var(--violet),var(--coral-lt))"></div></div><span class="stat-val">100</span></div>
+    <div class="stat-row"><span class="stat-label">⭐ Espontaneidade</span><div class="stat-track"><div class="stat-fill" style="width:95%;background:linear-gradient(90deg,var(--indigo),var(--mauve))"></div></div><span class="stat-val">95</span></div>
+  </div>
+  <div class="photo-slot upload-zone" data-uid="g1">${CARD_FRAME}<span class="ps-icon">📸</span><span class="uz-label">Espaço para foto de viagem ou aventura</span><span class="uz-hint">toque pra adicionar foto</span></div>
+</div>
+
+<div class="sign-card" data-glyph="♏">
+  <span class="sign-symbol">♏</span>
+  <div class="sign-name" style="color:var(--mauve)">Lua em Escorpião</div>
+  <div class="sign-role">O CORAÇÃO QUE SENTE FUNDO</div>
+  <div class="sign-text">Por trás da leveza sagitariana mora um coração que não faz nada pela metade. Grazi sente intensamente, protege quem ama com unha e dente e não tem paciência pra relação de superfície — quer verdade, profundidade e lealdade sem letras miúdas.</div>
+  <div class="tags">
+    <span class="tag" style="border-color:rgba(139,107,149,.2);color:var(--mauve)">🦂 Intensidade</span>
+    <span class="tag" style="border-color:rgba(232,184,109,.2);color:var(--gold2)">🦂 Lealdade Absoluta</span>
+    <span class="tag" style="border-color:rgba(212,115,110,.2);color:var(--coral-lt)">🦂 Instinto Certeiro</span>
+  </div>
+  <div class="photo-slot upload-zone" data-uid="g2">${CARD_FRAME}<span class="ps-icon">📸</span><span class="uz-label">Espaço para selfie ou foto sorrindo</span><span class="uz-hint">toque pra adicionar foto</span></div>
+</div>
+
+<div class="sign-card" data-glyph="♈">
+  <span class="sign-symbol">♈</span>
+  <div class="sign-name" style="color:var(--gold2)">Vênus em Escorpião · Marte em Áries</div>
+  <div class="sign-role">AMA FUNDO, AGE NA HORA</div>
+  <div class="sign-text">No amor, é tudo ou nada — paixão de verdade, sem joguinho. Na ação, não espera: vê o que quer e já vai atrás, de peito aberto. Mercúrio também em Sagitário deixa tudo isso ainda mais direto: ela diz o que sente assim que sente.</div>
+  <div class="tags">
+    <span class="tag" style="border-color:rgba(212,115,110,.2);color:var(--coral-lt)">🔥 Paixão Sem Meio-Termo</span>
+    <span class="tag" style="border-color:rgba(74,103,65,.2);color:var(--green)">🔥 Iniciativa</span>
+    <span class="tag" style="border-color:rgba(232,184,109,.2);color:var(--gold2)">🔥 Coragem de Ir Atrás</span>
+  </div>
+  <div class="photo-slot upload-zone" data-uid="g3">${CARD_FRAME}<span class="ps-icon">📸</span><span class="uz-label">Espaço para foto espontânea</span><span class="uz-hint">toque pra adicionar foto</span></div>
+</div>
+
+<div class="sign-card" data-glyph="🐶">
+  <span class="sign-symbol">🐾</span>
+  <div class="sign-name" style="color:var(--green)">A Família de Quatro Patas</div>
+  <div class="sign-role">PARA CONHECER ALGUÉM DE VERDADE, OBSERVE COMO ELA AMA SEUS BICHINHOS</div>
+  <div class="pets-grid">
+    <div class="pet-card">
+      <span class="pet-emoji">🐾</span>
+      <div class="pet-name-slot">Rico — o sagitariano da casa</div>
+      <div class="pet-photo upload-zone" data-uid="pet2">${CARD_FRAME}<span class="pp-icon">📸</span><span class="uz-label">foto do Rico</span><span class="uz-hint">toque</span></div>
+      <div class="pet-curiosity">Curiosidades: um sagitariano cuidando de outro — dose dupla de energia e vontade de aventura.</div>
+    </div>
+  </div>
+</div>
+
+<div class="cosmic-profile">
+  <h3>🔥 Perfil Cósmico da Grazi</h3>
+  <div class="cosmic-row"><span class="cr-icon">🌻</span><span class="cr-label">FLOR</span><span class="cr-value">Girassol</span></div>
+  <div class="cosmic-row"><span class="cr-icon">🔥</span><span class="cr-label">ELEMENTO</span><span class="cr-value">Fogo</span></div>
+  <div class="cosmic-row"><span class="cr-icon">⭐</span><span class="cr-label">PLANETA</span><span class="cr-value">Júpiter</span></div>
+  <div class="cosmic-row"><span class="cr-icon">☮️</span><span class="cr-label">ENERGIA</span><span class="cr-value">Expansiva e Sincera</span></div>
+  <div class="cosmic-row"><span class="cr-icon">🌿</span><span class="cr-label">HABITAT</span><span class="cr-value">Entre viagens, risada alta, conversa sem filtro e gente que aceita levar a vida a sério só até certo ponto</span></div>
+  <div class="rarity-badge">💛 Nível de Raridade: ÚNICA 💛</div>
+</div>`;
+
+/* ═══ CONSTELAÇÃO A DOIS — COMPATIBILIDADE HTML ═══ */
+const COMPAT_HTML = `
+<div class="ed-quote">
+  <p>Terra e Fogo não competem — uma dá base, a outra dá faísca. Juntas, sabem exatamente onde uma completa o que falta na outra.</p>
+</div>
+
+<div class="sign-card" data-glyph="♑♐">
+  <span class="sign-symbol">♑ + ♐</span>
+  <div class="sign-name" style="color:var(--gold2)">Capricórnio e Sagitário lado a lado</div>
+  <div class="sign-role">CONSTRUÇÃO CALMA + IMPULSO PRA VOAR</div>
+  <div class="sign-text">Jussara constrói devagar e com os pés no chão; Grazi chega com vontade de expandir tudo agora. Uma segura, a outra empurra pra frente — e é exatamente essa diferença que faz o par funcionar: nenhuma das duas sozinha chegaria tão longe.</div>
+</div>
+
+<div class="sign-card" data-glyph="✦">
+  <span class="sign-symbol">✦</span>
+  <div class="sign-name" style="color:var(--coral-lt)">O que cada uma traz pra outra</div>
+  <div class="sign-role">TROCA DE FORÇAS</div>
+  <div class="sign-text">Jussara ensina paciência, constância e a acalmar antes de agir. Grazi ensina a abrir o jogo, arriscar e comemorar as coisas pequenas com festa grande. Quando as duas linguagens se encontram no meio do caminho, ninguém fica sozinho segurando o peso de tudo.</div>
+  <div class="tags">
+    <span class="tag" style="border-color:rgba(74,103,65,.2);color:var(--green)">🗻 Base e Constância</span>
+    <span class="tag" style="border-color:rgba(212,115,110,.2);color:var(--coral-lt)">🔥 Coragem e Leveza</span>
+  </div>
+</div>
+
+<div class="sign-card" data-glyph="⚖">
+  <span class="sign-symbol">⚖</span>
+  <div class="sign-name" style="color:var(--mauve)">Onde dá pra melhorar, juntas</div>
+  <div class="sign-role">CRESCIMENTO A DOIS</div>
+  <div class="sign-text">Jussara pode treinar falar o que sente antes de guardar demais pra si — Grazi já mostra que dá pra ser direta sem machucar. Grazi pode treinar respirar antes de agir e dar tempo pra Jussara processar em silêncio — sem achar que silêncio é distância. Nenhuma das duas precisa mudar quem é: só aprender a esperar um pouquinho mais pela outra.</div>
+</div>
+
+<div class="cosmic-profile">
+  <h3>✨ Selo da Dupla</h3>
+  <div class="cosmic-row"><span class="cr-icon">🌍</span><span class="cr-label">ELEMENTOS</span><span class="cr-value">Terra (Jussara) + Fogo (Grazi)</span></div>
+  <div class="cosmic-row"><span class="cr-icon">🤝</span><span class="cr-label">COMBINAÇÃO</span><span class="cr-value">Diferentes o suficiente pra crescer, parecidas o suficiente pra se entender</span></div>
+  <div class="rarity-badge">💜 Nível de Raridade: DUPLA ÚNICA 💜</div>
+</div>`;
+
 /* ═══ BUILD PAGES ═══ */
+AL.find(p=>p.type==='editorial' && p.title==='Jussara').html = JUSSARA_HTML;
+AL.find(p=>p.type==='editorial' && p.title==='Grazi').html = GRAZI_HTML;
+AL.find(p=>p.type==='editorial' && p.title==='Constelação a Dois').html = COMPAT_HTML;
+
 const TOTAL=AL.filter(p=>p.type==='sticker').reduce((a,p)=>a+p.s.length,0);
 let rev=0,cur=0;const done={};
 const bk=document.getElementById('book');
@@ -1209,7 +1395,7 @@ AL.forEach((pg,i)=>{
     <span class="cn tl">${pg.cn}</span><span class="cn tr">${pg.cn}</span><span class="cn bl">${pg.cn}</span><span class="cn br">${pg.cn}</span>
     <div class="vine l">${pg.vine}</div><div class="vine r">${pg.vine}</div>
     <div class="pt"><div class="pt-n">${pg.num}</div><h2 class="pt-h">${pg.title}</h2><div class="pt-s">${pg.sub}</div><div class="pt-d">${pg.deco}</div></div>
-    <div class="ed">${JUSSARA_HTML}</div>
+    <div class="ed">${pg.html}</div>
     ${PSYCH_FOOTER}
     <div class="nav"><button class="nb" onclick="goP(${i-1})">← Voltar</button><div class="dots" id="d-${i}"></div>
     <button class="nb go" onclick="goP(${i+1})">Próxima →</button></div></div>`;
@@ -1407,6 +1593,9 @@ if(_FB_ON){
 // ─── Notificações de foto nova ───
 // id único deste aparelho (para não notificar você das suas próprias fotos)
 const _CLIENT = (function(){
+  let u = null;
+  try{ u = localStorage.getItem('cosmoUser'); }catch(e){}
+  if(u) return u;
   let c = null;
   try{ c = localStorage.getItem('cosmoClientId'); }catch(e){}
   if(!c){ c = 'c' + Math.random().toString(36).slice(2) + Date.now().toString(36); try{ localStorage.setItem('cosmoClientId', c); }catch(e){} }
