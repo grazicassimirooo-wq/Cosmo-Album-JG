@@ -1042,20 +1042,22 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
   window.saveProfile = saveProfile;
   if(_db){
     _db.collection('profiles').onSnapshot(snap=>{
+      let latest = null;
       snap.forEach(doc=>{
         const d = doc.data();
-        if(!d) return;
-        if(d.by && d.by !== _CLIENT){
-          document.getElementById('otherEmoji').textContent = d.emoji || '🌿';
-          const nm = document.getElementById('otherName');
-          nm.textContent = d.name || '— sem nome —';
-          nm.classList.toggle('empty', !d.name);
-          const lg = document.getElementById('otherLang');
-          const langLabel = { palavras:'Palavras de afirmação', tempo:'Tempo de qualidade', toque:'Toque físico', presentes:'Presentes', atos:'Atos de serviço' }[d.lang];
-          lg.textContent = langLabel ? ('linguagem: '+langLabel) : '';
-          lg.classList.toggle('empty', !langLabel);
-        }
+        if(!d || !d.by || d.by === _CLIENT) return;
+        if(!latest || (d.ts||0) > (latest.ts||0)) latest = d;
       });
+      if(latest){
+        document.getElementById('otherEmoji').textContent = latest.emoji || '🌿';
+        const nm = document.getElementById('otherName');
+        nm.textContent = latest.name || '— sem nome —';
+        nm.classList.toggle('empty', !latest.name);
+        const lg = document.getElementById('otherLang');
+        const langLabel = { palavras:'Palavras de afirmação', tempo:'Tempo de qualidade', toque:'Toque físico', presentes:'Presentes', atos:'Atos de serviço' }[latest.lang];
+        lg.textContent = langLabel ? ('linguagem: '+langLabel) : '';
+        lg.classList.toggle('empty', !langLabel);
+      }
     }, err=>console.warn('profiles err', err));
   }
 
@@ -1104,12 +1106,14 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
   updateQuizSummary(_meLang, _otherLang);
   if(_db){
     _db.collection('quiz-linguagem').onSnapshot(snap=>{
+      let latestOther = null;
       snap.forEach(doc=>{
         const d = doc.data();
         if(!d || !d.winner) return;
         if(d.by === _CLIENT){ _meLang = d.winner; paintLang(document.getElementById('qLangMe'), _meLang); }
-        else { _otherLang = d.winner; paintLang(document.getElementById('qLangOther'), _otherLang); }
+        else if(!latestOther || (d.ts||0) > (latestOther.ts||0)) latestOther = d;
       });
+      if(latestOther){ _otherLang = latestOther.winner; paintLang(document.getElementById('qLangOther'), _otherLang); }
       updateQuizSummary(_meLang, _otherLang);
     }, err=>console.warn('quiz-linguagem err', err));
   }
