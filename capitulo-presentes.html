@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Presentes · Mandar um Doce · J&G</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Dancing+Script:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#12102E;--night2:#0A0820;--night3:#06041C;
+  --cream:#F0DFC0;--cream2:#E8D5B7;--cream3:#D4C4A0;
+  --rose:#E89890;--rose-lt:#F4B8B0;--rose-deep:#A24A45;
+  --gold:#C4956A;--gold2:#E8B86D;--gold3:#F4DCA8;--gold-deep:#8E6A1F;
+  --ink:#2A2540;--ink2:#3A2410;
+  --space:clamp(22px,6vw,30px);
+  --ease-out:cubic-bezier(.2,.7,.2,1);
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream);
+  -webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh;overflow-x:hidden}
+.board{max-width:468px;margin:0 auto;position:relative;z-index:1;padding-bottom:40px}
+:focus-visible{outline:2px solid var(--gold2);outline-offset:3px;border-radius:8px}
+
+/* atmosfera rosa/âmbar */
+.sky-bg{position:fixed;inset:-10% -5%;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 45% at 25% 8%,rgba(232,152,144,.18),transparent 60%),
+    radial-gradient(ellipse 50% 35% at 82% 88%,rgba(196,149,106,.14),transparent 60%),
+    linear-gradient(180deg,var(--night),var(--night2) 55%,var(--night3));will-change:transform}
+.sky-stars{position:fixed;inset:-10%;z-index:0;pointer-events:none;opacity:0;
+  background-image:
+    radial-gradient(1px 1px at 14% 16%,rgba(255,255,255,.5) 50%,transparent),
+    radial-gradient(1px 1px at 76% 22%,rgba(255,255,255,.45) 50%,transparent),
+    radial-gradient(1.2px 1.2px at 28% 64%,var(--gold3) 50%,transparent),
+    radial-gradient(1px 1px at 54% 80%,rgba(244,184,176,.5) 50%,transparent),
+    radial-gradient(1px 1px at 88% 46%,#fff 50%,transparent);
+  background-repeat:no-repeat;
+  animation:bgIn 1.4s var(--ease-out) .15s forwards}
+@keyframes bgIn{to{opacity:.7}}
+
+/* ── HEADER ── */
+.chap-head{position:relative;padding:46px var(--space) 16px}
+.chap-meta{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--rose-lt);opacity:0;animation:fadeUp .7s var(--ease-out) .1s forwards}
+.chap-meta b{color:var(--cream3);font-style:normal;font-weight:800}
+.chap-head h1{font-family:'Playfair Display',serif;font-weight:900;font-size:clamp(2.2rem,10vw,2.9rem);line-height:.95;margin:10px 0 4px;letter-spacing:-.5px}
+.chap-head h1 .w{display:inline-block;opacity:0;transform:translateY(40px);animation:wordIn .9s var(--ease-spring) forwards}
+.chap-head h1 .w:nth-child(1){animation-delay:.30s}
+.chap-head h1 .w:nth-child(2){animation-delay:.46s}
+.chap-head h1 .w:nth-child(3){animation-delay:.62s}
+.chap-head .promise{font-family:'Dancing Script',cursive;font-size:1.6rem;color:var(--rose-lt);opacity:0;animation:fadeUp .8s var(--ease-out) .88s forwards;margin-bottom:16px}
+.chap-head .lede{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--cream2);max-width:360px;line-height:1.55;opacity:0;animation:fadeUp .8s var(--ease-out) 1.02s forwards}
+.chap-head .lede .drop{font-family:'Playfair Display',serif;font-weight:900;font-style:normal;font-size:2.5rem;float:left;line-height:.78;margin:4px 8px 0 0;color:var(--rose-lt)}
+.chap-head .folio{font-family:'Cormorant Garamond',serif;font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--cream3);opacity:.55;margin-top:14px}
+.numeral{position:absolute;top:30px;right:var(--space);font-family:'Playfair Display',serif;font-weight:900;font-size:4.8rem;line-height:.85;
+  background:linear-gradient(180deg,var(--rose-lt),var(--rose) 60%,var(--rose-deep));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  opacity:0;animation:numIn 1.1s var(--ease-spring) .35s forwards;pointer-events:none}
+.numeral::after{content:'';position:absolute;top:8px;right:-6px;width:8px;height:8px;border-radius:50%;background:var(--gold2);box-shadow:0 0 12px var(--gold2)}
+@keyframes wordIn{to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes numIn{from{opacity:0;transform:scale(.6) rotate(-8deg)}to{opacity:.9;transform:scale(1) rotate(0)}}
+
+.hair{height:1px;background:linear-gradient(90deg,transparent,var(--rose-lt),transparent);opacity:.55;margin:6px var(--space)}
+
+/* ════════ CARDÁPIO DE DOCES ════════ */
+.cardapio-box{margin:18px var(--space) 8px;padding:22px 20px 24px;border-radius:18px;
+  background:radial-gradient(ellipse 80% 55% at 50% 100%,rgba(232,152,144,.16),transparent 65%),
+  linear-gradient(180deg,#1e1432,#13102f);
+  border:1px solid rgba(232,152,144,.32);
+  box-shadow:0 10px 28px rgba(0,0,0,.4),inset 0 1px 0 rgba(244,220,168,.1)}
+.cardapio-box .label{font-family:'Nunito';font-weight:900;font-size:.56rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--rose-lt);margin-bottom:6px}
+.cardapio-box h3{font-family:'Playfair Display',serif;font-weight:800;font-size:1.35rem;margin-bottom:4px;line-height:1.1}
+.cardapio-box p.deck{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.92rem;color:var(--cream3);margin-bottom:18px;line-height:1.45}
+
+/* grid de doces */
+.doce-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.doce-item{
+  padding:12px 8px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.07);
+  background:rgba(255,255,255,.03);cursor:pointer;text-align:center;
+  transition:all .22s var(--ease-out);position:relative}
+.doce-item:hover{border-color:rgba(232,152,144,.4);background:rgba(232,152,144,.07);transform:translateY(-2px)}
+.doce-item.selected{border-color:var(--rose-lt);background:rgba(232,152,144,.14);
+  box-shadow:0 0 0 1px rgba(232,152,144,.25)}
+.doce-item.selected::after{content:'✦';position:absolute;top:4px;right:6px;font-size:.55rem;color:var(--gold2)}
+.doce-ico{font-size:1.8rem;margin-bottom:5px;display:block;transition:transform .3s var(--ease-spring)}
+.doce-item:hover .doce-ico,.doce-item.selected .doce-ico{transform:scale(1.15)}
+.doce-nome{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.78rem;color:var(--cream2);line-height:1.2;display:block}
+.doce-sub{font-family:'Nunito';font-weight:700;font-size:.5rem;letter-spacing:1px;text-transform:uppercase;color:var(--cream3);opacity:.6;display:block;margin-top:2px}
+
+/* campo de mensagem */
+.msg-area{margin-bottom:14px}
+.msg-label{font-family:'Nunito';font-weight:800;font-size:.56rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold2);margin-bottom:8px;display:block}
+.msg-field{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(232,152,144,.3);border-radius:10px;
+  padding:13px 16px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;
+  color:var(--cream);line-height:1.5;resize:none;min-height:72px;outline:none;transition:border-color .2s}
+.msg-field::placeholder{color:rgba(240,223,192,.3)}
+.msg-field:focus{border-color:var(--rose-lt)}
+.msg-counter{font-family:'Nunito';font-weight:700;font-size:.52rem;letter-spacing:1px;color:var(--cream3);text-align:right;margin-top:3px;opacity:.6}
+
+/* botão enviar */
+.send-btn{width:100%;padding:15px 22px;border-radius:99px;border:none;cursor:pointer;
+  background:linear-gradient(180deg,var(--rose-lt),var(--rose) 60%,var(--rose-deep));
+  color:var(--cream);font-family:'Nunito';font-weight:900;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;
+  box-shadow:0 6px 20px rgba(212,115,110,.4),inset 0 1px 0 rgba(255,255,255,.2);
+  transition:all .25s var(--ease-spring);opacity:.35;pointer-events:none}
+.send-btn.active{opacity:1;pointer-events:auto;animation:sweetPulse 2.6s ease-in-out infinite}
+.send-btn.active:hover{transform:scale(1.03);box-shadow:0 8px 28px rgba(212,115,110,.6),inset 0 1px 0 rgba(255,255,255,.25)}
+.send-btn.active:active{transform:scale(.97)}
+@keyframes sweetPulse{0%,100%{box-shadow:0 6px 20px rgba(212,115,110,.4),inset 0 1px 0 rgba(255,255,255,.2)}
+  50%{box-shadow:0 6px 32px rgba(232,152,144,.7),inset 0 1px 0 rgba(255,255,255,.25)}}
+
+/* ════════ SEÇÃO ENDEREÇO ════════ */
+.addr-form{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.addr-field{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(232,152,144,.3);border-radius:10px;
+  padding:12px 16px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;
+  color:var(--cream);outline:none;transition:border-color .2s;resize:none;min-height:58px;box-sizing:border-box}
+.addr-field::placeholder{color:rgba(240,223,192,.3)}
+.addr-field:focus{border-color:var(--rose-lt)}
+.addr-action{width:100%;padding:13px 20px;border-radius:99px;border:1px solid rgba(232,152,144,.45);
+  background:rgba(232,152,144,.1);color:var(--rose-lt);font-family:'Nunito';font-weight:800;
+  font-size:.62rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.addr-action:hover{background:rgba(232,152,144,.2);border-color:var(--rose-lt)}
+.addr-action.danger{border-color:rgba(240,223,192,.15);color:rgba(240,223,192,.4);background:none;font-size:.58rem}
+.addr-status{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.84rem;color:var(--cream3);opacity:.7}
+.addr-map-link{display:flex;align-items:center;gap:8px;padding:11px 14px;background:rgba(74,103,65,.14);
+  border:1px solid rgba(74,103,65,.28);border-radius:10px;color:#85CF81;
+  font-family:'Cormorant Garamond',serif;font-size:.9rem;text-decoration:none}
+.addr-note-show{font-family:'Dancing Script',cursive;font-size:1.05rem;color:var(--rose-lt);
+  background:rgba(232,152,144,.07);border-radius:8px;padding:10px 14px;
+  border-left:2px solid rgba(232,152,144,.28);line-height:1.5}
+.addr-incoming{background:rgba(232,152,144,.06);border:1px solid rgba(232,152,144,.18);
+  border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.addr-incoming-hd{font-family:'Playfair Display',serif;font-size:.9rem;font-weight:700;color:var(--rose-lt)}
+.addr-divider{border:none;border-top:1px solid rgba(232,152,144,.12);margin:4px 0}
+
+/* ════════ FOTO DO MIMO ════════ */
+.mimo-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+.mimo-col-label{font-family:'Nunito';font-weight:900;font-size:.54rem;letter-spacing:2px;text-transform:uppercase;
+  color:var(--rose-lt);opacity:.65;margin-bottom:6px;text-align:center}
+.mimo-zone{width:100%;aspect-ratio:1;border-radius:12px;border:1.5px dashed rgba(232,152,144,.3);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  cursor:pointer;background:rgba(232,152,144,.04);position:relative;overflow:hidden;
+  background-size:cover!important;background-position:center!important;transition:border-color .2s}
+.mimo-zone:hover:not(.readonly){border-color:rgba(232,152,144,.6)}
+.mimo-zone.filled{border-style:solid;border-color:rgba(232,152,144,.5)}
+.mimo-zone.readonly{cursor:default;border-color:rgba(232,184,109,.2);background:rgba(232,184,109,.03)}
+.mimo-zone.filled .mimo-ico,.mimo-zone.filled .mimo-hint{opacity:0}
+.mimo-ico{font-size:1.6rem;pointer-events:none}
+.mimo-hint{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.75rem;color:var(--cream3);
+  opacity:.5;pointer-events:none;text-align:center;padding:0 4px;line-height:1.3}
+.mimo-empty-hint{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.75rem;
+  color:var(--cream3);opacity:.35;text-align:center;padding:8px;pointer-events:none}
+
+/* ════════ CONTADOR ════════ */
+.counter-box{margin:16px var(--space) 8px;padding:18px 20px;
+  background:linear-gradient(180deg,#1e1432,#13102f);
+  border:1px solid rgba(232,184,109,.2);border-radius:14px}
+.counter-box .label{font-family:'Nunito';font-weight:900;font-size:.56rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold2);margin-bottom:6px}
+.counter-box h3{font-family:'Playfair Display',serif;font-weight:800;font-size:1.25rem;line-height:1.1;margin-bottom:10px}
+
+.big-doce{display:flex;align-items:baseline;justify-content:center;gap:10px;padding:6px 0 12px}
+.big-doce .n{font-family:'Playfair Display',serif;font-weight:900;font-size:3.4rem;line-height:.9;
+  background:linear-gradient(180deg,var(--gold3),var(--gold) 60%,var(--gold-deep));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.big-doce .u{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:var(--cream2);line-height:1.2;max-width:130px}
+
+/* mini histórico */
+.historico{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.hist-item{display:flex;align-items:center;gap:10px;padding:9px 12px;
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:9px}
+.hist-item.received{border-color:rgba(232,152,144,.18);background:rgba(232,152,144,.04)}
+.hist-ico{font-size:1.3rem;flex-shrink:0}
+.hist-info{flex:1}
+.hist-txt{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.88rem;color:var(--cream2);line-height:1.3}
+.hist-meta{font-family:'Nunito';font-weight:700;font-size:.52rem;letter-spacing:1px;text-transform:uppercase;color:var(--cream3);opacity:.6;margin-top:2px}
+.hist-time{font-family:'Cormorant Garamond',serif;font-size:.65rem;letter-spacing:1px;color:var(--cream3);opacity:.5;flex-shrink:0}
+
+/* ════════ PULL QUOTE ════════ */
+.pull{margin:20px var(--space);padding:18px 20px 18px 26px;border-left:3px solid var(--rose);position:relative}
+.pull::before{content:'\201C';position:absolute;left:-2px;top:-12px;font-family:'Playfair Display',serif;font-weight:900;font-size:4rem;color:var(--rose-lt);opacity:.5;line-height:1}
+.pull p{font-family:'Playfair Display',serif;font-style:italic;font-weight:600;font-size:1.2rem;line-height:1.3;color:var(--cream)}
+.pull cite{font-family:'Dancing Script',cursive;font-style:normal;font-size:1.05rem;color:var(--rose-lt);display:block;margin-top:8px}
+
+/* legenda */
+.legend-aside{margin:10px var(--space) 0;padding:12px 14px;border:1px dashed rgba(232,184,109,.4);border-radius:10px;background:rgba(232,184,109,.04)}
+.legend-aside h4{font-family:'Nunito';font-weight:900;font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold2);margin-bottom:6px}
+.legend-aside li{list-style:none;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.78rem;color:var(--cream2);padding-left:14px;position:relative;line-height:1.4;margin-bottom:3px}
+.legend-aside li::before{content:'✦';position:absolute;left:0;color:var(--gold2);font-size:.55rem;top:3px}
+.legend-aside li b{font-family:'Nunito';font-weight:800;font-style:normal;color:var(--gold3);font-size:.72rem}
+
+/* nav */
+.chapnav{margin:12px var(--space) 0;display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+.nb{background:none;border:1px solid rgba(232,184,109,.35);border-radius:99px;padding:11px 14px;cursor:pointer;color:var(--cream2);font-family:'Nunito';font-weight:800;font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;transition:all .2s}
+.nb:hover{border-color:var(--gold2);color:var(--gold2)}
+.nb.next{background:linear-gradient(180deg,var(--gold3),var(--gold) 60%,var(--gold-deep));color:var(--ink);border-color:transparent;box-shadow:0 4px 12px rgba(196,149,106,.35)}
+.nb-mid{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.7rem;color:var(--cream3);background:none;border:none;cursor:pointer}
+.nb-mid:hover{color:var(--gold2)}
+
+/* trocar perfil */
+.trocar-link{display:block;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:.75rem;color:rgba(240,223,192,.3);cursor:pointer;padding:12px 0 4px;
+  border:none;background:none;width:100%;text-decoration:none}
+.trocar-link:hover{color:rgba(240,223,192,.55)}
+
+/* ════════ OVERLAY — CHUVA DE DOCES ════════ */
+.candy-overlay{position:fixed;inset:0;z-index:90;pointer-events:none;opacity:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(232,152,144,.0) 30%,rgba(232,152,144,.45) 80%,rgba(120,30,40,.85) 100%);
+  transition:opacity 1s var(--ease-out)}
+.candy-overlay.on{opacity:1}
+.candy-particle{position:fixed;font-size:2rem;pointer-events:none;z-index:91;animation:candyFall linear forwards}
+@keyframes candyFall{
+  0%  {opacity:1;transform:translateY(-60px) rotate(0deg) scale(1)}
+  80% {opacity:1}
+  100%{opacity:0;transform:translateY(110vh) rotate(720deg) scale(.5)}}
+.candy-card{
+  position:fixed;left:50%;top:50%;z-index:92;
+  transform:translate(-50%,-50%) scale(.8);opacity:0;pointer-events:none;
+  text-align:center;padding:28px 32px;border-radius:18px;
+  background:radial-gradient(ellipse at 50% 20%,rgba(232,184,109,.14),rgba(18,16,46,.93) 70%);
+  border:1px solid rgba(232,152,144,.5);
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
+  transition:opacity .6s var(--ease-out),transform .7s var(--ease-spring);max-width:300px}
+.candy-card.on{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto}
+.candy-card .cc-ico{font-size:3rem;margin-bottom:4px;animation:bigBounce 1.2s var(--ease-spring) infinite alternate}
+@keyframes bigBounce{from{transform:scale(1)}to{transform:scale(1.15)}}
+.candy-card .cc-ttl{font-family:'Playfair Display',serif;font-weight:800;font-size:1.2rem;color:var(--cream);margin:6px 0 4px}
+.candy-card .cc-msg{font-family:'Dancing Script',cursive;font-size:1.3rem;color:var(--rose-lt);line-height:1.3;margin-bottom:4px}
+.candy-card .cc-from{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.85rem;color:var(--cream3);opacity:.85;margin-bottom:16px}
+.candy-card .cc-close{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:99px;cursor:pointer;border:none;
+  background:linear-gradient(180deg,var(--gold3),var(--gold) 60%,var(--gold-deep));color:var(--ink);
+  font-family:'Nunito';font-weight:900;font-size:.68rem;letter-spacing:1.5px;text-transform:uppercase;
+  box-shadow:0 6px 18px rgba(196,149,106,.4),inset 0 1px 0 rgba(255,255,255,.4)}
+
+/* toast */
+.toast{position:fixed;top:24px;left:50%;z-index:110;transform:translateX(-50%) translateY(-20px);
+  background:linear-gradient(180deg,#6B1420,#3E0810);color:var(--gold3);
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.8rem;letter-spacing:1.5px;padding:10px 22px;
+  border-radius:4px;border:1.5px solid var(--gold);box-shadow:0 8px 24px rgba(0,0,0,.5);
+  opacity:0;transition:all .4s;white-space:nowrap}
+
+/* ══ LOGIN GATE ══ */
+.cosmo-login-gate{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:24px;
+  background:radial-gradient(ellipse at 50% 20%,rgba(232,152,144,.15),transparent 55%),linear-gradient(170deg,#100E28,#181440,#12102A)}
+.cosmo-login-gate.show{display:flex}
+.clg-card{max-width:340px;width:100%;text-align:center;font-family:'Nunito',sans-serif}
+.clg-deco{font-size:1rem;color:#E89890;opacity:.6;letter-spacing:4px;margin-bottom:10px}
+.clg-card h2{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;color:#F0DFC0;margin-bottom:6px}
+.clg-card p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:rgba(240,223,192,.6);margin-bottom:26px}
+.clg-options{display:flex;flex-direction:column;gap:14px}
+.clg-opt{display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;
+  background:rgba(240,223,192,.04);border:1px solid rgba(240,223,192,.12);
+  color:#F0DFC0;font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;letter-spacing:.5px;
+  cursor:pointer;transition:.2s;text-align:left}
+.clg-opt:active{background:rgba(240,223,192,.1);transform:scale(.98)}
+.clg-ico{font-size:1.6rem}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001s!important;animation-delay:0s!important;transition-duration:.001s!important}
+  .sky-stars,.numeral{opacity:.85}
+  .send-btn.active{animation:none}
+  .candy-particle{display:none}
+}
+@media (max-width:360px){.numeral{font-size:3.8rem}.doce-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN GATE -->
+<div class="cosmo-login-gate" id="cosmoLoginGate" aria-hidden="true">
+  <div class="clg-card">
+    <div class="clg-deco">✦ · ✦ · ✦</div>
+    <h2>Quem é você?</h2>
+    <p>Escolha seu perfil pra personalizar o álbum</p>
+    <div class="clg-options">
+      <button type="button" class="clg-opt" data-user="jussara"><span class="clg-ico">🌼</span><span>Jussara</span></button>
+      <button type="button" class="clg-opt" data-user="grazi"><span class="clg-ico">🌻</span><span>Grazi</span></button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var u=null; try{ u = localStorage.getItem('cosmoUser'); }catch(e){}
+  if(u) return;
+  document.addEventListener('DOMContentLoaded', function(){
+    var gate = document.getElementById('cosmoLoginGate');
+    if(!gate) return;
+    gate.classList.add('show');
+    gate.querySelectorAll('.clg-opt').forEach(function(b){
+      b.addEventListener('click', function(){
+        try{ localStorage.setItem('cosmoUser', b.dataset.user); }catch(e){}
+        location.reload();
+      });
+    });
+  });
+})();
+</script>
+
+<div class="sky-bg"></div>
+<div class="sky-stars"></div>
+
+<div class="board">
+
+  <!-- HEADER -->
+  <header class="chap-head">
+    <div class="chap-meta"><b>Mimo · J &amp; G</b> · álbum cósmico</div>
+    <div class="numeral">🍬</div>
+    <h1>
+      <span class="w">Mandar</span>
+      <span class="w">um</span>
+      <span class="w">Doce</span>
+    </h1>
+    <div class="promise">porque às vezes o amor é doce mesmo</div>
+    <p class="lede"><span class="drop">E</span>scolha um doce, escreva o que quiser e mande. Ela recebe no álbum dela — com tudo que você sentiu ao mandar.</p>
+    <div class="folio">JG · MIMO · PÁG. 96</div>
+  </header>
+
+  <div class="hair"></div>
+
+  <!-- ════════ CARDÁPIO ════════ -->
+  <section class="cardapio-box">
+    <div class="label">o cardápio</div>
+    <h3>Qual doce você manda hoje?</h3>
+    <p class="deck">cada um tem um significado — mas qualquer um que você escolher já diz "estou pensando em você"</p>
+
+    <div class="doce-grid" id="doceGrid">
+      <button class="doce-item" data-doce="brigadeiro" data-ico="🍫" data-art="um" onclick="selecionarDoce(this)">
+        <span class="doce-ico">🍫</span>
+        <span class="doce-nome">Brigadeiro</span>
+        <span class="doce-sub">clássico de sempre</span>
+      </button>
+      <button class="doce-item" data-doce="bala de beijo" data-ico="🍬" data-art="uma" onclick="selecionarDoce(this)">
+        <span class="doce-ico">🍬</span>
+        <span class="doce-nome">Bala de Beijo</span>
+        <span class="doce-sub">pra sentir na boca</span>
+      </button>
+      <button class="doce-item" data-doce="macaron" data-ico="🫶" data-art="um" onclick="selecionarDoce(this)">
+        <span class="doce-ico">🫶</span>
+        <span class="doce-nome">Macaron</span>
+        <span class="doce-sub">delicado como você</span>
+      </button>
+      <button class="doce-item" data-doce="fatia de bolo" data-ico="🍰" data-art="uma" onclick="selecionarDoce(this)">
+        <span class="doce-ico">🍰</span>
+        <span class="doce-nome">Fatia de Bolo</span>
+        <span class="doce-sub">pra celebrar</span>
+      </button>
+      <button class="doce-item" data-doce="morango" data-ico="🍓" data-art="um" onclick="selecionarDoce(this)">
+        <span class="doce-ico">🍓</span>
+        <span class="doce-nome">Morango</span>
+        <span class="doce-sub">do jeito que você é</span>
+      </button>
+      <button class="doce-item" data-doce="mel" data-ico="🍯" data-art="um" onclick="selecionarDoce(this)">
+        <span class="doce-ico">🍯</span>
+        <span class="doce-nome">Mel</span>
+        <span class="doce-sub">docinho e quente</span>
+      </button>
+      <button class="doce-item" data-doce="sorvete" data-ico="🍦" data-art="um" onclick="selecionarDoce(this)">
+        <span class="doce-ico">🍦</span>
+        <span class="doce-nome">Sorvete</span>
+        <span class="doce-sub">pra refrescar</span>
+      </button>
+      <button class="doce-item" data-doce="cookie" data-ico="🍪" data-art="um" onclick="selecionarDoce(this)">
+        <span class="doce-ico">🍪</span>
+        <span class="doce-nome">Cookie</span>
+        <span class="doce-sub">crocante e caloroso</span>
+      </button>
+      <button class="doce-item" data-doce="estrela" data-ico="⭐" data-art="uma" onclick="selecionarDoce(this)">
+        <span class="doce-ico">⭐</span>
+        <span class="doce-nome">Estrela</span>
+        <span class="doce-sub">porque você brilha</span>
+      </button>
+    </div>
+
+    <div class="msg-area">
+      <span class="msg-label">escreva uma mensagem (opcional)</span>
+      <textarea class="msg-field" id="msgField" maxlength="160" placeholder="escreve o que veio no coração…" rows="3" aria-label="Mensagem junto com o doce"></textarea>
+      <div class="msg-counter"><span id="msgLen">0</span> / 160</div>
+    </div>
+
+    <button class="send-btn" id="sendBtn" onclick="enviarDoce()" aria-label="Mandar o doce">
+      🍬 mandar esse doce agora
+    </button>
+  </section>
+
+  <!-- ════════ ENDEREÇO — ME MANDA UM DOCE AQUI! ════════ -->
+  <section class="cardapio-box" id="enderecoBox">
+    <div class="label">onde você está</div>
+    <h3>Me Manda um Doce Aqui!</h3>
+    <p class="deck">Compartilhe sua localização ou escreva seu endereço — ela vai até você com um docinho de verdade ♡</p>
+    <div id="enderecoContent"><!-- preenchido por JS --></div>
+  </section>
+
+  <!-- ════════ FOTO DO MIMO ════════ -->
+  <section class="cardapio-box">
+    <div class="label">registro do mimo</div>
+    <h3>Quando o Doce Chegar...</h3>
+    <p class="deck">Tire uma foto do docinho que você recebeu e guarde aqui para as duas verem ♡</p>
+    <div class="mimo-grid">
+      <div>
+        <div class="mimo-col-label" id="myMimoLabel">sua foto</div>
+        <div class="mimo-zone" id="myMimoZone" onclick="_mimoClickMy()">
+          <span class="mimo-ico">📸</span>
+          <span class="mimo-hint">toque para adicionar a foto do docinho</span>
+        </div>
+      </div>
+      <div>
+        <div class="mimo-col-label" id="theirMimoLabel">foto dela</div>
+        <div class="mimo-zone readonly" id="theirMimoZone">
+          <span class="mimo-ico">🍬</span>
+          <span class="mimo-hint mimo-empty-hint">ainda não chegou ♡</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ CONTADOR ════════ -->
+  <section class="counter-box">
+    <div class="label">doces enviados</div>
+    <h3>Histórico de Mimos</h3>
+
+    <div class="big-doce">
+      <span class="n" id="doceCount">0</span>
+      <span class="u">doces mandados desde o começo</span>
+    </div>
+
+    <div class="historico" id="historico">
+      <!-- preenchido por JS -->
+    </div>
+  </section>
+
+  <!-- PULL QUOTE -->
+  <blockquote class="pull">
+    <p>Cada doce que eu te mando é uma forma de dizer: lembrei de você agora mesmo.</p>
+    <cite id="pullCite">— para a Jussara, com amor, G</cite>
+  </blockquote>
+
+  <!-- LEGENDA -->
+  <aside class="legend-aside">
+    <h4>✦ Notas sobre este módulo</h4>
+    <ul>
+      <li><b>Doces</b> são salvos no Firebase e aparecem em tempo real no app dela</li>
+      <li><b>A chuva de doces</b> dispara no aparelho de quem recebe, com vibração háptica</li>
+      <li><b>Localização</b> é compartilhada via link do Google Maps — ela vê na hora</li>
+      <li><b>Foto do mimo</b> sincroniza entre os dois aparelhos quando salva</li>
+    </ul>
+  </aside>
+
+  <!-- NAV -->
+  <nav class="chapnav" aria-label="Navegação">
+    <button class="nb" onclick="location.href='quiz-linguagem.html'">← Quiz</button>
+    <button class="nb-mid" onclick="location.href='index.html'">☰ sumário</button>
+    <button class="nb next" onclick="location.href='index.html'">Início →</button>
+  </nav>
+
+  <button class="trocar-link" onclick="trocarPerfil()">não é você? trocar perfil</button>
+
+</div>
+
+<!-- OVERLAY CHUVA DE DOCES -->
+<div class="candy-overlay" id="candyOverlay" aria-hidden="true"></div>
+<div class="candy-card" id="candyCard" role="dialog" aria-live="assertive">
+  <div class="cc-ico" id="ccIco">🍫</div>
+  <div class="cc-ttl" id="ccTtl">Você recebeu um doce!</div>
+  <div class="cc-msg" id="ccMsg"></div>
+  <div class="cc-from" id="ccFrom">agora mesmo · com amor</div>
+  <button class="cc-close" onclick="fecharOverlay()">🍬 aceitar com carinho</button>
+</div>
+
+<!-- input oculto para upload de foto -->
+<input type="file" id="mimoFileInput" accept="image/*" style="display:none">
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const STORE  = 'jg-doces';
+  const PHOTOS_KEY = 'jg-photos-presentes';
+
+  /* ═══ IDENTIDADE ═══ */
+  const _CLIENT = (function(){
+    let u = null;
+    try{ u = localStorage.getItem('cosmoUser'); }catch(e){}
+    if(u) return u;
+    let c = null;
+    try{ c = localStorage.getItem('cosmoClientId'); }catch(e){}
+    if(!c){ c = 'c'+Math.random().toString(36).slice(2)+Date.now().toString(36); try{ localStorage.setItem('cosmoClientId', c); }catch(e){} }
+    return c;
+  })();
+  const _MY_NAME    = _CLIENT === 'grazi' ? 'Grazi'   : _CLIENT === 'jussara' ? 'Jussara' : 'você';
+  const _MY_INITIAL = _CLIENT === 'grazi' ? 'G'       : _CLIENT === 'jussara' ? 'J'       : '♡';
+  const _THEIR_NAME = _CLIENT === 'grazi' ? 'Jussara' : _CLIENT === 'jussara' ? 'Grazi'   : 'ela';
+  const _THEIR_ID   = _CLIENT === 'grazi' ? 'jussara' : _CLIENT === 'jussara' ? 'grazi'   : null;
+  const _MY_ID      = (_CLIENT === 'grazi' || _CLIENT === 'jussara') ? _CLIENT : null;
+
+  /* pull quote dinâmico */
+  const pullCite = document.getElementById('pullCite');
+  if(pullCite) pullCite.textContent = `— para ${_THEIR_NAME}, com amor, ${_MY_INITIAL}`;
+
+  /* rótulos de foto */
+  const myMimoLabel    = document.getElementById('myMimoLabel');
+  const theirMimoLabel = document.getElementById('theirMimoLabel');
+  if(myMimoLabel)    myMimoLabel.textContent    = 'sua foto';
+  if(theirMimoLabel) theirMimoLabel.textContent = `foto d${_CLIENT === 'jussara' ? 'a Grazi' : 'a Jussara'}`;
+
+  /* trocar perfil */
+  function trocarPerfil(){
+    try{ localStorage.removeItem('cosmoUser'); }catch(e){}
+    location.reload();
+  }
+
+  /* ═══ FIREBASE ═══ */
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyD0-GBYHLsYc_mqqq3Ymhbq3ynpIdx2sMg",
+    authDomain: "album--jussara.firebaseapp.com",
+    projectId: "album--jussara",
+    storageBucket: "album--jussara.firebasestorage.app",
+    messagingSenderId: "732871382789",
+    appId: "1:732871382789:web:7d93bce8c431ba80bd496c"
+  };
+  let _db = null;
+  try{
+    if(typeof firebase !== 'undefined'){
+      if(!firebase.apps || !firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+      _db = firebase.firestore();
+      try{ _db.settings({ experimentalAutoDetectLongPolling: true, merge: true }); }catch(e){}
+    }
+  }catch(e){ console.warn('Firebase off:', e); _db = null; }
+
+  /* ═══ CAMPO DE MENSAGEM ═══ */
+  const msgField = document.getElementById('msgField');
+  msgField.addEventListener('input', ()=>{
+    document.getElementById('msgLen').textContent = msgField.value.length;
+  });
+
+  /* ═══ SELECIONAR DOCE ═══ */
+  let doceAtual = null;
+  function selecionarDoce(btn){
+    document.querySelectorAll('.doce-item').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    doceAtual = { nome: btn.dataset.doce, ico: btn.dataset.ico, art: btn.dataset.art||'um' };
+    const sendBtn = document.getElementById('sendBtn');
+    sendBtn.classList.add('active');
+    sendBtn.textContent = `${doceAtual.ico} mandar ${doceAtual.art} ${btn.querySelector('.doce-nome').textContent.toLowerCase()}`;
+    if(navigator.vibrate) navigator.vibrate(15);
+  }
+
+  /* ═══ STORAGE LOCAL ═══ */
+  function getData(){ try{ return JSON.parse(localStorage.getItem(STORE)||'{"total":0,"items":[]}'); }catch(e){ return {total:0,items:[]}; } }
+  function setData(d){ try{ localStorage.setItem(STORE, JSON.stringify(d)); }catch(e){} }
+
+  /* ═══ ENVIAR DOCE ═══ */
+  function enviarDoce(){
+    if(!doceAtual) return;
+    const msg   = msgField.value.trim();
+    const entry = { by: _CLIENT, ico: doceAtual.ico, nome: doceAtual.nome, art: doceAtual.art, msg, ts: Date.now(), mine: true };
+
+    /* salva localmente */
+    const data = getData();
+    data.items.unshift(entry);
+    data.total = (data.total||0) + 1;
+    setData(data);
+    document.getElementById('doceCount').textContent = data.total;
+    adicionarHistorico(entry, true);
+
+    /* vibração crescente */
+    if(navigator.vibrate) navigator.vibrate([40,30,80,40,120,60,180]);
+
+    /* animação */
+    if(!reduce) chuvaDeDoces(doceAtual.ico);
+    setTimeout(()=> abrirOverlay(
+      doceAtual.ico,
+      msg || `${_MY_NAME} mandou ${entry.art} ${doceAtual.nome} pra você`,
+      'enviando com amor ♡'
+    ), 600);
+
+    /* Firebase */
+    if(_db){
+      _db.collection('doces').add(entry)
+        .catch(e => console.warn('Falha ao enviar doce:', e));
+    }
+
+    /* reset */
+    msgField.value = '';
+    document.getElementById('msgLen').textContent = '0';
+    document.querySelectorAll('.doce-item').forEach(b => b.classList.remove('selected'));
+    doceAtual = null;
+    const sendBtn = document.getElementById('sendBtn');
+    sendBtn.classList.remove('active');
+    sendBtn.textContent = '🍬 mandar esse doce agora';
+    flash('Doce enviado 🍬');
+  }
+
+  /* ═══ FIREBASE: receber doces em tempo real ═══ */
+  let _firstDocSnap = true;
+  if(_db){
+    try{
+      _db.collection('doces').orderBy('ts','desc').limit(30).onSnapshot(snap=>{
+        if(_firstDocSnap){
+          _firstDocSnap = false;
+          /* carrega histórico completo na 1ª leitura */
+          const docs = snap.docs.map(d=>({...d.data()}));
+          const meus = docs.filter(d=>d.by === _CLIENT);
+          document.getElementById('doceCount').textContent = meus.length || getData().total;
+          const hist = document.getElementById('historico');
+          hist.innerHTML = '';
+          if(!docs.length){ hist.innerHTML = _emptyHist(); return; }
+          docs.slice(0,8).forEach(d => adicionarHistorico({...d, mine: d.by===_CLIENT}, false));
+        } else {
+          /* novos doces chegando depois da primeira leitura */
+          snap.docChanges().forEach(ch=>{
+            if(ch.type !== 'added') return;
+            const d = ch.doc.data();
+            if(!d || d.by === _CLIENT) return;
+            /* é um doce da outra pessoa! */
+            if(!reduce) chuvaDeDoces(d.ico);
+            setTimeout(()=> abrirOverlay(
+              d.ico,
+              d.msg || `${_THEIR_NAME} mandou ${d.art||'um'} ${d.nome||'doce'} pra você 🍬`,
+              `${_THEIR_NAME} · agora mesmo`
+            ), 600);
+            adicionarHistorico({...d, mine: false}, true);
+            if(navigator.vibrate) navigator.vibrate([40,30,80,40,120]);
+            flash(`${_THEIR_NAME} mandou ${d.art||'um'} ${d.nome||'doce'} 🍬`);
+          });
+        }
+      }, e=>{ console.warn('onSnapshot doces:', e); _carregarLocal(); });
+    }catch(e){ console.warn('doces listener:', e); _carregarLocal(); }
+  } else {
+    _carregarLocal();
+  }
+  function _carregarLocal(){
+    const data = getData();
+    document.getElementById('doceCount').textContent = data.total;
+    const hist = document.getElementById('historico');
+    hist.innerHTML = '';
+    if(!data.items.length){ hist.innerHTML = _emptyHist(); return; }
+    data.items.slice(0,5).forEach(e => adicionarHistorico(e, false));
+  }
+  function _emptyHist(){
+    return `<div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.88rem;color:var(--cream3);text-align:center;padding:12px 0;opacity:.6">nenhum doce ainda — manda o primeiro ✦</div>`;
+  }
+
+  /* ═══ CHUVA DE PARTÍCULAS ═══ */
+  function chuvaDeDoces(ico){
+    for(let i = 0; i < 22; i++){
+      setTimeout(()=>{
+        const p = document.createElement('div');
+        p.className = 'candy-particle';
+        p.textContent = ico;
+        p.style.left = Math.random()*100 + 'vw';
+        const dur = 2.2 + Math.random()*1.6;
+        const delay = Math.random()*0.8;
+        p.style.animationDuration  = dur + 's';
+        p.style.animationDelay     = delay + 's';
+        p.style.fontSize = (1.4 + Math.random()*1.2) + 'rem';
+        document.body.appendChild(p);
+        setTimeout(()=> p.remove(), (dur + delay)*1000 + 200);
+      }, i * 80);
+    }
+  }
+
+  /* ═══ OVERLAY ═══ */
+  const candyOverlay = document.getElementById('candyOverlay');
+  const candyCard    = document.getElementById('candyCard');
+  function abrirOverlay(ico, msg, from){
+    document.getElementById('ccIco').textContent  = ico;
+    document.getElementById('ccTtl').textContent  = 'Você recebeu um doce!';
+    document.getElementById('ccMsg').textContent  = msg;
+    document.getElementById('ccFrom').textContent = from || 'agora mesmo · com amor';
+    candyOverlay.classList.add('on');
+    setTimeout(()=> candyCard.classList.add('on'), 300);
+  }
+  function fecharOverlay(){
+    candyOverlay.classList.remove('on');
+    candyCard.classList.remove('on');
+  }
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') fecharOverlay(); });
+  candyOverlay.addEventListener('click', fecharOverlay);
+
+  /* ═══ HISTÓRICO ═══ */
+  function adicionarHistorico(entry, prepend){
+    const hist = document.getElementById('historico');
+    /* remove placeholder se existir */
+    const ph = hist.querySelector('[data-ph]');
+    if(ph) ph.remove();
+    const el = document.createElement('div');
+    el.className = 'hist-item' + (entry.mine ? '' : ' received');
+    const ago = formatAgo(entry.ts);
+    const dir = entry.mine ? 'você enviou' : `${_THEIR_NAME} enviou`;
+    el.innerHTML = `
+      <span class="hist-ico">${entry.ico||'🍬'}</span>
+      <div class="hist-info">
+        ${entry.msg ? `<span class="hist-txt">${escHtml(entry.msg)}</span>` : ''}
+        <div class="hist-meta">${entry.nome||'doce'} · ${dir}</div>
+      </div>
+      <span class="hist-time">${ago}</span>`;
+    if(prepend && hist.firstChild) hist.insertBefore(el, hist.firstChild);
+    else hist.appendChild(el);
+  }
+  function formatAgo(ts){
+    const m = Math.floor((Date.now()-ts)/60000);
+    if(m < 1) return 'agora';
+    if(m < 60) return `há ${m}min`;
+    const h = Math.floor(m/60);
+    if(h < 24) return `há ${h}h`;
+    return `há ${Math.floor(h/24)}d`;
+  }
+  function escHtml(s){ return (s||'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+  /* ════════════════════════════════════════
+     SEÇÃO ENDEREÇO — Me Manda um Doce Aqui
+     ════════════════════════════════════════ */
+  let _ADDR = { mine: null, theirs: null };
+  let _addrLoc = null;
+
+  function _addrRender(){
+    const wrap = document.getElementById('enderecoContent');
+    if(!wrap) return;
+    const mine = _ADDR.mine, theirs = _ADDR.theirs;
+    let h = '';
+
+    if(mine){
+      h += `<div class="addr-status">📍 Seu pedido está ativo</div>`;
+      if(mine.mapsUrl) h += `<a class="addr-map-link" href="${mine.mapsUrl}" target="_blank" rel="noopener">📍 Ver sua localização no mapa</a>`;
+      if(mine.address) h += `<div class="addr-note-show">🏠 ${escHtml(mine.address)}</div>`;
+      if(mine.note)    h += `<div class="addr-note-show">"${escHtml(mine.note)}"</div>`;
+      h += `<button class="addr-action danger" onclick="_addrCancelar()">✕ cancelar pedido</button>`;
+    } else {
+      h += `<div id="addrFormArea"><button class="addr-action" onclick="_addrAbrirForm()">📍 Compartilhar localização + endereço</button></div>`;
+    }
+
+    if(theirs){
+      h += `<hr class="addr-divider">`;
+      h += `<div class="addr-incoming">`;
+      h += `<div class="addr-incoming-hd">🍬 ${_THEIR_NAME} quer um docinho!</div>`;
+      if(theirs.mapsUrl) h += `<a class="addr-map-link" href="${theirs.mapsUrl}" target="_blank" rel="noopener">📍 Ver onde ela está</a>`;
+      if(theirs.address) h += `<div class="addr-note-show">🏠 ${escHtml(theirs.address)}</div>`;
+      if(theirs.note)    h += `<div class="addr-note-show">"${escHtml(theirs.note)}"</div>`;
+      h += `</div>`;
+    }
+
+    wrap.innerHTML = h;
+  }
+
+  function _addrAbrirForm(){
+    const fa = document.getElementById('addrFormArea');
+    if(!fa) return;
+    _addrLoc = null;
+    fa.innerHTML = `
+      <div class="addr-form">
+        <div class="addr-status" id="addrLocSt">📍 Buscando sua localização…</div>
+        <textarea class="addr-field" id="addrFieldAddr" placeholder="Endereço (rua, número, bairro…)" rows="2"></textarea>
+        <textarea class="addr-field" id="addrFieldNote" placeholder="Bilhete opcional… ex: estou em casa 💛" rows="2" style="min-height:46px"></textarea>
+        <div style="display:flex;gap:8px">
+          <button class="addr-action" onclick="_addrEnviar()" style="flex:1">✈ Enviar pedido</button>
+          <button class="addr-action danger" onclick="_addrRender()" style="flex:0 0 auto;padding:13px 14px">✕</button>
+        </div>
+      </div>`;
+    if('geolocation' in navigator){
+      navigator.geolocation.getCurrentPosition(
+        p=>{ _addrLoc = p.coords; const s=document.getElementById('addrLocSt'); if(s) s.textContent='✓ Localização capturada 📍'; },
+        ()=>{ const s=document.getElementById('addrLocSt'); if(s) s.textContent='⚠ GPS indisponível — só o endereço será enviado'; },
+        {enableHighAccuracy:true,timeout:10000}
+      );
+    } else {
+      const s=document.getElementById('addrLocSt'); if(s) s.textContent='⚠ GPS não suportado — preencha o endereço abaixo';
+    }
+  }
+
+  function _addrEnviar(){
+    const myId = _MY_ID;
+    if(!myId){ flash('Escolha seu perfil antes ✦'); return; }
+    const address = (document.getElementById('addrFieldAddr')||{}).value||'';
+    const note    = (document.getElementById('addrFieldNote')||{}).value||'';
+    const lat     = _addrLoc ? _addrLoc.latitude  : null;
+    const lng     = _addrLoc ? _addrLoc.longitude : null;
+    const mapsUrl = lat !== null ? `https://www.google.com/maps?q=${lat},${lng}` : null;
+    const data = { by: myId, address: address.trim(), note: note.trim(), lat, lng, mapsUrl, ts: Date.now() };
+    if(_db){
+      _db.collection('doce-pedido').doc(myId).set(data)
+        .then(()=> flash('Pedido enviado! Ela já sabe onde você está 🍬', true))
+        .catch(e=> flash('Erro: '+(e.code||e.message)));
+    } else {
+      _ADDR.mine = data; _addrRender();
+      flash('Pedido salvo localmente (sem conexão)', true);
+    }
+  }
+
+  function _addrCancelar(){
+    const myId = _MY_ID;
+    if(!myId) return;
+    if(_db){
+      _db.collection('doce-pedido').doc(myId).delete()
+        .then(()=> flash('Pedido cancelado ✓'))
+        .catch(e=> flash('Erro ao cancelar: '+(e.code||e.message)));
+    } else {
+      _ADDR.mine = null; _addrRender();
+    }
+  }
+
+  /* Firestore listener para pedidos de endereço */
+  if(_db && _MY_ID){
+    try{
+      _db.collection('doce-pedido').doc(_MY_ID).onSnapshot(s=>{
+        _ADDR.mine = s.exists ? s.data() : null; _addrRender();
+      });
+    }catch(e){ console.warn('addr mine:', e); }
+  }
+  if(_db && _THEIR_ID){
+    try{
+      _db.collection('doce-pedido').doc(_THEIR_ID).onSnapshot(s=>{
+        _ADDR.theirs = s.exists ? s.data() : null; _addrRender();
+      });
+    }catch(e){ console.warn('addr theirs:', e); }
+  }
+  if(!_db) _addrRender();
+
+  /* ════════════════════════════
+     FOTO DO MIMO
+     ════════════════════════════ */
+  const _PHOTOS_STORE = 'jg-photos-presentes';
+  const _myMimoKey    = 'doce_mimo_' + (_MY_ID || 'x');
+  const _theirMimoKey = 'doce_mimo_' + (_THEIR_ID || 'y');
+
+  function _loadPresPhotos(){ try{ return JSON.parse(localStorage.getItem(_PHOTOS_STORE)||'{}'); }catch(e){ return {}; } }
+  function _savePresPhotos(m){ try{ localStorage.setItem(_PHOTOS_STORE, JSON.stringify(m)); }catch(e){} }
+
+  function _applyMimoPhoto(key, img){
+    const isMy    = key === _myMimoKey;
+    const zone    = document.getElementById(isMy ? 'myMimoZone' : 'theirMimoZone');
+    if(!zone || !img) return;
+    zone.style.backgroundImage = `url('${img.replace(/'/g,"\\'")}')`;
+    zone.classList.add('filled');
+  }
+
+  /* restaurar fotos do cache local */
+  (function(){
+    const saved = _loadPresPhotos();
+    if(saved[_myMimoKey])    _applyMimoPhoto(_myMimoKey,    saved[_myMimoKey]);
+    if(saved[_theirMimoKey]) _applyMimoPhoto(_theirMimoKey, saved[_theirMimoKey]);
+  })();
+
+  /* Firestore: escuta fotos do mimo */
+  if(_db){
+    try{
+      _db.collection('photos').onSnapshot(snap=>{
+        const saved = _loadPresPhotos();
+        snap.docChanges().forEach(ch=>{
+          if(ch.type === 'removed') return;
+          const d  = ch.doc.data();
+          const id = ch.doc.id;
+          if(id !== _myMimoKey && id !== _theirMimoKey) return;
+          if(!d || !d.img) return;
+          _applyMimoPhoto(id, d.img);
+          saved[id] = d.img;
+        });
+        _savePresPhotos(saved);
+      });
+    }catch(e){ console.warn('photos listener:', e); }
+  }
+
+  /* click na zona da minha foto → abre o picker */
+  function _mimoClickMy(){
+    const fi = document.getElementById('mimoFileInput');
+    fi.value = '';
+    fi.click();
+  }
+
+  document.getElementById('mimoFileInput').addEventListener('change', function(){
+    const file = this.files && this.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ev=>{
+      _resizeMimo(ev.target.result, 900, out=>{
+        const saved = _loadPresPhotos();
+        saved[_myMimoKey] = out;
+        _savePresPhotos(saved);
+        _applyMimoPhoto(_myMimoKey, out);
+        if(navigator.vibrate) navigator.vibrate(20);
+        if(_db){
+          flash('Salvando foto…');
+          _db.collection('photos').doc(_myMimoKey).set({ img: out, ts: Date.now(), by: _CLIENT })
+            .then(()=> flash('Foto do mimo salva e compartilhada 📸'))
+            .catch(e=> flash('Foto salva aqui · falhou online: '+(e.code||e.message)));
+        } else {
+          flash('Foto salva neste aparelho 📸');
+        }
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function _resizeMimo(dataURL, maxW, cb){
+    const img = new Image();
+    img.onload = ()=>{
+      const r = Math.min(1, maxW/img.naturalWidth);
+      const w = Math.round(img.naturalWidth*r);
+      const h = Math.round(img.naturalHeight*r);
+      try{
+        const cv = document.createElement('canvas'); cv.width=w; cv.height=h;
+        cv.getContext('2d').drawImage(img,0,0,w,h);
+        cb(cv.toDataURL('image/jpeg',0.82));
+      }catch(e){ cb(dataURL); }
+    };
+    img.onerror = ()=> cb(dataURL);
+    img.src = dataURL;
+  }
+
+  /* ═══ TOAST ═══ */
+  function flash(msg){
+    const f = document.createElement('div');
+    f.className='toast'; f.textContent=msg;
+    document.body.appendChild(f);
+    requestAnimationFrame(()=>{ f.style.opacity='1'; f.style.transform='translateX(-50%) translateY(0)'; });
+    setTimeout(()=>{ f.style.opacity='0'; f.style.transform='translateX(-50%) translateY(-20px)'; setTimeout(()=>f.remove(),400); },2200);
+  }
+</script>
+</body>
+</html>

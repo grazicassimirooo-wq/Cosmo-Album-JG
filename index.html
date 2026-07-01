@@ -1048,12 +1048,7 @@ function goPack(){
   _hideAllScreens(); document.getElementById('s-pack').classList.add('active'); window.scrollTo({top:0,behavior:'instant'});
 }
 function goPresentes(){
-  const idx = AL.findIndex(p=>p.type==='gifts');
-  if(idx < 0) return;
-  _hideAllScreens();
-  document.getElementById('s-book').classList.add('active');
-  goP(idx);
-  window.scrollTo({top:0,behavior:'instant'});
+  location.href = 'capitulo-presentes.html';
 }
 function goMeuPerfil(){
   let u = null; try{ u = localStorage.getItem('cosmoUser'); }catch(e){}
