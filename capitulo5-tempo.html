@@ -367,9 +367,53 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
 .mini-btn{padding:9px 14px;border-radius:99px;border:none;cursor:pointer;font-family:'Nunito';font-weight:800;font-size:.65rem;letter-spacing:1.4px;text-transform:uppercase}
 .mini-btn.primary{background:linear-gradient(180deg,var(--gold3),var(--gold) 60%,var(--gold-deep));color:var(--ink)}
 .mini-btn.ghost{background:transparent;color:var(--mint);border:1px solid rgba(91,191,176,.4)}
+
+/* ══ COSMO LOGIN GATE — "quem é você?" ══ */
+.cosmo-login-gate{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:24px;
+  background:radial-gradient(ellipse at 50% 20%,rgba(124,91,173,.15),transparent 55%),linear-gradient(170deg,#100E28,#181440,#12102A);}
+.cosmo-login-gate.show{display:flex}
+.clg-card{max-width:340px;width:100%;text-align:center;font-family:'Nunito',sans-serif}
+.clg-deco{font-size:1rem;color:#C4956A;opacity:.6;letter-spacing:4px;margin-bottom:10px}
+.clg-card h2{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;color:#F0DFC0;margin-bottom:6px}
+.clg-card p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:rgba(240,223,192,.6);margin-bottom:26px}
+.clg-options{display:flex;flex-direction:column;gap:14px}
+.clg-opt{display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;
+  background:rgba(240,223,192,.04);border:1px solid rgba(240,223,192,.12);
+  color:#F0DFC0;font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;letter-spacing:.5px;
+  cursor:pointer;transition:.2s;text-align:left}
+.clg-opt:active{background:rgba(240,223,192,.1);transform:scale(.98)}
+.clg-ico{font-size:1.6rem}
 </style>
 </head>
 <body>
+<div class="cosmo-login-gate" id="cosmoLoginGate" aria-hidden="true">
+  <div class="clg-card">
+    <div class="clg-deco">✦ ✧ ✦</div>
+    <h2>Quem é você?</h2>
+    <p>Escolha seu perfil pra personalizar o álbum</p>
+    <div class="clg-options">
+      <button type="button" class="clg-opt" data-user="jussara"><span class="clg-ico">🌼</span><span>Jussara</span></button>
+      <button type="button" class="clg-opt" data-user="grazi"><span class="clg-ico">🌻</span><span>Grazi</span></button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var u=null; try{ u = localStorage.getItem('cosmoUser'); }catch(e){}
+  if(u) return;
+  document.addEventListener('DOMContentLoaded', function(){
+    var gate = document.getElementById('cosmoLoginGate');
+    if(!gate) return;
+    gate.classList.add('show');
+    gate.querySelectorAll('.clg-opt').forEach(function(b){
+      b.addEventListener('click', function(){
+        try{ localStorage.setItem('cosmoUser', b.dataset.user); }catch(e){}
+        location.reload();
+      });
+    });
+  });
+})();
+</script>
 
 <div class="sky-bg"></div>
 <div class="sky-stars"></div>
@@ -571,6 +615,9 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
       </div>
     </div>
     <button class="profile-save" type="button" onclick="saveProfile()">salvar e sincronizar ✦</button>
+    <div class="profile-switch" style="text-align:center;margin-top:10px">
+      <a href="#" onclick="trocarPerfil();return false" style="font-size:.62rem;letter-spacing:.5px;color:var(--mint);opacity:.6;text-decoration:underline">não é você? trocar perfil</a>
+    </div>
   </section>
 
   <!-- ════════ QUIZ DA LINGUAGEM DO AMOR ════════ -->
@@ -669,6 +716,9 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
   }catch(e){ console.warn('Firebase não iniciou:', e); _db = null; }
 
   const _CLIENT = (function(){
+    let u = null;
+    try{ u = localStorage.getItem('cosmoUser'); }catch(e){}
+    if(u) return u;
     let c = null;
     try{ c = localStorage.getItem('cosmoClientId'); }catch(e){}
     if(!c){ c = 'c' + Math.random().toString(36).slice(2) + Date.now().toString(36); try{ localStorage.setItem('cosmoClientId', c); }catch(e){} }
@@ -1014,6 +1064,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     el.textContent = profEmojiPool[idx % profEmojiPool.length];
   }
   cyclePickEmoji('meEmoji','jg-prof-me-emoji-idx');
+  const IDENTITY_META = { jussara:{name:'Jussara',emoji:'🌼'}, grazi:{name:'Grazi',emoji:'🌻'} };
   // restaura input local
   try{
     const me = JSON.parse(localStorage.getItem('jg-profile-me')||'null');
@@ -1021,6 +1072,11 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
       if(me.name) document.getElementById('meName').value = me.name;
       if(me.lang) document.getElementById('meLang').value = me.lang;
       if(me.emoji) document.getElementById('meEmoji').textContent = me.emoji;
+    } else if(IDENTITY_META[_CLIENT]){
+      // primeira vez com o login "quem é você?" — já preenche e sincroniza sozinho
+      document.getElementById('meName').value = IDENTITY_META[_CLIENT].name;
+      document.getElementById('meEmoji').textContent = IDENTITY_META[_CLIENT].emoji;
+      saveProfile();
     }
   }catch(e){}
   function saveProfile(){
@@ -1040,6 +1096,11 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     }
   }
   window.saveProfile = saveProfile;
+  function trocarPerfil(){
+    try{ localStorage.removeItem('cosmoUser'); }catch(e){}
+    location.reload();
+  }
+  window.trocarPerfil = trocarPerfil;
   if(_db){
     _db.collection('profiles').onSnapshot(snap=>{
       let latest = null;

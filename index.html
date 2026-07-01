@@ -451,9 +451,53 @@ img{max-width:100%}
 .vid-rec-btn.danger{background:linear-gradient(180deg,#E36870,#7A2530);color:#fff}
 .vid-rec-btn.ghost{background:transparent;border:1.5px solid rgba(232,184,109,.45);color:#E8B86D}
 .vid-rec-status{margin-top:10px;text-align:center;font-size:.7rem;color:rgba(240,223,192,.6);font-style:italic;min-height:1.2em}
+
+/* ══ COSMO LOGIN GATE — "quem é você?" ══ */
+.cosmo-login-gate{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:24px;
+  background:radial-gradient(ellipse at 50% 20%,rgba(124,91,173,.15),transparent 55%),linear-gradient(170deg,#100E28,#181440,#12102A);}
+.cosmo-login-gate.show{display:flex}
+.clg-card{max-width:340px;width:100%;text-align:center;font-family:'Nunito',sans-serif}
+.clg-deco{font-size:1rem;color:#C4956A;opacity:.6;letter-spacing:4px;margin-bottom:10px}
+.clg-card h2{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;color:#F0DFC0;margin-bottom:6px}
+.clg-card p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:rgba(240,223,192,.6);margin-bottom:26px}
+.clg-options{display:flex;flex-direction:column;gap:14px}
+.clg-opt{display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;
+  background:rgba(240,223,192,.04);border:1px solid rgba(240,223,192,.12);
+  color:#F0DFC0;font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;letter-spacing:.5px;
+  cursor:pointer;transition:.2s;text-align:left}
+.clg-opt:active{background:rgba(240,223,192,.1);transform:scale(.98)}
+.clg-ico{font-size:1.6rem}
 </style>
 </head>
 <body>
+<div class="cosmo-login-gate" id="cosmoLoginGate" aria-hidden="true">
+  <div class="clg-card">
+    <div class="clg-deco">✦ ✧ ✦</div>
+    <h2>Quem é você?</h2>
+    <p>Escolha seu perfil pra personalizar o álbum</p>
+    <div class="clg-options">
+      <button type="button" class="clg-opt" data-user="jussara"><span class="clg-ico">🌼</span><span>Jussara</span></button>
+      <button type="button" class="clg-opt" data-user="grazi"><span class="clg-ico">🌻</span><span>Grazi</span></button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var u=null; try{ u = localStorage.getItem('cosmoUser'); }catch(e){}
+  if(u) return;
+  document.addEventListener('DOMContentLoaded', function(){
+    var gate = document.getElementById('cosmoLoginGate');
+    if(!gate) return;
+    gate.classList.add('show');
+    gate.querySelectorAll('.clg-opt').forEach(function(b){
+      b.addEventListener('click', function(){
+        try{ localStorage.setItem('cosmoUser', b.dataset.user); }catch(e){}
+        location.reload();
+      });
+    });
+  });
+})();
+</script>
 
 <!-- ═══ SCREEN 0: PACK ═══ -->
 <div class="screen pack-screen active" id="s-pack">
@@ -743,6 +787,10 @@ img{max-width:100%}
           <span class="jg-lab">o quiz das duas</span><span class="jg-nm">Linguagem do amor</span>
           <span class="jg-dk">12 perguntas · descobre como cada uma ama</span>
         </a>
+        <a class="jg-btn" href="#" onclick="goMeuPerfil();return false" style="grid-column:1/-1">
+          <span class="jg-lab">seu signo, sua lua, seu ascendente</span><span class="jg-nm">✦ Ver meu Perfil Cósmico</span>
+          <span class="jg-dk">a página é diferente pra cada uma — a sua abre sozinha aqui</span>
+        </a>
       </section>
       <footer class="jg-foot">
         <div class="jg-folio">JG · sumário</div>
@@ -978,6 +1026,17 @@ function _jgShowRevealInstant(){
 function goPack(){
   if(_jgPackOpenedToday()){ _jgShowRevealInstant(); return; }
   _hideAllScreens(); document.getElementById('s-pack').classList.add('active'); window.scrollTo({top:0,behavior:'instant'});
+}
+function goMeuPerfil(){
+  let u = null; try{ u = localStorage.getItem('cosmoUser'); }catch(e){}
+  const nameMap = { jussara:'Jussara', grazi:'Grazi' };
+  const wanted = nameMap[u];
+  let idx = AL.findIndex(p=>p.type==='editorial' && p.title===wanted);
+  if(idx < 0) idx = AL.findIndex(p=>p.type==='editorial');
+  _hideAllScreens();
+  document.getElementById('s-book').classList.add('active');
+  goP(idx);
+  window.scrollTo({top:0,behavior:'instant'});
 }
 function _jgHashRoute(){
   const h = (location.hash||'').replace(/^#/,'');
@@ -1534,6 +1593,9 @@ if(_FB_ON){
 // ─── Notificações de foto nova ───
 // id único deste aparelho (para não notificar você das suas próprias fotos)
 const _CLIENT = (function(){
+  let u = null;
+  try{ u = localStorage.getItem('cosmoUser'); }catch(e){}
+  if(u) return u;
   let c = null;
   try{ c = localStorage.getItem('cosmoClientId'); }catch(e){}
   if(!c){ c = 'c' + Math.random().toString(36).slice(2) + Date.now().toString(36); try{ localStorage.setItem('cosmoClientId', c); }catch(e){} }
