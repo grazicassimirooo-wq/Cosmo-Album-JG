@@ -771,9 +771,9 @@ img{max-width:100%}
           <div class="jg-titles"><div class="jg-lang">Atos de Serviço <span class="jg-read-mark">✓</span></div><div class="jg-promise">amar é fazer</div></div>
           <div class="jg-pg">cap. IV<br>pág · 58</div>
         </button>
-        <button class="jg-tocrow jg-reveal" style="--acc:var(--jg-violet)" data-id="5" onclick="alert('Capítulo V em construção')">
+        <button class="jg-tocrow jg-reveal" style="--acc:var(--jg-violet)" data-id="5" onclick="goPresentes()">
           <div class="jg-numchip">V</div>
-          <div class="jg-titles"><div class="jg-lang">Presentes <span class="jg-read-mark">✓</span></div><div class="jg-promise">um doce, sem motivo</div></div>
+          <div class="jg-titles"><div class="jg-lang">Presentes & Dates <span class="jg-read-mark">✓</span></div><div class="jg-promise">vales pra resgatar e dates pra viver</div></div>
           <div class="jg-pg">cap. V<br>pág · 74</div>
         </button>
       </nav>
@@ -1026,6 +1026,14 @@ function _jgShowRevealInstant(){
 function goPack(){
   if(_jgPackOpenedToday()){ _jgShowRevealInstant(); return; }
   _hideAllScreens(); document.getElementById('s-pack').classList.add('active'); window.scrollTo({top:0,behavior:'instant'});
+}
+function goPresentes(){
+  const idx = AL.findIndex(p=>p.type==='gifts');
+  if(idx < 0) return;
+  _hideAllScreens();
+  document.getElementById('s-book').classList.add('active');
+  goP(idx);
+  window.scrollTo({top:0,behavior:'instant'});
 }
 function goMeuPerfil(){
   let u = null; try{ u = localStorage.getItem('cosmoUser'); }catch(e){}
