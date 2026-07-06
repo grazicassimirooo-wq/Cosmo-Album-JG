@@ -1169,10 +1169,16 @@ body{
   }
   function fecharCartas(){ $('cartasModal').classList.remove('on'); }
   function apagarCarta(i){
-    // só apaga do cache local de enviadas (a cópia da nuvem fica preservada)
     const enviadas = getEnviadas();
+    const carta = enviadas[i];
     enviadas.splice(i,1);
     saveEnviadas(enviadas);
+    // apaga também na nuvem — senão a próxima sincronização traz a carta de volta
+    if(_db && carta && carta.id){
+      _db.collection('letters').doc(carta.id).delete()
+        .then(()=> flash('Carta apagada ✕'))
+        .catch(err=>{ console.warn('Falha ao apagar na nuvem:', err); flash('Não apagou na nuvem — pode voltar'); });
+    }
     atualizarContador(); renderCartas();
   }
   $('cartasModal').addEventListener('click', e=>{ if(e.target.id==='cartasModal') fecharCartas(); });

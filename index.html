@@ -1349,6 +1349,14 @@ const _CLIENT = (function(){
   if(!c){ c = 'c' + Math.random().toString(36).slice(2) + Date.now().toString(36); try{ localStorage.setItem('cosmoClientId', c); }catch(e){} }
   return c;
 })();
+// id físico do aparelho — o token de push é por aparelho, não por usuária
+// (senão dois celulares da mesma pessoa disputam o mesmo doc e só o último recebe push)
+const _DEVICE = (function(){
+  let c = null;
+  try{ c = localStorage.getItem('cosmoClientId'); }catch(e){}
+  if(!c){ c = 'c' + Math.random().toString(36).slice(2) + Date.now().toString(36); try{ localStorage.setItem('cosmoClientId', c); }catch(e){} }
+  return c;
+})();
 let _firstSnap = true; // ignora a 1ª leitura (fotos que já existiam) para não notificar
 
 // ─── Push com o app FECHADO (Firebase Cloud Messaging) ───
@@ -1369,7 +1377,10 @@ async function _initFCM(){
     if(!token) return;
     _fcmActive = true;
     // guarda o token deste aparelho para a função no servidor enviar o push
-    await _db.collection('tokens').doc(_CLIENT).set({ token, client: _CLIENT, ts: Date.now() });
+    // (doc por aparelho; "client" continua sendo a usuária, pra não notificar quem enviou)
+    await _db.collection('tokens').doc(_DEVICE).set({ token, client: _CLIENT, ts: Date.now() });
+    // migração: remove o doc antigo compartilhado por usuária, se existir
+    if(_DEVICE !== _CLIENT){ _db.collection('tokens').doc(_CLIENT).delete().catch(()=>{}); }
     // com o app aberto, mostra a notificação na hora
     messaging.onMessage(()=> _notifyNewPhoto());
   }catch(e){ console.warn('FCM não ativou:', e); }

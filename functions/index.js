@@ -38,23 +38,35 @@ async function sendToOther(by, data) {
     log.targets = targets.map((t) => t.id).join(',');
     if (!targets.length) { log.result = 'sem destinatários'; return log; }
 
-    const link = new URL(data.link || './', BASE).href;
-    const res = await getMessaging().sendEachForMulticast({
-      tokens: targets.map((t) => t.token),
-      data,
-      webpush: {
-        headers: { Urgency: 'high' },
-        // com o bloco `notification`, o navegador exibe o aviso sozinho,
-        // mesmo se o service worker não rodar o onBackgroundMessage
-        notification: {
-          title: data.title,
-          body: data.body,
-          icon: BASE + 'icon-192.png',
-          badge: BASE + 'icon-192.png',
-          tag: data.tag,
-          renotify: true
-        },
-        fcmOptions: { link }
+  const tokensSnap = await db.collection('tokens').get();
+  const targets = [];
+  const seen = new Set(); // mesmo token pode estar em dois docs (migração usuária → aparelho)
+  tokensSnap.forEach((doc) => {
+    const t = doc.data();
+    if (t && t.token && t.client !== by && !seen.has(t.token)) {
+      seen.add(t.token);
+      targets.push({ id: doc.id, token: t.token });
+    }
+  });
+  if (!targets.length) return;
+
+  const res = await getMessaging().sendEachForMulticast({
+    tokens: targets.map((t) => t.token),
+    data: {
+      title: '💛 Nova foto no álbum!',
+      body: 'Alguém adicionou uma foto novinha 📸✨'
+    },
+    webpush: { headers: { Urgency: 'high' }, fcmOptions: { link: '/' } }
+  });
+
+  // Limpa tokens que não valem mais (aparelho desinstalou / permissão revogada)
+  const deletions = [];
+  res.responses.forEach((r, i) => {
+    if (!r.success) {
+      const code = r.error && r.error.code;
+      if (code === 'messaging/registration-token-not-registered' ||
+          code === 'messaging/invalid-argument') {
+        deletions.push(db.collection('tokens').doc(targets[i].id).delete());
       }
     });
     log.ok = res.successCount;
