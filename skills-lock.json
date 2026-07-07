@@ -13,6 +13,18 @@
       "skillPath": "skills/brandkit/SKILL.md",
       "computedHash": "b63012f3c3d21197e0185d3e9cc7ec40c589fb10e0b5a32a561739de31aa3f20"
     },
+    "code-simplifier": {
+      "source": "rtk-ai/rtk",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/code-simplifier/SKILL.md",
+      "computedHash": "a503f0907b54c6b450c06aae866a9352518dda16f908241944ba72a405abc7e8"
+    },
+    "design-patterns": {
+      "source": "rtk-ai/rtk",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/design-patterns/SKILL.md",
+      "computedHash": "4372e23db7a82cf23ffec2db1e19a145dc13251cb80654768cafc133ab07d72a"
+    },
     "design-taste-frontend": {
       "source": "Leonxlnx/taste-skill",
       "sourceType": "github",
@@ -67,11 +79,23 @@
       "skillPath": "skills/brutalist-skill/SKILL.md",
       "computedHash": "8fc355c4aadb7d29c53ca28bc41be3cd6eea765d121e3737c4dc2d0f90a8effa"
     },
+    "issue-triage": {
+      "source": "rtk-ai/rtk",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/issue-triage/SKILL.md",
+      "computedHash": "87ff37f4cde77c95b5f6c307efa62fd305886f5dbf01698fbd466983e8b8120b"
+    },
     "minimalist-ui": {
       "source": "Leonxlnx/taste-skill",
       "sourceType": "github",
       "skillPath": "skills/minimalist-skill/SKILL.md",
       "computedHash": "08873a3131d3be27bef9bf3304b310b16b44ca6e3561aebe532797be3443f6bd"
+    },
+    "pr-triage": {
+      "source": "rtk-ai/rtk",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/pr-triage/SKILL.md",
+      "computedHash": "bc33a3270ee38160b290d852d1f77f0fe0cbcf9914715dadf770933ab0079995"
     },
     "redesign-existing-projects": {
       "source": "Leonxlnx/taste-skill",
@@ -79,11 +103,29 @@
       "skillPath": "skills/redesign-skill/SKILL.md",
       "computedHash": "b405eee0e0e80fc243f731d9aa368bca307e356db7e6157d27101d369dac6726"
     },
+    "rtk-tdd": {
+      "source": "rtk-ai/rtk",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/rtk-tdd/SKILL.md",
+      "computedHash": "270ad4feaf83248082fa8d90d62c82afc6bbed77b1613782ff08a485f0b4b06d"
+    },
+    "rtk-triage": {
+      "source": "rtk-ai/rtk",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/rtk-triage/SKILL.md",
+      "computedHash": "967e402b2639433c6b0bebd634c909e13345fc2cc60d4b85bba8e72f445d76ae"
+    },
     "stitch-design-taste": {
       "source": "Leonxlnx/taste-skill",
       "sourceType": "github",
       "skillPath": "skills/stitch-skill/SKILL.md",
       "computedHash": "13322f38406cd3abf16ba45e35bdc9b18002d0153a79b4612b97aefc65d5a335"
+    },
+    "tdd-rust": {
+      "source": "rtk-ai/rtk",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/tdd-rust/SKILL.md",
+      "computedHash": "3b5a8171412f67c82102c665129af092502c74eebb781ad4687febeeed0bc064"
     },
     "typeui-fundamentals": {
       "source": "bergside/typeui",
