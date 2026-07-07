@@ -1661,7 +1661,12 @@ async function _initFCM(){
     if(!VAPID_KEY || VAPID_KEY.indexOf('COLE_AQUI') !== -1) return;            // ainda não configurado
     if(firebase.messaging.isSupported && !firebase.messaging.isSupported()) return;
     const messaging = firebase.messaging();
-    const token = await messaging.getToken({ vapidKey: VAPID_KEY });
+    // registra o SW de push por caminho RELATIVO: o padrão do Firebase é
+    // /firebase-messaging-sw.js na raiz do domínio, que dá 404 no GitHub Pages
+    // (o site mora num subcaminho). Escopo próprio pra não substituir o sw.js.
+    let _swReg = null;
+    try{ _swReg = await navigator.serviceWorker.register('firebase-messaging-sw.js', { scope: './fcm-push/' }); }catch(e){ console.warn('SW de push não registrou:', e); }
+    const token = await messaging.getToken(_swReg ? { vapidKey: VAPID_KEY, serviceWorkerRegistration: _swReg } : { vapidKey: VAPID_KEY });
     if(!token) return;
     _fcmActive = true;
     // guarda o token deste aparelho para a função no servidor enviar o push
@@ -1671,8 +1676,12 @@ async function _initFCM(){
       const legacy = localStorage.getItem('cosmoClientId');
       if(legacy) _db.collection('tokens').doc(legacy).delete().catch(()=>{});
     }catch(e){}
-    // com o app aberto, mostra a notificação na hora
-    messaging.onMessage(()=> _notifyNewPhoto());
+    // com o app aberto, mostra a notificação na hora (com o conteúdo do push:
+    // carta, doce ou foto — antes tudo virava "nova foto")
+    messaging.onMessage(payload=>{
+      const d = (payload && payload.data) || {};
+      _showLocalNotification(d.title || '💛 Novidade no álbum!', d.body || 'Tem algo novo esperando por você ✦', d.tag || 'cosmo-album');
+    });
   }catch(e){ console.warn('FCM não ativou:', e); }
 }
 
@@ -1687,18 +1696,22 @@ function _askNotify(){
   }catch(e){}
 }
 
-// Mostra a notificação "foto nova"
-function _notifyNewPhoto(){
+// Mostra uma notificação local (app aberto)
+function _showLocalNotification(title, body, tag){
   try{
     if(!('Notification' in window) || Notification.permission !== 'granted') return;
-    const title = '💛 Nova foto no álbum!';
-    const opts = { body: 'Alguém adicionou uma foto novinha 📸✨', icon: 'icon-192.png', badge: 'icon-192.png', tag: 'cosmo-photo', renotify: true };
+    const opts = { body, icon: 'icon-192.png', badge: 'icon-192.png', tag, renotify: true };
     if(navigator.serviceWorker && navigator.serviceWorker.ready){
       navigator.serviceWorker.ready.then(reg => reg.showNotification(title, opts)).catch(()=>{ try{ new Notification(title, opts); }catch(e){} });
     } else {
       new Notification(title, opts);
     }
   }catch(e){}
+}
+
+// Mostra a notificação "foto nova" (fallback via Firestore, sem FCM)
+function _notifyNewPhoto(){
+  _showLocalNotification('💛 Nova foto no álbum!', 'Alguém adicionou uma foto novinha 📸✨', 'cosmo-photo');
 }
 
 // Acha o quadro pela chave: id fixo (novo) OU id legado (fotos antigas)

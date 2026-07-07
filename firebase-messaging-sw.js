@@ -17,23 +17,31 @@ const messaging = firebase.messaging();
 // Mensagem recebida com o app em segundo plano / fechado
 messaging.onBackgroundMessage((payload) => {
   const d = (payload && payload.data) || {};
-  self.registration.showNotification(d.title || '💛 Nova foto no álbum!', {
-    body: d.body || 'Alguém adicionou uma foto novinha 📸✨',
+  self.registration.showNotification(d.title || '💛 Novidade no álbum!', {
+    body: d.body || 'Tem algo novo esperando por você ✦',
     icon: 'icon-192.png',
     badge: 'icon-192.png',
-    tag: 'cosmo-photo',
+    tag: d.tag || 'cosmo-album',
     renotify: true,
-    data: { link: '/' }
+    data: { link: d.link || './' }
   });
 });
 
-// Tocar na notificação foca/abre o álbum
+// Tocar na notificação abre a página certa (link resolvido pelo escopo do SW —
+// funciona no Firebase Hosting e no GitHub Pages, que serve num subcaminho)
 self.addEventListener('notificationclick', (e) => {
   e.notification.close();
+  const link = (e.notification.data && e.notification.data.link) || './';
+  const url = new URL(link, self.registration.scope).href;
   e.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((cs) => {
-      for (const c of cs) { if ('focus' in c) return c.focus(); }
-      if (clients.openWindow) return clients.openWindow('/');
+      for (const c of cs) {
+        if ('focus' in c) {
+          if (c.url !== url && 'navigate' in c) c.navigate(url).catch(() => {});
+          return c.focus();
+        }
+      }
+      if (clients.openWindow) return clients.openWindow(url);
     })
   );
 });
