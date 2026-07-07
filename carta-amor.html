@@ -383,6 +383,7 @@ body{
   font-family:'Pinyon Script',cursive;
 }
 .letter-greet input::placeholder{color:rgba(90,56,32,.4)}
+.letter-greet #greet{flex:0 1 46%;text-align:left}
 
 /* linhas de pauta sutis atrás do texto */
 .letter-body{
@@ -799,7 +800,7 @@ body{
 
       <form class="letter-field" onsubmit="event.preventDefault();enviar()">
         <label class="letter-greet">
-          <span>Querida</span>
+          <input id="greet" type="text" placeholder="Querida" value="Querida" aria-label="Saudação (pode trocar ou apagar)">
           <input id="dest" type="text" placeholder="Jussara" value="Jussara">
           <span>,</span>
         </label>
@@ -961,7 +962,11 @@ body{
   /* ---- restaurar rascunho ---- */
   try{
     const d = JSON.parse(localStorage.getItem(DRAFT) || 'null');
-    if(d){ if(d.dest) $('dest').value = d.dest; if(d.body) ta.value = d.body; }
+    if(d){
+      if(d.dest) $('dest').value = d.dest;
+      if(d.body) ta.value = d.body;
+      if(typeof d.greet === 'string') $('greet').value = d.greet; // '' = sem saudação, por escolha
+    }
   }catch(e){}
   $('dest').value = _THEIR_NAME;
   const _signEl = document.getElementById('letter-sign');
@@ -969,10 +974,10 @@ body{
   autoGrow();
 
   /* ---- auto-save do rascunho ---- */
-  ['dest','letter'].forEach(id=>{
+  ['greet','dest','letter'].forEach(id=>{
     $(id).addEventListener('input', ()=>{
       localStorage.setItem(DRAFT, JSON.stringify({
-        dest: $('dest').value, body: ta.value, ts: Date.now()
+        greet: $('greet').value, dest: $('dest').value, body: ta.value, ts: Date.now()
       }));
       if(id==='letter') autoGrow();
     });
@@ -1015,7 +1020,7 @@ body{
   /* ---- salvar rascunho ---- */
   function salvar(){
     if(!ta.value.trim()){ flash('Escreva algo antes de selar ✦'); return; }
-    localStorage.setItem(DRAFT, JSON.stringify({ dest:$('dest').value, body:ta.value, ts:Date.now() }));
+    localStorage.setItem(DRAFT, JSON.stringify({ greet:$('greet').value, dest:$('dest').value, body:ta.value, ts:Date.now() }));
     if(navigator.vibrate) navigator.vibrate([20,60,20]);
     flash('Rascunho guardado ✒');
   }
@@ -1024,9 +1029,10 @@ body{
   function enviar(){
     const body = ta.value.trim();
     const dest = ($('dest').value.trim() || 'meu amor');
+    const greet = $('greet').value.trim();   // pode ser '' — carta sem saudação
     if(!body){ flash('A carta está em branco…'); return; }
 
-    const carta = { dest, body, ts: Date.now(), by: _CLIENT };
+    const carta = { greet, dest, body, ts: Date.now(), by: _CLIENT };
     const enviadas = getEnviadas();
     enviadas.unshift(carta);
     saveEnviadas(enviadas);
@@ -1065,7 +1071,7 @@ body{
         snap.forEach(doc=>{
           const c = doc.data();
           if(!c || !c.body) return;
-          const item = { id: doc.id, dest: c.dest||'', body: c.body, ts: c.ts||0, by: c.by||'' };
+          const item = { id: doc.id, greet: c.greet, dest: c.dest||'', body: c.body, ts: c.ts||0, by: c.by||'' };
           if(c.by === _CLIENT) enviadas.push(item);
           else recebidas.push(item);
         });
@@ -1122,7 +1128,7 @@ body{
     list.innerHTML = cartas.map((c,i)=>`
       <div class="carta-item${recebida?' recebida':''}">
         ${recebida ? '<div class="ci-from"><span class="dot"></span>Recebida</div>' : '<button class="ci-del" onclick="apagarCarta(' + i + ')" aria-label="Apagar">✕</button><div class="ci-from"><span class="dot"></span>Enviada por você</div>'}
-        <div class="ci-dest">Querida ${escapeHtml(c.dest||'meu amor')},</div>
+        <div class="ci-dest">${escapeHtml(((typeof c.greet==='string' ? c.greet : 'Querida').trim() + ' ' + (c.dest||'meu amor')).trim())},</div>
         <div class="ci-body">${escapeHtml(c.body)}</div>
         <div class="ci-date">${fmtData(c.ts)}${recebida?'':' · com amor, ' + _MY_INITIAL}</div>
       </div>`).join('');
