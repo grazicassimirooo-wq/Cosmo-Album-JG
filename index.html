@@ -1653,6 +1653,9 @@ let _fcmActive = false;
 
 async function _initFCM(){
   try{
+    // só registra o token com um perfil real — com id aleatório de aparelho, o
+    // servidor não reconhece "quem enviou" e a pessoa recebe push da própria foto
+    if(_CLIENT !== 'jussara' && _CLIENT !== 'grazi') return;
     if(!_db || typeof firebase === 'undefined' || typeof firebase.messaging !== 'function') return;
     if(!('Notification' in window) || Notification.permission !== 'granted') return;
     if(!VAPID_KEY || VAPID_KEY.indexOf('COLE_AQUI') !== -1) return;            // ainda não configurado
@@ -1663,6 +1666,11 @@ async function _initFCM(){
     _fcmActive = true;
     // guarda o token deste aparelho para a função no servidor enviar o push
     await _db.collection('tokens').doc(_CLIENT).set({ token, client: _CLIENT, ts: Date.now() });
+    // apaga o token que este aparelho possa ter registrado com id aleatório
+    try{
+      const legacy = localStorage.getItem('cosmoClientId');
+      if(legacy) _db.collection('tokens').doc(legacy).delete().catch(()=>{});
+    }catch(e){}
     // com o app aberto, mostra a notificação na hora
     messaging.onMessage(()=> _notifyNewPhoto());
   }catch(e){ console.warn('FCM não ativou:', e); }
