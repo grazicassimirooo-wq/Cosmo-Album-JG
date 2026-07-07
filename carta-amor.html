@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>✒️ Escrever Carta de Amor — J&G</title>
 <meta name="theme-color" content="#0E0B36">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -27,12 +27,12 @@
   --gold2:#E8C36A;
   --gold-glow:#F4DA8A;
   --gold-deep:#8E6A1F;
-  --wine:#5C1A22;
-  --wine2:#7A2530;
-  --rose:#C7424B;
-  --rose-lt:#E36870;
-  --leaf:#2F5A2A;
-  --leaf2:#4A7A38;
+  --wine:#2A2060;
+  --wine2:#4A4090;
+  --rose:#D4736E;
+  --rose-lt:#E89890;
+  --leaf:#3A3070;
+  --leaf2:#7C5BAD;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -118,7 +118,7 @@ body{
 }
 .const.c1{top:60%;left:5%;font-size:.6rem;letter-spacing:6px}
 .const.c2{top:22%;right:6%;font-size:.5rem;letter-spacing:5px}
-.const.c3{bottom:18%;right:10%;font-size:.55rem;letter-spacing:6px}
+.const.c3{bottom:18%;right:10%;font-size:.62rem;letter-spacing:6px}
 
 /* ═══════════════════════════════════════════════════
    APP CONTAINER
@@ -179,48 +179,49 @@ body{
 .cornerflower.bl{bottom:-10px;left:-10px;transform:scaleY(-1)}
 .cornerflower.br{bottom:-10px;right:-10px;transform:scale(-1,-1)}
 
-/* leaves */
+/* névoas de nebulosa (antes eram folhas verdes) */
 .leaf{
   position:absolute;width:60px;height:24px;
-  background:radial-gradient(ellipse at 30% 50%, var(--leaf2) 0%, var(--leaf) 60%, #1c3a18 100%);
-  border-radius:60% 10% 60% 10%;
-  box-shadow:inset 0 -2px 4px rgba(0,0,0,.4),inset 0 2px 4px rgba(255,255,255,.08);
+  background:radial-gradient(ellipse at 30% 50%, rgba(124,91,173,.5) 0%, rgba(74,64,144,.35) 60%, transparent 100%);
+  border-radius:60% 40% 60% 40%;
+  filter:blur(3px);
 }
 .leaf.l1{top:18px;left:8px;transform:rotate(-25deg)}
 .leaf.l2{top:48px;left:-4px;transform:rotate(20deg);width:50px;height:20px}
 .leaf.l3{top:78px;left:14px;transform:rotate(-50deg);width:46px;height:18px}
 .leaf.l4{top:8px;left:42px;transform:rotate(45deg);width:44px;height:18px}
 
-/* flor (rosa) construída com camadas radiais */
+/* astros dourados (antes eram rosas vermelhas) */
 .rose{
   position:absolute;border-radius:50%;
-  background:
-    radial-gradient(circle at 50% 50%,#5C0E14 0%,#8E1A22 18%,#C7424B 38%,#E36870 60%,#F2A0A4 100%);
+  background:radial-gradient(circle at 38% 32%,#FCE6A8 0%,var(--gold2) 35%,var(--gold) 60%,var(--gold-deep) 100%);
   box-shadow:
-    inset 0 -8px 14px rgba(60,5,12,.7),
-    inset 0 6px 12px rgba(255,180,170,.35),
-    0 4px 14px rgba(0,0,0,.45);
+    inset 0 -6px 12px rgba(90,55,15,.55),
+    inset 0 5px 10px rgba(255,240,200,.4),
+    0 0 22px rgba(232,195,106,.4);
+  animation:twk 6s ease-in-out infinite alternate;
 }
 .rose::before{
   content:'';position:absolute;inset:18%;border-radius:50%;
-  background:radial-gradient(circle at 40% 35%,#F8B0A8,#C7424B 50%,#5C0E14 100%);
-  box-shadow:inset 0 -4px 8px rgba(60,5,12,.6);
+  background:radial-gradient(circle at 40% 35%,#FFF6DF,var(--gold2) 55%,transparent 100%);
+  opacity:.75;
 }
 .rose::after{
   content:'';position:absolute;inset:38%;border-radius:50%;
-  background:radial-gradient(circle at 45% 40%,#FACFC6,#A02530 90%);
+  background:radial-gradient(circle at 45% 40%,#fff,rgba(252,230,168,.0) 90%);
 }
 .rose.r1{top:0;left:18px;width:54px;height:54px}
-.rose.r2{top:36px;left:46px;width:42px;height:42px;background:radial-gradient(circle at 50% 50%,#5C0E14 0%,#8E1A22 18%,#D85A2F 38%,#F0945A 65%,#F8C58A 100%)}
+.rose.r2{top:36px;left:46px;width:42px;height:42px;background:radial-gradient(circle at 38% 32%,#EAD9FF 0%,#9B7BC9 40%,#7C5BAD 65%,#3A2870 100%);box-shadow:inset 0 -6px 12px rgba(30,15,60,.55),inset 0 5px 10px rgba(240,225,255,.4),0 0 22px rgba(124,91,173,.45)}
 .rose.r3{top:56px;left:8px;width:34px;height:34px}
-.rose.r4{top:-6px;left:62px;width:30px;height:30px;background:radial-gradient(circle at 50% 50%,#5C0E14 0%,#8E1A22 20%,#E78A2C 45%,#F4B868 70%,#FCDFA0 100%)}
-.rose.r5{top:78px;left:54px;width:26px;height:26px;background:radial-gradient(circle at 50% 50%,#5C0E14 0%,#8E1A22 20%,#E78A2C 45%,#F4B868 70%,#FCDFA0 100%)}
+.rose.r4{top:-6px;left:62px;width:30px;height:30px;background:radial-gradient(circle at 38% 32%,#FFE3DE 0%,var(--rose-lt) 40%,var(--rose) 70%,#8E3A36 100%);box-shadow:inset 0 -6px 12px rgba(90,25,25,.5),inset 0 5px 10px rgba(255,230,225,.4),0 0 20px rgba(212,115,110,.4)}
+.rose.r5{top:78px;left:54px;width:26px;height:26px;background:radial-gradient(circle at 38% 32%,#FFE3DE 0%,var(--rose-lt) 40%,var(--rose) 70%,#8E3A36 100%);box-shadow:inset 0 -5px 10px rgba(90,25,25,.5),0 0 18px rgba(212,115,110,.4)}
 
-/* tiny bud */
+/* estrelinha */
 .bud{
   position:absolute;width:14px;height:14px;border-radius:50%;
-  background:radial-gradient(circle at 40% 35%,#F2A0A4,#8E1A22);
-  box-shadow:0 2px 6px rgba(0,0,0,.4);
+  background:radial-gradient(circle at 40% 35%,#fff,var(--gold2) 60%,transparent 100%);
+  box-shadow:0 0 12px rgba(244,218,138,.7);
+  animation:twk 4s ease-in-out infinite alternate-reverse;
 }
 .bud.b1{top:96px;left:38px}
 .bud.b2{top:6px;left:96px}
@@ -457,7 +458,7 @@ body{
 }
 /* primário — Enviar (dourado, dominante) */
 .ribbon.primary{
-  background:linear-gradient(180deg,#7A2530 0%,#5C1A22 55%,#3E0E16 100%);
+  background:linear-gradient(180deg,#4A4090 0%,#2A2060 55%,#161244 100%);
   color:var(--gold-glow);
   border:1.5px solid var(--gold);
   text-shadow:0 1px 2px rgba(0,0,0,.6);
@@ -547,7 +548,7 @@ body{
   position:relative;z-index:3;
   margin:0 8px 8px;
   padding:10px 14px;
-  background:linear-gradient(180deg,var(--wine2) 0%,var(--wine) 60%,#3E0E16 100%);
+  background:linear-gradient(180deg,var(--wine2) 0%,var(--wine) 60%,#161244 100%);
   border:2px solid var(--gold);
   border-radius:4px;
   text-align:center;
@@ -586,10 +587,10 @@ body{
 .wax{
   width:130px;height:130px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  background:radial-gradient(circle at 38% 30%,#9E2E36,#7A2530 45%,#4E1118 100%);
+  background:radial-gradient(circle at 38% 30%,#8E6BC0,#5C4A9E 45%,#2A2060 100%);
   box-shadow:
-    inset 0 -10px 22px rgba(40,4,10,.7),
-    inset 0 8px 16px rgba(255,150,150,.25),
+    inset 0 -10px 22px rgba(15,8,45,.7),
+    inset 0 8px 16px rgba(210,190,255,.25),
     0 14px 40px rgba(0,0,0,.6);
   color:var(--gold-glow);
   font-family:'Great Vibes',cursive;font-size:3.4rem;
@@ -647,7 +648,7 @@ body{
 .cartas-tab .badge{display:inline-block;min-width:18px;height:18px;line-height:18px;border-radius:99px;background:var(--rose);color:#fff;font-family:'Nunito',sans-serif;font-size:.6rem;letter-spacing:0;padding:0 6px;margin-left:6px;vertical-align:middle}
 .cartas-tab .badge:empty,.cartas-tab .badge[data-n="0"]{display:none}
 .carta-item.recebida{background:linear-gradient(180deg,rgba(232,184,109,.94),rgba(196,149,106,.94))}
-.carta-item .ci-from{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:1.5px;color:var(--gold-deep);text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.carta-item .ci-from{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:1.5px;color:var(--gold-deep);text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px}
 .carta-item .ci-from .dot{width:6px;height:6px;border-radius:50%;background:var(--rose);display:inline-block}
 .carta-item.recebida .ci-from .dot{background:var(--leaf2)}
 .archive-link .new-pill{display:none;margin-left:6px;padding:2px 8px;border-radius:99px;background:var(--rose);color:#fff;font-family:'Nunito',sans-serif;font-size:.6rem;letter-spacing:.5px;font-weight:900;vertical-align:middle}
@@ -669,7 +670,7 @@ body{
 .cartas-empty{text-align:center;color:var(--parchment);opacity:.7;font-style:italic;padding:30px 10px}
 .cartas-close{
   width:100%;margin-top:6px;padding:12px;border-radius:8px;cursor:pointer;
-  background:linear-gradient(180deg,#7A2530,#3E0E16);color:var(--gold-glow);
+  background:linear-gradient(180deg,#4A4090,#161244);color:var(--gold-glow);
   border:1.5px solid var(--gold);font-family:'Cinzel',serif;letter-spacing:2px;font-size:.78rem;
 }
 
@@ -677,7 +678,7 @@ body{
 .flash{
   position:fixed;top:24px;left:50%;z-index:100;
   transform:translateX(-50%) translateY(-20px);
-  background:linear-gradient(180deg,#7A2530,#3E0E16);
+  background:linear-gradient(180deg,#4A4090,#161244);
   color:var(--gold-glow);
   font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:1.5px;font-weight:600;
   padding:10px 22px;border-radius:4px;border:1.5px solid var(--gold);
@@ -1159,5 +1160,6 @@ body{
   }
 </script>
 
+<script src="magic.js" defer></script>
 </body>
 </html>

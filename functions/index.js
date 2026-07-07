@@ -12,7 +12,7 @@ setGlobalOptions({ maxInstances: 3 });
 exports.notifyNewPhoto = onDocumentWritten('photos/{id}', async (event) => {
   const snap = event.data && event.data.after;
   const after = snap && snap.exists ? snap.data() : null;
-  if (!after || !after.img) return;
+  if (!after || !(after.img || after.url)) return;
 
   const by = after.by || '';
   const db = getFirestore();
