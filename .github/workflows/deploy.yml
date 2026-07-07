@@ -1,17 +1,28 @@
 # Deploy automático do Álbum J&G no Firebase (Hosting + Functions + regras).
 #
-# ⚠️ Precisa de UM segredo configurado no GitHub para funcionar:
+# ⚠️ Precisa de UM segredo configurado no GitHub (qualquer um dos dois):
+#
+# Caminho A — FIREBASE_TOKEN (recomendado; funciona mesmo quando o Google
+# bloqueia a criação de chaves de conta de serviço):
+#   1. Abra o Cloud Shell no navegador: https://shell.cloud.google.com
+#   2. Rode:  npx --yes firebase-tools@13 login:ci --no-localhost
+#      Abra o link que aparecer, entre com a MESMA conta Google do Firebase,
+#      autorize e cole de volta o código. O comando imprime um token (começa
+#      com "1//").
+#   3. GitHub → Settings → Secrets and variables → Actions → New repository secret
+#      Nome:  FIREBASE_TOKEN   ·   Valor: o token inteiro
+#
+# Caminho B — FIREBASE_SERVICE_ACCOUNT (se a sua conta permitir gerar chave):
 #   1. Console do Firebase → Configurações do projeto → Contas de serviço
 #      → "Gerar nova chave privada" (baixa um arquivo .json)
-#   2. GitHub → Settings → Secrets and variables → Actions → New repository secret
-#      Nome:  FIREBASE_SERVICE_ACCOUNT
-#      Valor: o conteúdo inteiro do arquivo .json
+#   2. Segredo com nome FIREBASE_SERVICE_ACCOUNT e o conteúdo inteiro do .json
 #
-# Sem o segredo, o job apenas avisa e termina verde (o GitHub Pages continua
-# publicando o site normalmente a cada merge). Com o segredo, todo push/merge
-# na main publica o site no Firebase Hosting E as Cloud Functions de push
-# (notificações de foto/carta/doce) + regras do Firestore/Storage.
-# Também dá pra disparar manualmente na aba Actions ("Run workflow").
+# Sem segredo nenhum, o job apenas avisa e termina verde (o GitHub Pages
+# continua publicando o site normalmente a cada merge). Com um dos segredos,
+# todo push/merge na main publica o site no Firebase Hosting E as Cloud
+# Functions de push (notificações de foto/carta/doce) + regras do
+# Firestore/Storage. Também dá pra disparar manualmente na aba Actions
+# ("Run workflow").
 name: Deploy Firebase
 
 on:
@@ -24,14 +35,25 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Avisar quando o segredo não existe
-        if: env.FIREBASE_SERVICE_ACCOUNT == ''
+      - name: Avisar quando nenhum segredo existe
+        if: env.FIREBASE_SERVICE_ACCOUNT == '' && env.FIREBASE_TOKEN == ''
         run: |
-          echo "::notice title=Deploy do Firebase pulado::O segredo FIREBASE_SERVICE_ACCOUNT ainda não foi configurado (instruções no topo de .github/workflows/deploy.yml). O site continua publicando pelo GitHub Pages."
+          echo "::notice title=Deploy do Firebase pulado::Nenhum segredo configurado (FIREBASE_TOKEN ou FIREBASE_SERVICE_ACCOUNT — instruções no topo de .github/workflows/deploy.yml). O site continua publicando pelo GitHub Pages."
 
+      # ── Caminho A: token do Firebase CLI (deploy completo de uma vez) ──
+      - name: Deploy completo com FIREBASE_TOKEN
+        if: env.FIREBASE_TOKEN != '' && env.FIREBASE_SERVICE_ACCOUNT == ''
+        run: |
+          npm --prefix functions install --no-fund --no-audit
+          npx --yes firebase-tools@13 deploy \
+            --only hosting,functions,firestore:rules,storage \
+            --project album--jussara --non-interactive --force
+
+      # ── Caminho B: chave de conta de serviço ──
       - name: Deploy Hosting
         if: env.FIREBASE_SERVICE_ACCOUNT != ''
         uses: FirebaseExtended/action-hosting-deploy@v0
