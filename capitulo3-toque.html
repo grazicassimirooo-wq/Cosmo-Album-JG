@@ -360,14 +360,26 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
 <script>
 (function(){
   var u=null; try{ u = localStorage.getItem('cosmoUser'); }catch(e){}
-  if(u) return;
+  if(u){ try{ localStorage.setItem('cosmoLastUser', u); }catch(e){} return; }
+  /* dados locais da usuária anterior — apagados só se o perfil escolhido for outro */
+  var USER_KEYS = ['jg-profile-me','jg-prof-me-emoji-idx','jg-quiz-result',
+    'jg-letter-draft','jg-cartas-enviadas','jg-cartas-recebidas','jg-cartas-vistas-ts',
+    'jg-doces','jg-touch-diary','jg-touch-media','jg-services-diary','jg-services-media',
+    'jg-read-chapters','jg-pack-opened-date'];
   document.addEventListener('DOMContentLoaded', function(){
     var gate = document.getElementById('cosmoLoginGate');
     if(!gate) return;
     gate.classList.add('show');
     gate.querySelectorAll('.clg-opt').forEach(function(b){
       b.addEventListener('click', function(){
-        try{ localStorage.setItem('cosmoUser', b.dataset.user); }catch(e){}
+        try{
+          var prev = localStorage.getItem('cosmoLastUser');
+          if(prev && prev !== b.dataset.user){
+            USER_KEYS.forEach(function(k){ localStorage.removeItem(k); });
+          }
+          localStorage.setItem('cosmoUser', b.dataset.user);
+          localStorage.setItem('cosmoLastUser', b.dataset.user);
+        }catch(e){}
         location.reload();
       });
     });
