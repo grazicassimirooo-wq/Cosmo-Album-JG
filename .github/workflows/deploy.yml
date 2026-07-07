@@ -1,0 +1,29 @@
+# Deploy automático do Álbum J&G no Firebase Hosting.
+#
+# ⚠️ Precisa de UM segredo configurado no GitHub para funcionar:
+#   1. Console do Firebase → Configurações do projeto → Contas de serviço
+#      → "Gerar nova chave privada" (baixa um arquivo .json)
+#   2. GitHub → Settings → Secrets and variables → Actions → New repository secret
+#      Nome:  FIREBASE_SERVICE_ACCOUNT
+#      Valor: o conteúdo inteiro do arquivo .json
+#
+# Depois disso, todo push/merge na branch main publica o site sozinho.
+# Também dá pra disparar manualmente na aba Actions ("Run workflow").
+name: Deploy Firebase Hosting
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          channelId: live
+          projectId: album--jussara

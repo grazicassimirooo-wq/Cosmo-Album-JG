@@ -1,0 +1,28 @@
+rules_version = '2';
+
+// Storage do Álbum J&G: leitura liberada (as URLs circulam no Firestore),
+// escrita só nas pastas que o app usa, com limite de tamanho e tipo certo.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /photos/{file} {
+      allow read;
+      allow write: if request.resource.size < 8 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+    match /videos/{file} {
+      allow read;
+      allow write: if request.resource.size < 80 * 1024 * 1024
+                   && request.resource.contentType.matches('video/.*');
+    }
+    match /touch-media/{file} {
+      allow read;
+      allow write: if request.resource.size < 80 * 1024 * 1024
+                   && request.resource.contentType.matches('(image|video)/.*');
+    }
+    match /service-media/{file} {
+      allow read;
+      allow write: if request.resource.size < 80 * 1024 * 1024
+                   && request.resource.contentType.matches('(image|video)/.*');
+    }
+  }
+}

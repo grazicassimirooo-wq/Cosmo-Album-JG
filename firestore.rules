@@ -1,0 +1,33 @@
+rules_version = '2';
+
+// Regras do Álbum J&G.
+// O app não tem login (é um presente compartilhado por link), então leitura e
+// escrita ficam liberadas — mas SÓ nas coleções que o álbum realmente usa.
+// Isso substitui o "modo de teste" (que expira em 30 dias e derruba a
+// sincronização) e impede que gravem dados em coleções arbitrárias.
+// Endurecimento futuro: Firebase Anonymous Auth + App Check.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{col}/{doc} {
+      allow read, write: if col in [
+        'counters',        // contadores das figurinhas
+        'doce-pedido',     // pedido de doce em tempo real
+        'doces',           // doces enviados
+        'letters',         // cartas de amor
+        'photos',          // fotos do álbum (doc guarda URL do Storage)
+        'places',          // lugares
+        'presence',        // presença "estou aqui"
+        'profiles',        // perfis J & G
+        'quiz-linguagem',  // resultado do quiz
+        'reactions',       // reações
+        'serviceMedia',    // mídia do capítulo serviço
+        'services',        // atos de serviço
+        'tempo-diario',    // diário do tempo de qualidade
+        'tokens',          // tokens de push (FCM)
+        'touchMedia',      // mídia do capítulo toque
+        'touches',         // toques
+        'videos'           // vídeos (doc guarda URL do Storage)
+      ];
+    }
+  }
+}
