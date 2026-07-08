@@ -49,6 +49,11 @@ jobs:
         if: env.FIREBASE_TOKEN != '' && env.FIREBASE_SERVICE_ACCOUNT == ''
         run: |
           npm --prefix functions install --no-fund --no-audit
+          # Recriação única (remover depois que o push funcionar): gatilhos
+          # criados logo após a 1ª ativação da API do Eventarc podem nascer
+          # inoperantes — apagar e recriar as funções resolve.
+          npx --yes firebase-tools@13 functions:delete notifyNewPhoto notifyNewLetter notifyNewDoce \
+            --project album--jussara --force || true
           npx --yes firebase-tools@13 deploy \
             --only hosting,functions,firestore:rules \
             --project album--jussara --non-interactive --force
@@ -64,7 +69,9 @@ jobs:
         if: env.FIREBASE_TOKEN != '' && env.FIREBASE_SERVICE_ACCOUNT == ''
         run: |
           echo "── bancos Firestore ──"
-          npx --yes firebase-tools@13 firestore:databases:list --project album--jussara || true
+          npx --yes firebase-tools@13 firestore:databases:get "(default)" --project album--jussara --json \
+            || npx --yes firebase-tools@latest firestore:databases:get "(default)" --project album--jussara --json \
+            || npx --yes firebase-tools@13 firestore:databases:list --project album--jussara || true
           echo "── funções ──"
           npx --yes firebase-tools@13 functions:list --project album--jussara || true
 
