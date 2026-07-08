@@ -2198,14 +2198,23 @@ function _resizeImage(dataURL, maxDim, cb){
 
 // Compartilha a foto: sobe pro Storage (sem o limite de 1MB do Firestore) e
 // grava só a URL no doc; se o Storage falhar, cai pro caminho antigo (base64).
+/* avisa a função de push na nuvem (o gatilho do Firestore não dispara neste projeto) */
+const _PUSH_URL = 'https://southamerica-east1-album--jussara.cloudfunctions.net/notify';
+function _pingPush(kind, extra){
+  try{
+    fetch(_PUSH_URL, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(Object.assign({ kind, by: _CLIENT, k: 'jg-cosmo-2026' }, extra||{})) }).catch(()=>{});
+  }catch(e){}
+}
 function _sharePhoto(uid, out){
   const meta = { ts: Date.now(), by: _CLIENT };
-  const viaDoc = ()=> _db.collection('photos').doc(uid).set(Object.assign({ img: out }, meta));
+  const done = r => { _pingPush('foto'); return r; };
+  const viaDoc = ()=> _db.collection('photos').doc(uid).set(Object.assign({ img: out }, meta)).then(done);
   if(!_stg) return viaDoc();
   return _stg.ref().child('photos/' + uid + '.jpg')
     .putString(out, 'data_url', { contentType: 'image/jpeg' })
     .then(s => s.ref.getDownloadURL())
-    .then(url => _db.collection('photos').doc(uid).set(Object.assign({ url }, meta)))
+    .then(url => _db.collection('photos').doc(uid).set(Object.assign({ url }, meta)).then(done))
     .catch(err => { console.warn('Storage falhou, salvando no doc:', err); return viaDoc(); });
 }
 
