@@ -91,9 +91,13 @@ exports.notify = onRequest({ cors: true }, async (req, res) => {
       : ((req.body && typeof req.body === 'object') ? req.body : {});
     if (b.k !== KEY) { res.status(403).json({ ok: false }); return; }
     if (b.kind === 'ping') {
-      // só prova de vida (usada pelo CI): registra no diário, sem enviar push
-      try { await getFirestore().collection('push-log').add({ tag: 'ping', ts: Date.now() }); } catch (e) {}
-      res.json({ ok: true, pong: true });
+      // prova de vida (usada pelo CI): registra no diário, sem enviar push.
+      // O resultado da escrita vai na resposta — se a conta de serviço da
+      // função estiver sem permissão no Firestore, é aqui que aparece.
+      let write = 'ok';
+      try { await getFirestore().collection('push-log').add({ tag: 'ping', ts: Date.now() }); }
+      catch (e) { write = 'ERRO: ' + ((e && e.message) || String(e)); }
+      res.json({ ok: true, pong: true, write });
       return;
     }
     const by = (b.by === 'grazi' || b.by === 'jussara') ? b.by : '';
