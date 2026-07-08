@@ -21,6 +21,23 @@ galáctico": 12 páginas HTML estáticas e independentes (sem build), Firebase
 (Firestore + Storage + FCM) para fotos/cartas/vídeos compartilhados em tempo
 real, e Cloud Function de push em `functions/`.
 
+- **Notificações push (FCM)**: NÃO usar gatilhos do Firestore
+  (`onDocumentCreated`/`Written`) — neste projeto o Eventarc nunca entrega os
+  eventos. O push é uma função HTTPS `notify` (`functions/index.js`, região
+  `southamerica-east1`) que o app chama via `_pingPush(kind, extra)` logo
+  após gravar carta/doce/foto no Firestore. A função lê `tokens/`, monta a
+  mensagem por tipo e envia a todos menos quem enviou; cada envio registra em
+  `push-log` (diagnóstico). Chave anti-varredura `k: 'jg-cosmo-2026'`.
+  Teste manual: abrir no navegador
+  `…/notify?k=jg-cosmo-2026&kind=carta&by=claude-teste` (GET responde com uma
+  página de status). Token só é registrado com perfil real (jussara/grazi).
+- **Permissões da conta de serviço (secure by default)**: a conta Google
+  bloqueia coisas por padrão. A conta de runtime das Functions
+  (`732871382789-compute@developer.gserviceaccount.com`) precisou receber à
+  mão (no Cloud Shell) `roles/datastore.user` e
+  `roles/firebasecloudmessaging.admin` — sem isso a função dá
+  `PERMISSION_DENIED` ao ler o banco/enviar push, em silêncio.
+
 - **Publicação**: GitHub Pages publica da `main` automaticamente. O Firebase
   (Hosting `album--jussara.web.app` + Functions de push + regras) publica via
   `.github/workflows/deploy.yml`, autenticado pelo segredo `FIREBASE_TOKEN`
