@@ -22,9 +22,11 @@ galáctico": 12 páginas HTML estáticas e independentes (sem build), Firebase
 real, e Cloud Function de push em `functions/`.
 
 - **Publicação**: GitHub Pages publica da `main` automaticamente. O Firebase
-  Hosting (`album--jussara.web.app`) só publica via
-  `.github/workflows/deploy.yml`, que precisa do segredo
-  `FIREBASE_SERVICE_ACCOUNT` no GitHub (ou `firebase deploy` manual).
+  (Hosting `album--jussara.web.app` + Functions de push + regras) publica via
+  `.github/workflows/deploy.yml`, autenticado pelo segredo `FIREBASE_TOKEN`
+  (gerado com `firebase login:ci`; configurado em 2026-07-08). A alternativa
+  `FIREBASE_SERVICE_ACCOUNT` não é viável: a conta Google bloqueia a criação
+  de chaves de conta de serviço.
 - **Identidade**: sem login; o gate "Quem é você?" grava `cosmoUser`
   (jussara/grazi) no localStorage. Toda página deve ter o gate.
 - **Direção de arte**: paleta e regras em `direcao-de-arte.html` — noite
