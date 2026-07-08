@@ -86,8 +86,16 @@ const s = (v, max) => String(v == null ? '' : v).slice(0, max || 60);
 
 exports.notify = onRequest({ cors: true }, async (req, res) => {
   try {
-    const b = (req.body && typeof req.body === 'object') ? req.body : {};
+    // POST (app) manda JSON; GET (teste no navegador) manda query string
+    const b = (req.method === 'GET') ? (req.query || {})
+      : ((req.body && typeof req.body === 'object') ? req.body : {});
     if (b.k !== KEY) { res.status(403).json({ ok: false }); return; }
+    if (b.kind === 'ping') {
+      // só prova de vida (usada pelo CI): registra no diário, sem enviar push
+      try { await getFirestore().collection('push-log').add({ tag: 'ping', ts: Date.now() }); } catch (e) {}
+      res.json({ ok: true, pong: true });
+      return;
+    }
     const by = (b.by === 'grazi' || b.by === 'jussara') ? b.by : '';
     const quem = NOMES[by] || 'Seu amor';
     let data = null;
@@ -116,6 +124,12 @@ exports.notify = onRequest({ cors: true }, async (req, res) => {
     }
     if (!data) { res.status(400).json({ ok: false }); return; }
     const log = await sendToOther(by, data);
+    if (req.method === 'GET') {
+      // resposta amigável pro teste no navegador
+      res.set('Content-Type', 'text/html; charset=utf-8');
+      res.send('<body style="background:#12102E;color:#F0DFC0;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:95vh;text-align:center"><div><h1>✦ Push enviado! ✦</h1><p>enviados: ' + (log.ok || 0) + ' · falhas: ' + (log.fail || 0) + (log.result ? ' · ' + log.result : '') + '</p><p>Olhe o celular 💜</p></div></body>');
+      return;
+    }
     res.json({ ok: true, sent: log.ok || 0, fail: log.fail || 0, result: log.result || '' });
   } catch (e) {
     res.status(500).json({ ok: false, err: String((e && e.message) || e) });
