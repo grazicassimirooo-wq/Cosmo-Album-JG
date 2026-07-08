@@ -60,6 +60,14 @@ jobs:
             --project album--jussara --non-interactive --force \
           || echo "::notice title=Storage pulado::Firebase Storage ainda não foi ativado no console — as regras do Storage não foram publicadas (o resto do deploy foi)."
 
+      - name: Diagnóstico (região do banco e estado das funções)
+        if: env.FIREBASE_TOKEN != '' && env.FIREBASE_SERVICE_ACCOUNT == ''
+        run: |
+          echo "── bancos Firestore ──"
+          npx --yes firebase-tools@13 firestore:databases:list --project album--jussara || true
+          echo "── funções ──"
+          npx --yes firebase-tools@13 functions:list --project album--jussara || true
+
       # ── Caminho B: chave de conta de serviço ──
       - name: Deploy Hosting
         if: env.FIREBASE_SERVICE_ACCOUNT != ''
