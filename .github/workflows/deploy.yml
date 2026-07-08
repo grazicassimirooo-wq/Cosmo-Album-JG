@@ -60,6 +60,13 @@ jobs:
             --project album--jussara --non-interactive --force \
           || echo "::notice title=Storage pulado::Firebase Storage ainda não foi ativado no console — as regras do Storage não foram publicadas (o resto do deploy foi)."
 
+      - name: Testar a função notify (ping — não envia push)
+        if: env.FIREBASE_TOKEN != '' && env.FIREBASE_SERVICE_ACCOUNT == ''
+        run: |
+          curl -s --max-time 30 "https://southamerica-east1-album--jussara.cloudfunctions.net/notify?k=jg-cosmo-2026&kind=ping" \
+            -w '\nHTTP %{http_code}\n' \
+          || echo "::warning title=Ping falhou::A função notify não respondeu."
+
       - name: Diagnóstico (região do banco e estado das funções)
         if: env.FIREBASE_TOKEN != '' && env.FIREBASE_SERVICE_ACCOUNT == ''
         run: |
