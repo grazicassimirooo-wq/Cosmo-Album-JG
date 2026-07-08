@@ -1083,8 +1083,9 @@ function _jgHashRoute(){
 }
 document.addEventListener('DOMContentLoaded',()=>{
   if(_jgHashRoute()) return;
-  // temporário: abre direto no Perfil Cósmico pra conferência dos dados
-  goMeuPerfil();
+  // tela inicial: a surpresa de raspar a figurinha (pula pro reveal se já
+  // abriu hoje — ver goPack)
+  goPack();
 });
 window.addEventListener('hashchange', _jgHashRoute);
 
