@@ -1,5 +1,5 @@
 /* Service Worker do Álbum J&G — PWA (instalável + offline) e notificações */
-const CACHE = 'cosmo-album-v10';
+const CACHE = 'cosmo-album-v11';
 const SHELL = [
   './', './index.html', './manifest.json', './icon-192.png', './icon-512.png',
   './capitulo1-palavras.html', './capitulo3-toque.html', './capitulo4-servico.html',
