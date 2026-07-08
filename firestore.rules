@@ -18,6 +18,7 @@ service cloud.firestore {
         'places',          // lugares
         'presence',        // presença "estou aqui"
         'profiles',        // perfis J & G
+        'push-log',        // diagnóstico dos envios de push (escrito pela função)
         'quiz-linguagem',  // resultado do quiz
         'reactions',       // reações
         'serviceMedia',    // mídia do capítulo serviço
