@@ -50,8 +50,15 @@ jobs:
         run: |
           npm --prefix functions install --no-fund --no-audit
           npx --yes firebase-tools@13 deploy \
-            --only hosting,functions,firestore:rules,storage \
+            --only hosting,functions,firestore:rules \
             --project album--jussara --non-interactive --force
+          # As regras do Storage só entram depois de ativar o Storage no console
+          # (https://console.firebase.google.com/project/album--jussara/storage
+          # → "Get Started"). Até lá, a falha aqui não derruba o deploy.
+          npx --yes firebase-tools@13 deploy \
+            --only storage \
+            --project album--jussara --non-interactive --force \
+          || echo "::notice title=Storage pulado::Firebase Storage ainda não foi ativado no console — as regras do Storage não foram publicadas (o resto do deploy foi)."
 
       # ── Caminho B: chave de conta de serviço ──
       - name: Deploy Hosting
