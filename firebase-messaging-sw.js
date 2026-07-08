@@ -16,6 +16,9 @@ const messaging = firebase.messaging();
 
 // Mensagem recebida com o app em segundo plano / fechado
 messaging.onBackgroundMessage((payload) => {
+  // se veio o bloco `notification`, o navegador já exibe sozinho — mostrar
+  // de novo aqui duplicaria o aviso
+  if (payload && payload.notification) return;
   const d = (payload && payload.data) || {};
   self.registration.showNotification(d.title || '💛 Novidade no álbum!', {
     body: d.body || 'Tem algo novo esperando por você ✦',
