@@ -48,10 +48,10 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
 .chap-meta b{color:var(--cream3);font-style:normal;font-weight:800}
 .chap-head h1{font-family:'Playfair Display',serif;font-weight:900;font-size:clamp(2.4rem,11vw,3rem);line-height:.95;margin:10px 0 4px;letter-spacing:-.5px}
 .chap-head h1 .w{display:inline-block;opacity:0;transform:translateY(40px);animation:wordIn .9s var(--ease-spring) forwards}
-.chap-head h1 .w:nth-child(1){animation-delay:.30s}
-.chap-head h1 .w:nth-child(2){animation-delay:.45s}
-.chap-head .promise{font-family:'Dancing Script',cursive;font-size:1.6rem;color:var(--coral-lt);opacity:0;animation:fadeUp .8s var(--ease-out) .85s forwards;margin-bottom:18px}
-.chap-head .lede{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.1rem;color:var(--cream2);max-width:360px;line-height:1.55;opacity:0;animation:fadeUp .8s var(--ease-out) 1s forwards}
+.chap-head h1 .w:nth-child(1){animation-delay:.16s}
+.chap-head h1 .w:nth-child(2){animation-delay:.28s}
+.chap-head .promise{font-family:'Dancing Script',cursive;font-size:1.6rem;color:var(--coral-lt);opacity:0;animation:fadeUp .8s var(--ease-out) .42s forwards;margin-bottom:18px}
+.chap-head .lede{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.1rem;color:var(--cream2);max-width:360px;line-height:1.55;opacity:0;animation:fadeUp .8s var(--ease-out) .55s forwards}
 .chap-head .lede .drop{font-family:'Playfair Display',serif;font-weight:900;font-style:normal;font-size:2.6rem;float:left;line-height:.78;margin:4px 8px 0 0;color:var(--coral-lt)}
 .chap-head .folio{font-family:'Cormorant Garamond',serif;font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--cream3);opacity:.55;margin-top:16px}
 .numeral{position:absolute;top:30px;right:var(--space);font-family:'Playfair Display',serif;font-weight:900;font-size:5rem;line-height:.85;
@@ -121,6 +121,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
   color:var(--cream3);background:rgba(255,255,255,.04);border:1px solid rgba(232,184,109,.25);
   border-radius:99px;padding:7px 12px;cursor:pointer;transition:all .2s}
 .hmod:hover{border-color:var(--coral-lt);color:var(--coral-lt)}
+.hmod:active{transform:scale(.94)}
 .hmod.active{background:linear-gradient(180deg,rgba(212,115,110,.25),rgba(212,115,110,.1));border-color:var(--coral-lt);color:var(--cream)}
 
 /* ════════ TIMELINE DE PROXIMIDADE ════════ */

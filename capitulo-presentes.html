@@ -11,7 +11,7 @@
 :root{
   --night:#12102E;--night2:#0A0820;--night3:#06041C;
   --cream:#F0DFC0;--cream2:#E8D5B7;--cream3:#D4C4A0;
-  --rose:#E89890;--rose-lt:#F4B8B0;--rose-deep:#A24A45;
+  --rose:#9C86C9;--rose-lt:#B9A3E0;--rose-deep:#5A3E8E;
   --gold:#C4956A;--gold2:#E8B86D;--gold3:#F4DCA8;--gold-deep:#8E6A1F;
   --ink:#2A2540;--ink2:#3A2410;
   --space:clamp(22px,6vw,30px);
@@ -48,11 +48,11 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
 .chap-meta b{color:var(--cream3);font-style:normal;font-weight:800}
 .chap-head h1{font-family:'Playfair Display',serif;font-weight:900;font-size:clamp(2.2rem,10vw,2.9rem);line-height:.95;margin:10px 0 4px;letter-spacing:-.5px}
 .chap-head h1 .w{display:inline-block;opacity:0;transform:translateY(40px);animation:wordIn .9s var(--ease-spring) forwards}
-.chap-head h1 .w:nth-child(1){animation-delay:.30s}
+.chap-head h1 .w:nth-child(1){animation-delay:.16s}
 .chap-head h1 .w:nth-child(2){animation-delay:.46s}
 .chap-head h1 .w:nth-child(3){animation-delay:.62s}
-.chap-head .promise{font-family:'Dancing Script',cursive;font-size:1.6rem;color:var(--rose-lt);opacity:0;animation:fadeUp .8s var(--ease-out) .88s forwards;margin-bottom:16px}
-.chap-head .lede{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--cream2);max-width:360px;line-height:1.55;opacity:0;animation:fadeUp .8s var(--ease-out) 1.02s forwards}
+.chap-head .promise{font-family:'Dancing Script',cursive;font-size:1.6rem;color:var(--rose-lt);opacity:0;animation:fadeUp .8s var(--ease-out) .42s forwards;margin-bottom:16px}
+.chap-head .lede{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--cream2);max-width:360px;line-height:1.55;opacity:0;animation:fadeUp .8s var(--ease-out) .55s forwards}
 .chap-head .lede .drop{font-family:'Playfair Display',serif;font-weight:900;font-style:normal;font-size:2.5rem;float:left;line-height:.78;margin:4px 8px 0 0;color:var(--rose-lt)}
 .chap-head .folio{font-family:'Cormorant Garamond',serif;font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--cream3);opacity:.55;margin-top:14px}
 .numeral{position:absolute;top:30px;right:var(--space);font-family:'Playfair Display',serif;font-weight:900;font-size:4.8rem;line-height:.85;
@@ -83,6 +83,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
   background:rgba(255,255,255,.03);cursor:pointer;text-align:center;
   transition:all .22s var(--ease-out);position:relative}
 .doce-item:hover{border-color:rgba(232,152,144,.4);background:rgba(232,152,144,.07);transform:translateY(-2px)}
+.doce-item:active{transform:scale(.96)}
 .doce-item.selected{border-color:var(--rose-lt);background:rgba(232,152,144,.14);
   box-shadow:0 0 0 1px rgba(232,152,144,.25)}
 .doce-item.selected::after{content:'✦';position:absolute;top:4px;right:6px;font-size:.62rem;color:var(--gold2)}
