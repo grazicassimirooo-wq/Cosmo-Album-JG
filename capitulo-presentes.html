@@ -156,6 +156,16 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
 .mimo-empty-hint{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.75rem;
   color:var(--cream3);opacity:.35;text-align:center;padding:8px;pointer-events:none}
 
+/* ════════ TROCA DE PRESENTES ════════ */
+.troca-links{display:flex;flex-direction:column;gap:10px}
+.troca-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 20px;border-radius:99px;text-decoration:none;cursor:pointer;
+  background:linear-gradient(180deg,var(--gold3),var(--gold) 60%,var(--gold-deep));color:var(--ink);
+  font-family:'Nunito';font-weight:900;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;
+  box-shadow:0 6px 18px rgba(196,149,106,.35),inset 0 1px 0 rgba(255,255,255,.35);transition:transform .2s var(--ease-spring)}
+.troca-btn:hover{transform:translateY(-2px)}
+.troca-btn:active{transform:scale(.97)}
+.troca-btn.ghost{background:rgba(232,152,144,.08);border:1.5px solid rgba(232,152,144,.45);color:var(--rose-lt);box-shadow:none}
+
 /* ════════ CONTADOR ════════ */
 .counter-box{margin:16px var(--space) 8px;padding:18px 20px;
   background:linear-gradient(180deg,#1e1432,#13102f);
@@ -429,6 +439,17 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     </div>
   </section>
 
+  <!-- ════════ TROCA DE PRESENTES & FIGURINHAS ════════ -->
+  <section class="cardapio-box">
+    <div class="label">a troca</div>
+    <h3>Troca de Presentes</h3>
+    <p class="deck">os vales de presente pra raspar e resgatar de verdade — e o álbum de figurinhas pra colecionar nós duas ♡</p>
+    <div class="troca-links">
+      <a class="troca-btn" href="index.html#trocapresentes">🎁 abrir os vales de presente</a>
+      <a class="troca-btn ghost" href="index.html#figurinhas">✦ álbum de figurinhas</a>
+    </div>
+  </section>
+
   <!-- ════════ CONTADOR ════════ -->
   <section class="counter-box">
     <div class="label">doces enviados</div>
@@ -458,6 +479,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
       <li><b>A chuva de doces</b> dispara no aparelho de quem recebe, com vibração háptica</li>
       <li><b>Localização</b> é compartilhada via link do Google Maps — ela vê na hora</li>
       <li><b>Foto do mimo</b> sincroniza entre os dois aparelhos quando salva</li>
+      <li><b>Vales &amp; figurinhas</b> abrem no álbum de raspadinhas — raspou, valeu ♡</li>
     </ul>
   </aside>
 
