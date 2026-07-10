@@ -368,6 +368,15 @@ const _CLIENT = (function(){
   return c;
 })();
 
+/* avisa a função de push na nuvem (o gatilho do Firestore não dispara neste projeto) */
+const _PUSH_URL = 'https://southamerica-east1-album--jussara.cloudfunctions.net/notify';
+function _pingPush(kind, extra){
+  try{
+    fetch(_PUSH_URL, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(Object.assign({ kind, by: _CLIENT, k: 'jg-cosmo-2026' }, extra||{})) }).catch(()=>{});
+  }catch(e){}
+}
+
 /* ════════ DADOS ════════ */
 // linguagens: T=Toque, P=Presentes, S=Serviço, Q=Tempo, W=Palavras
 const PERGUNTAS = [
@@ -639,7 +648,7 @@ function mostrarResultado(){
   if(_db){
     _db.collection('quiz-linguagem').doc(_CLIENT).set({
       winner, scores, ts: Date.now(), by: _CLIENT
-    }).catch(err=>console.warn('quiz save err', err));
+    }).then(()=> _pingPush('quiz')).catch(err=>console.warn('quiz save err', err));
   }
 
   // esconde quiz, mostra resultado

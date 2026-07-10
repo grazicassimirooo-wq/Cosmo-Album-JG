@@ -1,6 +1,7 @@
 /* Cloud Function de push (FCM): o app chama `notify` via HTTPS logo depois de
-   gravar uma carta, doce ou foto no Firestore, e todos os aparelhos
-   cadastrados recebem a notificação — menos o de quem enviou.
+   gravar QUALQUER interação no Firestore (carta, doce, foto, vídeo, toque,
+   ato de serviço, presença, reação, lugar, quiz, pedido de doce…) e todos os
+   aparelhos cadastrados recebem a notificação — menos o de quem enviou.
 
    (Os gatilhos do Firestore/Eventarc foram abandonados: neste projeto eles
    nunca receberam eventos, mesmo com região certa e recriação — o caminho
@@ -84,6 +85,84 @@ async function sendToOther(by, data) {
 
 const s = (v, max) => String(v == null ? '' : v).slice(0, max || 60);
 
+/* páginas que uma notificação pode abrir (whitelist — o cliente manda `pg`) */
+const PAGES = {
+  album: './', cap1: './#cap1', cartas: './carta-amor.html',
+  toque: './capitulo3-toque.html', servico: './capitulo4-servico.html',
+  tempo: './capitulo5-tempo.html', presentes: './capitulo-presentes.html',
+  quiz: './quiz-linguagem.html', galeria: './memory-gallery.html'
+};
+const pgLink = (b, padrao) => PAGES[b.pg] || padrao || './';
+
+/* mensagens por tipo de interação — estilo mensageiro: quem fez + o quê */
+const TOQUES = {
+  abraco: { e: '🤗', faz: 'está te abraçando agora',       ret: 'retribuiu seu abraço — aperta mais ♡' },
+  beijo:  { e: '💋', faz: 'te mandou um beijo',            ret: 'retribuiu seu beijo ♡' },
+  colo:   { e: '🌙', faz: 'está com você no colo',         ret: 'retribuiu o colo ♡' },
+  cabelo: { e: '✦',  faz: 'está fazendo cafuné em você',   ret: 'retribuiu o cafuné ♡' }
+};
+const SERVICOS = {
+  cuidei:    { e: '🌿', faz: 'cuidou de você agora' },
+  resolvi:   { e: '⚡', faz: 'resolveu algo por você' },
+  preparei:  { e: '🍽️', faz: 'preparou algo especial pra você' },
+  organizei: { e: '📋', faz: 'organizou tudo pra você' },
+  reconheci: { e: '💛', faz: 'reconheceu seu gesto de amor ♡' }
+};
+const PRESENCAS = {
+  cafe:     'está tomando um café pensando em você',
+  filme:    'quer assistir um filme com você agora',
+  passeio:  'está passeando e imaginando você do lado',
+  silencio: 'está em silêncio, mas pensando em você'
+};
+
+/* Monta título/corpo/link da notificação a partir do que o app mandou.
+   Qualquer `kind` desconhecido vira o aviso genérico — assim TODA interação
+   nova já chega no outro aparelho, mesmo antes de ganhar mensagem própria. */
+function buildData(b, quem) {
+  const kind = s(b.kind, 24);
+  if (kind === 'carta') {
+    return { title: '💌 Chegou uma carta de amor!', body: quem + ' te mandou uma carta seladinha ✦', tag: 'cosmo-carta', link: './carta-amor.html' };
+  }
+  if (kind === 'doce') {
+    const doce = (b.ico ? s(b.ico, 8) + ' ' : '') + s(b.art || 'um', 8) + ' ' + s(b.nome, 30).toLowerCase();
+    return { title: '🍬 Chegou um doce pra você!', body: quem + ' te mandou ' + doce + ' com carinho ✦', tag: 'cosmo-doce', link: './capitulo-presentes.html' };
+  }
+  if (kind === 'foto') {
+    return { title: '💛 Nova foto no álbum!', body: quem + ' adicionou uma foto novinha 📸✨', tag: 'cosmo-photo', link: pgLink(b) };
+  }
+  if (kind === 'video') {
+    return { title: '🎥 Chegou um vídeo pra você!', body: quem + ' te mandou um vídeo novinho — toca pra ver ✦', tag: 'cosmo-video', link: pgLink(b) };
+  }
+  if (kind === 'toque') {
+    const t = TOQUES[b.mode] || { e: '🫂', faz: 'te mandou um toque de carinho', ret: 'retribuiu seu carinho ♡' };
+    return { title: t.e + ' Toque a distância!', body: quem + ' ' + (b.retrib ? t.ret : t.faz), tag: 'cosmo-toque', link: './capitulo3-toque.html' };
+  }
+  if (kind === 'servico') {
+    const sv = SERVICOS[b.mode] || { e: '🌿', faz: 'fez um ato de amor por você' };
+    return { title: sv.e + ' Ato de amor!', body: quem + ' ' + sv.faz, tag: 'cosmo-servico', link: './capitulo4-servico.html' };
+  }
+  if (kind === 'presenca') {
+    const body = b.retrib ? quem + ' sentiu sua presença e retribuiu ♡'
+      : quem + ' ' + (PRESENCAS[b.mode] || 'está pensando em você agora');
+    return { title: '🌿 Pensando em você', body, tag: 'cosmo-presenca', link: './capitulo5-tempo.html' };
+  }
+  if (kind === 'reacao') {
+    return { title: '💬 Nova reação!', body: quem + ' reagiu com ' + (s(b.emoji, 8) || '💛') + ' no caderno do tempo', tag: 'cosmo-reacao', link: './capitulo5-tempo.html' };
+  }
+  if (kind === 'lugar') {
+    const nome = s(b.nome, 40);
+    return { title: '📍 Lugar novo no mapa!', body: quem + ' marcou ' + (s(b.emoji, 8) || '✦') + ' "' + (nome || 'um lugar') + '" nos lugares de vocês', tag: 'cosmo-lugar', link: './capitulo5-tempo.html' };
+  }
+  if (kind === 'quiz') {
+    return { title: '💘 Quiz respondido!', body: quem + ' descobriu a linguagem do amor dela — vai ver o resultado ✦', tag: 'cosmo-quiz', link: './quiz-linguagem.html' };
+  }
+  if (kind === 'pedido') {
+    return { title: '🍬 Me manda um doce aqui!', body: quem + ' compartilhou onde está, esperando um docinho 📍♡', tag: 'cosmo-pedido', link: './capitulo-presentes.html' };
+  }
+  if (!kind) return null;
+  return { title: '💛 Novidade no álbum!', body: quem + ' acabou de fazer algo novo pra você ✦', tag: 'cosmo-novidade', link: pgLink(b) };
+}
+
 exports.notify = onRequest({ cors: true }, async (req, res) => {
   try {
     // POST (app) manda JSON; GET (teste no navegador) manda query string
@@ -102,30 +181,7 @@ exports.notify = onRequest({ cors: true }, async (req, res) => {
     }
     const by = (b.by === 'grazi' || b.by === 'jussara') ? b.by : '';
     const quem = NOMES[by] || 'Seu amor';
-    let data = null;
-    if (b.kind === 'carta') {
-      data = {
-        title: '💌 Chegou uma carta de amor!',
-        body: quem + ' te mandou uma carta seladinha ✦',
-        tag: 'cosmo-carta',
-        link: './carta-amor.html'
-      };
-    } else if (b.kind === 'doce') {
-      const doce = (b.ico ? s(b.ico, 8) + ' ' : '') + s(b.art || 'um', 8) + ' ' + s(b.nome, 30).toLowerCase();
-      data = {
-        title: '🍬 Chegou um doce pra você!',
-        body: quem + ' te mandou ' + doce + ' com carinho ✦',
-        tag: 'cosmo-doce',
-        link: './capitulo-presentes.html'
-      };
-    } else if (b.kind === 'foto') {
-      data = {
-        title: '💛 Nova foto no álbum!',
-        body: (NOMES[by] || 'Alguém') + ' adicionou uma foto novinha 📸✨',
-        tag: 'cosmo-photo',
-        link: './'
-      };
-    }
+    const data = buildData(b, quem);
     if (!data) { res.status(400).json({ ok: false }); return; }
     const log = await sendToOther(by, data);
     if (req.method === 'GET') {

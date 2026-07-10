@@ -1913,7 +1913,7 @@ function _doceEnviar(){
   const data = { by: myId, note: note.trim(), lat, lng, mapsUrl, ts: Date.now() };
   if(_db){
     _db.collection('doce-pedido').doc(myId).set(data)
-      .then(()=>_toast('Pedido enviado! Ela já sabe onde você está 🍬', true))
+      .then(()=>{ _pingPush('pedido'); _toast('Pedido enviado! Ela já sabe onde você está 🍬', true); })
       .catch(e=>_toast('Erro ao enviar: '+(e.code||e.message), false));
   } else {
     _DOCE_DATA.mine = data; _doceRender();
@@ -2122,7 +2122,7 @@ function _jgSendRec(){
     _applyVideo(uid, saveUrl);
     if(_db){
       _db.collection('videos').doc(uid).set(Object.assign({ ts: Date.now(), by: _CLIENT, mime }, saveDocData))
-        .then(()=>{ status.textContent = 'Enviado ✓'; if(navigator.vibrate) navigator.vibrate([10,40,10,40,80]); setTimeout(_jgCloseVideoRec, 800); })
+        .then(()=>{ _pingPush('video', { pg: 'cap1' }); status.textContent = 'Enviado ✓'; if(navigator.vibrate) navigator.vibrate([10,40,10,40,80]); setTimeout(_jgCloseVideoRec, 800); })
         .catch(err=>{ console.warn('Falha ao salvar doc:', err); status.textContent = 'Vídeo enviado, mas falhou ao notificar: ' + (err.code||err.message); });
     } else {
       status.textContent = 'Salvo no aparelho (sem nuvem)';
@@ -2237,7 +2237,7 @@ function _pingPush(kind, extra){
 }
 function _sharePhoto(uid, out){
   const meta = { ts: Date.now(), by: _CLIENT };
-  const done = r => { _pingPush('foto'); return r; };
+  const done = r => { _pingPush('foto', { pg: 'album' }); return r; };
   const viaDoc = ()=> _db.collection('photos').doc(uid).set(Object.assign({ img: out }, meta)).then(done);
   if(!_stg) return viaDoc();
   return _stg.ref().child('photos/' + uid + '.jpg')
