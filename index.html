@@ -808,6 +808,17 @@ img{max-width:100%}
           <div class="jg-titles"><div class="jg-lang">Presentes & Dates <span class="jg-read-mark">✓</span></div><div class="jg-promise">vales pra resgatar e dates pra viver</div></div>
           <div class="jg-pg">cap. V<br>pág · 74</div>
         </button>
+        <div class="jg-hair" style="margin:10px 0 2px" aria-hidden="true"></div>
+        <button class="jg-tocrow jg-reveal right" style="--acc:var(--jg-gold3)" onclick="goFigurinhas()">
+          <div class="jg-numchip">✦</div>
+          <div class="jg-titles"><div class="jg-lang">Álbum de Figurinhas</div><div class="jg-promise">raspe, colecione, complete</div></div>
+          <div class="jg-pg">anexo<br>pág · 88</div>
+        </button>
+        <button class="jg-tocrow jg-reveal" style="--acc:var(--jg-coral-lt)" onclick="goTrocaPresentes()">
+          <div class="jg-numchip">🎁</div>
+          <div class="jg-titles"><div class="jg-lang">Troca de Presentes</div><div class="jg-promise">vales pra raspar e resgatar de verdade</div></div>
+          <div class="jg-pg">anexo<br>pág · 92</div>
+        </button>
       </nav>
       <p class="jg-howto"><b>Modo misto</b><br>toque numa linha para abrir um capítulo, ou comece pelo primeiro e folheie em sequência</p>
       <section class="jg-cross jg-reveal" id="jg-cross">
@@ -1062,6 +1073,18 @@ function goPack(){
 function goPresentes(){
   location.href = 'capitulo-presentes.html';
 }
+/* anexos do caderno: o álbum de figurinhas e a troca de presentes moram no book */
+function _goBookPage(idx){
+  _hideAllScreens();
+  document.getElementById('s-book').classList.add('active');
+  goP(idx);
+  window.scrollTo({top:0,behavior:'instant'});
+}
+function goFigurinhas(){ _goBookPage(0); }
+function goTrocaPresentes(){
+  const idx = AL.findIndex(p=>p.type==='gifts');
+  _goBookPage(idx < 0 ? 0 : idx);
+}
 function goMeuPerfil(){
   let u = null; try{ u = localStorage.getItem('cosmoUser'); }catch(e){}
   const nameMap = { jussara:'Jussara', grazi:'Grazi' };
@@ -1077,6 +1100,8 @@ function _jgHashRoute(){
   const h = (location.hash||'').replace(/^#/,'');
   if(h === 'sumario'){ goSumario(); return true; }
   if(h === 'perfil'){ goMeuPerfil(); return true; }
+  if(h === 'figurinhas'){ goFigurinhas(); return true; }
+  if(h === 'trocapresentes'){ goTrocaPresentes(); return true; }
   const m = h.match(/^cap(\d+)$/);
   if(m){ goCap(parseInt(m[1],10)); return true; }
   return false;
@@ -1425,6 +1450,7 @@ AL.forEach((pg,i)=>{
       <a href="carta-amor.html" style="display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;padding:12px 18px;border-radius:99px;background:linear-gradient(135deg,rgba(212,115,110,.25),rgba(196,149,106,.2));border:1px solid rgba(232,184,109,.35);color:#F4DA8A;font-family:'Nunito';font-size:.72rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase">🪶 Escrever Carta de Amor</a>
     </div>
     </div>
+    <div style="position:relative;z-index:2;text-align:center;margin:4px 0 10px"><button class="nb" style="font-size:.6rem;padding:6px 14px" onclick="goSumario()">☰ sumário</button></div>
     <div class="nav"><button class="nb" onclick="goP(${i-1})">← Voltar</button><div class="dots" id="d-${i}"></div><div style="width:80px"></div></div></div>`;
 
   } else if(pg.type==='editorial'){
@@ -1435,7 +1461,7 @@ AL.forEach((pg,i)=>{
     <div class="pt"><div class="pt-n">${pg.num}</div><h2 class="pt-h">${pg.title}</h2><div class="pt-s">${pg.sub}</div><div class="pt-d">${pg.deco}</div></div>
     <div class="ed">${pg.html}</div>
     ${PSYCH_FOOTER}
-    <div style="text-align:center;margin:4px 0 10px"><button class="nb" style="font-size:.6rem;padding:6px 14px" onclick="goSumario()">☰ sumário</button></div>
+    <div style="position:relative;z-index:2;text-align:center;margin:4px 0 10px"><button class="nb" style="font-size:.6rem;padding:6px 14px" onclick="goSumario()">☰ sumário</button></div>
     <div class="nav"><button class="nb" onclick="goP(${i-1})">← Voltar</button><div class="dots" id="d-${i}"></div>
     <button class="nb go" onclick="goP(${i+1})">Próxima →</button></div></div>`;
 
@@ -1474,6 +1500,7 @@ AL.forEach((pg,i)=>{
       <div class="gift-section-label"><div class="gsl-title">🍬 Me Manda um Doce Aqui!</div><div class="gsl-sub">compartilhe sua localização com um bilhete</div><div class="gsl-deco">✦ ♡ ✦</div></div>
       <div id="doce-wrap"></div>
     </div>
+    <div style="position:relative;z-index:2;text-align:center;margin:4px 0 10px"><button class="nb" style="font-size:.6rem;padding:6px 14px" onclick="goSumario()">☰ sumário</button></div>
     <div class="nav"><button class="nb" onclick="goP(${i-1})">← Voltar</button><div class="dots" id="d-${i}"></div>
     <button class="nb go" onclick="goP(${i+1})">Próxima →</button></div></div>`;
     setTimeout(_doceRender, 0);
@@ -1488,6 +1515,7 @@ AL.forEach((pg,i)=>{
     <div class="pt"><div class="pt-n">${pg.num}</div><h2 class="pt-h">${pg.title}</h2><div class="pt-s">${pg.sub}</div><div class="pt-d">${pg.deco}</div></div>
     <div class="sg" id="sg-${i}"></div>
     <div class="stamp" id="st-${i}"><span>${pg.stamp}</span></div>
+    <div style="position:relative;z-index:2;text-align:center;margin:4px 0 10px"><button class="nb" style="font-size:.6rem;padding:6px 14px" onclick="goSumario()">☰ sumário</button></div>
     <div class="nav"><button class="nb" onclick="goP(${i-1})" ${i===0?'disabled':''}>← Voltar</button><div class="dots" id="d-${i}"></div>
     <button class="nb go" onclick="goP(${i+1})" id="nx-${i}">Próxima →</button></div></div>`;
   }
