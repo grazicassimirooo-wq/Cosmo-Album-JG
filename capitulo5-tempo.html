@@ -742,7 +742,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
   }
   function _sharePhoto(uid, out){
     const meta = { ts: Date.now(), by: _CLIENT };
-    const done = r => { _pingPush('foto'); return r; };
+    const done = r => { _pingPush('foto', { pg: 'tempo' }); return r; };
     const viaDoc = ()=> _db.collection('photos').doc(uid).set(Object.assign({ img: out }, meta)).then(done);
     if(!_stg) return viaDoc();
     return _stg.ref().child('photos/' + uid + '.jpg')
@@ -824,6 +824,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     flash('Presença enviada 🌿');
     if(!_db) return;
     _db.collection('presence').add({ mode: currentMode, by: _CLIENT, ts: Date.now() })
+      .then(()=> _pingPush('presenca', { mode: currentMode }))
       .catch(err=>console.warn('presence err', err));
     _db.collection('counters').doc('presence').set({ total: firebase.firestore.FieldValue.increment(1) }, { merge: true })
       .catch(()=>{});
@@ -863,7 +864,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     presenceCard.classList.remove('on');
     if(retrib){
       if(navigator.vibrate) navigator.vibrate([60,50,100,80,60]);
-      if(_db) _db.collection('presence').add({ mode: currentMode, by: _CLIENT, ts: Date.now(), retrib:true }).catch(()=>{});
+      if(_db) _db.collection('presence').add({ mode: currentMode, by: _CLIENT, ts: Date.now(), retrib:true }).then(()=> _pingPush('presenca', { mode: currentMode, retrib: 1 })).catch(()=>{});
       setTimeout(()=> flash('Retribuído 🌿 🌿'), 200);
     }
   }
@@ -878,7 +879,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
       const em = b.dataset.em;
       if(navigator.vibrate) navigator.vibrate(20);
       _flyEmoji(em);
-      if(_db) _db.collection('reactions').add({ emoji: em, by: _CLIENT, ts: Date.now() }).catch(()=>{});
+      if(_db) _db.collection('reactions').add({ emoji: em, by: _CLIENT, ts: Date.now() }).then(()=> _pingPush('reacao', { emoji: em })).catch(()=>{});
     });
   });
   function _flyEmoji(em){
@@ -1070,7 +1071,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     const id = 'p_' + Date.now().toString(36) + Math.random().toString(36).slice(2,5);
     if(_db){
       _db.collection('places').doc(id).set({ id, emoji: em, name: nm, by: _CLIENT, ts: Date.now() })
-        .then(()=>{ flash('Estrela acesa ✦'); closeAddPlace(); document.getElementById('placeName').value=''; })
+        .then(()=>{ _pingPush('lugar', { nome: nm, emoji: em }); flash('Estrela acesa ✦'); closeAddPlace(); document.getElementById('placeName').value=''; })
         .catch(err=>flash('Falhou ao salvar lugar'));
     } else {
       _places.unshift({ id, emoji: em, name: nm });

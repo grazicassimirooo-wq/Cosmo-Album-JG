@@ -635,6 +635,15 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     return c;
   })();
 
+  /* avisa a função de push na nuvem (o gatilho do Firestore não dispara neste projeto) */
+  const _PUSH_URL = 'https://southamerica-east1-album--jussara.cloudfunctions.net/notify';
+  function _pingPush(kind, extra){
+    try{
+      fetch(_PUSH_URL, { method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(Object.assign({ kind, by: _CLIENT, k: 'jg-cosmo-2026' }, extra||{})) }).catch(()=>{});
+    }catch(e){}
+  }
+
   /* ═══════ ARMAZENAMENTO LOCAL ═══════ */
   function loadDiary(){ try{ return JSON.parse(localStorage.getItem(STORE_DIARY) || '[]'); }catch(e){ return []; } }
   function saveDiary(arr){ try{ localStorage.setItem(STORE_DIARY, JSON.stringify(arr.slice(-200))); }catch(e){} }
@@ -719,7 +728,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     // grava online — quem está do outro lado vai ver o "calor"
     if(_db){
       _db.collection('touches').add(entry)
-        .then(()=> flash('Enviado ♥'))
+        .then(()=>{ _pingPush('toque', { mode: entry.mode }); flash('Enviado ♥'); })
         .catch(()=> flash('Salvo aqui — sem sinal ♥'));
     } else {
       flash('Enviado ♥');
@@ -762,7 +771,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     if(retrib){
       const entry = { mode: currentMode, ts: Date.now(), by: _CLIENT };
       addEntryLocal(entry);
-      if(_db) _db.collection('touches').add(entry).catch(()=>{});
+      if(_db) _db.collection('touches').add(entry).then(()=> _pingPush('toque', { mode: entry.mode, retrib: 1 })).catch(()=>{});
       setTimeout(()=> flash('Retribuído ♥ ♥'), 200);
     }
   }
@@ -972,6 +981,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
               finishLocal(url, kind);
               if(_db){
                 _db.collection('touchMedia').doc(uid).set({ src:url, kind, ts:Date.now(), by:_CLIENT })
+                  .then(()=> _pingPush(kind === 'video' ? 'video' : 'foto', { pg: 'toque' }))
                   .catch(()=>{});
               }
             }).catch(err=>{ console.warn('URL falhou, caindo no base64:', err); readAsDataUrl(blob, kind); });
@@ -986,7 +996,8 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
         finishLocal(src, kind);
         // tenta gravar no Firestore só se for pequeno (Firestore limita ~1MB por doc)
         if(_db && (typeof src === 'string') && src.length < 900*1024){
-          _db.collection('touchMedia').doc(uid).set({ src, kind, ts:Date.now(), by:_CLIENT }).catch(()=>{});
+          _db.collection('touchMedia').doc(uid).set({ src, kind, ts:Date.now(), by:_CLIENT })
+            .then(()=> _pingPush(kind === 'video' ? 'video' : 'foto', { pg: 'toque' })).catch(()=>{});
         }
       };
       r.onerror = ()=> flash('Falha ao ler o arquivo');

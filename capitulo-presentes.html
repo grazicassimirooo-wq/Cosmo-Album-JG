@@ -579,7 +579,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
   }
   function _sharePhoto(uid, out){
     const meta = { ts: Date.now(), by: _CLIENT };
-    const done = r => { _pingPush('foto'); return r; };
+    const done = r => { _pingPush('foto', { pg: 'presentes' }); return r; };
     const viaDoc = ()=> _db.collection('photos').doc(uid).set(Object.assign({ img: out }, meta)).then(done);
     if(!_stg) return viaDoc();
     return _stg.ref().child('photos/' + uid + '.jpg')
@@ -842,7 +842,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     const data = { by: myId, address: address.trim(), note: note.trim(), lat, lng, mapsUrl, ts: Date.now() };
     if(_db){
       _db.collection('doce-pedido').doc(myId).set(data)
-        .then(()=> flash('Pedido enviado! Ela já sabe onde você está 🍬', true))
+        .then(()=>{ _pingPush('pedido'); flash('Pedido enviado! Ela já sabe onde você está 🍬', true); })
         .catch(e=> flash('Erro: '+(e.code||e.message)));
     } else {
       _ADDR.mine = data; _addrRender();
