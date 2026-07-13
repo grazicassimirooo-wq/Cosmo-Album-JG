@@ -17,6 +17,7 @@ service cloud.firestore {
         'photos',          // fotos do álbum (doc guarda URL do Storage)
         'places',          // lugares
         'presence',        // presença "estou aqui"
+        'presence-status', // online/visto por último (estilo WhatsApp)
         'profiles',        // perfis J & G
         'push-log',        // diagnóstico dos envios de push (escrito pela função)
         'quiz-linguagem',  // resultado do quiz
