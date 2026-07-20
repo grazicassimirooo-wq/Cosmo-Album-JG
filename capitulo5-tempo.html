@@ -339,6 +339,17 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
 .profile-card .static{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--cream2);font-size:.85rem;min-height:1.2em}
 .profile-card .static.empty{color:rgba(240,223,192,.4)}
 .profile-save{display:block;width:100%;margin-top:12px;padding:10px;border-radius:99px;border:none;cursor:pointer;background:linear-gradient(180deg,var(--gold3),var(--gold) 60%,var(--gold-deep));color:var(--ink);font-family:'Nunito';font-weight:900;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase}
+/* diagnóstico de notificações */
+.notif-check{margin-top:14px;padding:12px;border-radius:12px;background:rgba(10,20,28,.55);border:1px dashed rgba(232,184,109,.28);font-family:'Cormorant Garamond',serif;font-size:.86rem;color:var(--cream2);text-align:left}
+.notif-check h4{font-family:'Nunito';font-weight:800;font-size:.62rem;letter-spacing:1.8px;text-transform:uppercase;color:var(--gold2);margin-bottom:8px;text-align:center}
+.notif-check .status{margin:6px 0;line-height:1.4}
+.notif-check .status.ok{color:#B9D9AA}
+.notif-check .status.bad{color:#E89890}
+.notif-check .hint{margin-top:8px;padding:8px 10px;border-radius:8px;background:rgba(212,115,110,.10);color:var(--cream);font-style:italic;font-size:.82rem;line-height:1.4}
+.notif-btn{display:block;width:100%;margin-top:10px;padding:9px;border-radius:99px;border:1px solid rgba(232,184,109,.5);cursor:pointer;background:transparent;color:var(--gold2);font-family:'Nunito';font-weight:800;font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;transition:all .2s}
+.notif-btn:hover{background:rgba(232,184,109,.08)}
+.notif-btn:active{transform:scale(.98)}
+.notif-btn.busy{opacity:.55;cursor:progress}
 
 .quiz-question{padding:12px;border-radius:12px;background:rgba(10,20,28,.55);border:1px solid rgba(232,184,109,.2);margin-bottom:10px}
 .quiz-q{font-family:'Playfair Display',serif;font-weight:800;font-size:.95rem;margin-bottom:8px;color:var(--cream)}
@@ -632,6 +643,10 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     <div class="profile-switch" style="text-align:center;margin-top:10px">
       <a href="#" onclick="trocarPerfil();return false" style="font-size:.62rem;letter-spacing:.5px;color:var(--mint);opacity:.6;text-decoration:underline">não é você? trocar perfil</a>
     </div>
+
+    <!-- diagnóstico de notificações — abre um painel mostrando o que falta e envia push de teste -->
+    <button class="notif-btn" type="button" onclick="_notifCheck()" id="notifBtn">🔔 verificar minhas notificações</button>
+    <div class="notif-check" id="notifBox" style="display:none"></div>
   </section>
 
   <!-- ════════ QUIZ DA LINGUAGEM DO AMOR ════════ -->
@@ -740,6 +755,103 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
         body: JSON.stringify(Object.assign({ kind, by: _CLIENT, k: 'jg-cosmo-2026' }, extra||{})) }).catch(()=>{});
     }catch(e){}
   }
+
+  /* diagnóstico de notificações — mostra o que falta e envia push de teste */
+  function _isIOS(){ return /iPad|iPhone|iPod/.test(navigator.userAgent); }
+  function _isPWA(){ return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; }
+  function _iosVersion(){
+    const m = navigator.userAgent.match(/OS (\d+)_(\d+)/);
+    return m ? { major:+m[1], minor:+m[2] } : null;
+  }
+  async function _notifCheck(){
+    const box = document.getElementById('notifBox');
+    const btn = document.getElementById('notifBtn');
+    box.style.display = 'block';
+    box.innerHTML = '<div class="status">diagnosticando…</div>';
+    btn.classList.add('busy'); btn.disabled = true;
+
+    const lines = [];
+    const hints = [];
+    let block = false;
+
+    // 1) perfil escolhido
+    const perfilOk = (_CLIENT === 'jussara' || _CLIENT === 'grazi');
+    lines.push(perfilOk
+      ? '<div class="status ok">✓ perfil escolhido: ' + _CLIENT + '</div>'
+      : '<div class="status bad">✗ perfil ainda não escolhido</div>');
+    if (!perfilOk) { hints.push('Toque em "não é você? trocar perfil" acima e escolha um perfil.'); block = true; }
+
+    // 2) iOS: versão + PWA
+    if (_isIOS()) {
+      const v = _iosVersion();
+      const iosOk = v && (v.major > 16 || (v.major === 16 && v.minor >= 4));
+      lines.push(iosOk
+        ? '<div class="status ok">✓ iOS ' + v.major + '.' + v.minor + ' (compatível)</div>'
+        : '<div class="status bad">✗ iOS ' + (v ? v.major+'.'+v.minor : '?') + ' — precisa 16.4 ou maior</div>');
+      if (!iosOk) { hints.push('Vá em Ajustes → Geral → Atualização de Software e atualize o iPhone. Sem iOS 16.4+ o iPhone não recebe notificações de apps como este.'); block = true; }
+
+      const pwa = _isPWA();
+      lines.push(pwa
+        ? '<div class="status ok">✓ aberto como app (tela inicial)</div>'
+        : '<div class="status bad">✗ aberto pelo Safari, não pelo ícone da tela inicial</div>');
+      if (!pwa) { hints.push('Feche esta página, abra o álbum pelo <b>ícone que está na tela inicial</b> (o "app" instalado) e toque aqui de novo. No iPhone, notificação só funciona quando o app é aberto pelo ícone.'); block = true; }
+    } else {
+      lines.push('<div class="status ok">✓ ' + (/Android/i.test(navigator.userAgent) ? 'Android' : 'navegador') + ' (compatível)</div>');
+    }
+
+    // 3) permissão
+    const supports = 'Notification' in window;
+    if (!supports) {
+      lines.push('<div class="status bad">✗ este navegador não suporta notificações</div>');
+      hints.push('Tente abrir o álbum no Safari (iPhone) ou Chrome (Android).');
+      block = true;
+    } else {
+      const p = Notification.permission;
+      lines.push(p === 'granted'
+        ? '<div class="status ok">✓ permissão de notificação concedida</div>'
+        : '<div class="status bad">✗ permissão de notificação: ' + (p === 'denied' ? 'bloqueada' : 'ainda não concedida') + '</div>');
+      if (p === 'default') { hints.push('Volte à tela inicial do álbum e, quando o navegador perguntar, toque em <b>Permitir</b>.'); block = true; }
+      if (p === 'denied') { hints.push(_isIOS()
+        ? 'As notificações foram bloqueadas. No iPhone: Ajustes → Notificações → "Álbum J&G" (ou "Cosmo Album") → ative "Permitir notificações".'
+        : 'As notificações foram bloqueadas. No Android: toque no cadeado ao lado do endereço → Permissões → Notificações → Permitir.'); block = true; }
+    }
+
+    // 4) token registrado (só pra saber; a função checa de novo)
+    // (não temos como consultar diretamente; o teste envia e a função responde 'sem-token' se faltar)
+
+    // Se tudo básico ok, dispara teste real
+    if (!block) {
+      lines.push('<div class="status">enviando push de teste…</div>');
+      box.innerHTML = lines.join('');
+      try {
+        const r = await fetch(_PUSH_URL, {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ k:'jg-cosmo-2026', kind:'teste-eu', by:_CLIENT })
+        });
+        const j = await r.json();
+        lines.pop();
+        if (j.ok) {
+          lines.push('<div class="status ok">✓ push enviado com sucesso!</div>');
+          hints.push('Se a notificação apareceu, está tudo funcionando 💜. Se não apareceu em 30 segundos: veja Ajustes → Notificações → confira se este app está com o som e a exibição em tela ligados.');
+        } else if (j.err === 'sem-token') {
+          lines.push('<div class="status bad">✗ este aparelho ainda não foi registrado no servidor</div>');
+          hints.push('Feche o álbum e abra de novo (pelo ícone da tela inicial, no iPhone). Ao abrir, aguarde alguns segundos — o registro acontece automaticamente. Depois volte aqui e toque de novo em "verificar".');
+        } else {
+          lines.push('<div class="status bad">✗ falha ao enviar (' + (j.code || j.err || '?') + ')</div>');
+          hints.push('Aguarde alguns minutos e tente de novo. Se persistir, avise a Grazi.');
+        }
+      } catch (e) {
+        lines.pop();
+        lines.push('<div class="status bad">✗ falha na conexão com o servidor</div>');
+        hints.push('Confira sua internet e tente de novo.');
+      }
+    }
+
+    if (hints.length) lines.push('<div class="hint">' + hints.join('<br><br>') + '</div>');
+    box.innerHTML = lines.join('');
+    btn.classList.remove('busy'); btn.disabled = false;
+  }
+  window._notifCheck = _notifCheck;
   function _sharePhoto(uid, out){
     const meta = { ts: Date.now(), by: _CLIENT };
     const done = r => { _pingPush('foto', { pg: 'tempo' }); return r; };
