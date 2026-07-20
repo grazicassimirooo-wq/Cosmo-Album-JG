@@ -979,6 +979,10 @@ document.addEventListener('click',(e)=>{
   const row = e.target.closest('#s-sumario .jg-tocrow');
   if(!row) return;
   const id = row.dataset.id;
+  if(!id) return;
+  // capítulos 2–5 navegam pra outra página via onclick inline;
+  // registra a visita antes de sair pro progresso "de 5" contar certo
+  _jgMarkRead(id);
   if(id === '1'){ e.preventDefault(); e.stopPropagation(); goCap(1); }
 });
 
@@ -1345,6 +1349,14 @@ const _CLIENT = (function(){
   if(!c){ c = 'c' + Math.random().toString(36).slice(2) + Date.now().toString(36); try{ localStorage.setItem('cosmoClientId', c); }catch(e){} }
   return c;
 })();
+// id físico do aparelho — o token de push é por aparelho, não por usuária
+// (senão dois celulares da mesma pessoa disputam o mesmo doc e só o último recebe push)
+const _DEVICE = (function(){
+  let c = null;
+  try{ c = localStorage.getItem('cosmoClientId'); }catch(e){}
+  if(!c){ c = 'c' + Math.random().toString(36).slice(2) + Date.now().toString(36); try{ localStorage.setItem('cosmoClientId', c); }catch(e){} }
+  return c;
+})();
 let _firstSnap = true; // ignora a 1ª leitura (fotos que já existiam) para não notificar
 
 // ─── Push com o app FECHADO (Firebase Cloud Messaging) ───
@@ -1365,7 +1377,10 @@ async function _initFCM(){
     if(!token) return;
     _fcmActive = true;
     // guarda o token deste aparelho para a função no servidor enviar o push
-    await _db.collection('tokens').doc(_CLIENT).set({ token, client: _CLIENT, ts: Date.now() });
+    // (doc por aparelho; "client" continua sendo a usuária, pra não notificar quem enviou)
+    await _db.collection('tokens').doc(_DEVICE).set({ token, client: _CLIENT, ts: Date.now() });
+    // migração: remove o doc antigo compartilhado por usuária, se existir
+    if(_DEVICE !== _CLIENT){ _db.collection('tokens').doc(_CLIENT).delete().catch(()=>{}); }
     // com o app aberto, mostra a notificação na hora
     messaging.onMessage(()=> _notifyNewPhoto());
   }catch(e){ console.warn('FCM não ativou:', e); }
@@ -1469,6 +1484,398 @@ if(_db){
 
 // Se a permissão já foi concedida antes, ativa o push agora (sem precisar reabrir)
 if(_db && 'Notification' in window && Notification.permission === 'granted'){ _initFCM(); }
+
+/* ═══════════════════════════════════════════════════════════
+   DOCE — "Me Manda um Doce Aqui!"
+   ═══════════════════════════════════════════════════════════ */
+let _DOCE_DATA = { mine: null, theirs: null };
+let _DOCE_LOC = null;
+function _doceEsc(s){ return (s||'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+const _doceMyId    = ()=> (_CLIENT === 'grazi' || _CLIENT === 'jussara') ? _CLIENT : null;
+const _doceTheirId = ()=> _CLIENT === 'grazi' ? 'jussara' : _CLIENT === 'jussara' ? 'grazi' : null;
+const _doceMyName  = ()=> _CLIENT === 'grazi' ? 'Grazi' : _CLIENT === 'jussara' ? 'Jussara' : 'você';
+const _doceTheirName = ()=> _CLIENT === 'grazi' ? 'Jussara' : _CLIENT === 'jussara' ? 'Grazi' : 'ela';
+
+function _doceInit(){
+  if(!_db) return;
+  const myId = _doceMyId(), theirId = _doceTheirId();
+  if(myId) _db.collection('doce-pedido').doc(myId).onSnapshot(s=>{
+    _DOCE_DATA.mine = s.exists ? s.data() : null; _doceRender();
+  });
+  if(theirId) _db.collection('doce-pedido').doc(theirId).onSnapshot(s=>{
+    _DOCE_DATA.theirs = s.exists ? s.data() : null; _doceRender();
+  });
+}
+
+function _doceRender(){
+  const wrap = document.getElementById('doce-wrap');
+  if(!wrap) return;
+  const mine = _DOCE_DATA.mine, theirs = _DOCE_DATA.theirs;
+  const photoKey = 'doce_mimo_' + (_doceMyId() || 'x');
+  const doceImg = (_loadPhotos()||{})[photoKey];
+
+  let h = `<div class="doce-card">`;
+
+  /* --- meu pedido ativo --- */
+  if(mine){
+    h += `<div class="doce-hd">📍 Seu pedido está ativo</div>`;
+    if(mine.mapsUrl) h += `<a class="doce-map-link" href="${_doceEsc(mine.mapsUrl)}" target="_blank" rel="noopener">📍 Ver sua localização no mapa</a>`;
+    if(mine.note) h += `<div class="doce-note-show">"${_doceEsc(mine.note)}"</div>`;
+    h += `<div class="doce-status">aguardando o doce chegar 🍬</div>`;
+    h += `<button class="doce-btn danger" onclick="_doceCancelar()">✕ Cancelar pedido</button>`;
+  } else {
+    h += `<div class="doce-hd">🍬 Me Manda um Doce Aqui!</div>`;
+    h += `<div class="doce-sub">Compartilhe sua localização com um bilhete — ela vai até você ♡</div>`;
+    h += `<div id="doce-form-area"><button class="doce-btn primary" onclick="_doceAbrirForm()">📍 Compartilhar localização + bilhete</button></div>`;
+  }
+
+  /* --- pedido da outra --- */
+  if(theirs){
+    h += `<hr class="doce-divider">`;
+    h += `<div class="doce-hd" style="font-size:.9rem">🍬 ${_doceTheirName()} quer um docinho!</div>`;
+    if(theirs.mapsUrl) h += `<a class="doce-map-link" href="${_doceEsc(theirs.mapsUrl)}" target="_blank" rel="noopener">📍 Ver onde ela está</a>`;
+    if(theirs.note) h += `<div class="doce-note-show">"${_doceEsc(theirs.note)}"</div>`;
+  }
+
+  /* --- foto do mimo (para quem recebe) --- */
+  h += `<hr class="doce-divider">`;
+  h += `<div class="doce-sub">📸 Foto do mimo quando chegar</div>`;
+  const imgStyle = doceImg ? `style="background-image:url('${doceImg.replace(/'/g,"\\'")}')"` : '';
+  h += `<div class="doce-photo upload-zone${doceImg?' filled':''}" data-uid="${photoKey}" ${imgStyle}>`;
+  if(!doceImg) h += `<span class="doce-photo-ico">🍬</span><span class="doce-photo-hint">toque para adicionar a foto do docinho recebido</span>`;
+  h += `</div>`;
+
+  h += `</div>`;
+  wrap.innerHTML = h;
+}
+
+function _doceAbrirForm(){
+  const fa = document.getElementById('doce-form-area');
+  if(!fa) return;
+  _DOCE_LOC = null;
+  fa.innerHTML = `
+    <div class="doce-status" id="doce-loc-st">📍 Buscando sua localização…</div>
+    <textarea class="doce-note-area" id="doce-note-txt" placeholder="Escreva um bilhete (opcional)… ex: estou na sala 💛"></textarea>
+    <div style="display:flex;gap:8px">
+      <button class="doce-btn primary" onclick="_doceEnviar()" style="flex:1">✈ Enviar pedido</button>
+      <button class="doce-btn danger" onclick="_doceRender()" style="flex:0 0 auto;padding:12px 14px">✕</button>
+    </div>`;
+  if('geolocation' in navigator){
+    navigator.geolocation.getCurrentPosition(
+      p=>{ _DOCE_LOC = p.coords; const s=document.getElementById('doce-loc-st'); if(s) s.textContent='✓ Localização capturada 📍'; },
+      ()=>{ const s=document.getElementById('doce-loc-st'); if(s) s.textContent='⚠ GPS indisponível — só o bilhete será enviado'; },
+      {enableHighAccuracy:true,timeout:10000}
+    );
+  } else {
+    const s=document.getElementById('doce-loc-st'); if(s) s.textContent='⚠ GPS não suportado — só o bilhete será enviado';
+  }
+}
+
+function _doceEnviar(){
+  const myId = _doceMyId();
+  if(!myId) return;
+  const note = (document.getElementById('doce-note-txt')||{}).value||'';
+  const lat = _DOCE_LOC ? _DOCE_LOC.latitude : null;
+  const lng = _DOCE_LOC ? _DOCE_LOC.longitude : null;
+  const mapsUrl = lat !== null ? `https://www.google.com/maps?q=${lat},${lng}` : null;
+  const data = { by: myId, note: note.trim(), lat, lng, mapsUrl, ts: Date.now() };
+  if(_db){
+    _db.collection('doce-pedido').doc(myId).set(data)
+      .then(()=>_toast('Pedido enviado! Ela já sabe onde você está 🍬', true))
+      .catch(e=>_toast('Erro ao enviar: '+(e.code||e.message), false));
+  } else {
+    _DOCE_DATA.mine = data; _doceRender();
+    _toast('Pedido salvo localmente (sem conexão)', true);
+  }
+}
+
+function _doceCancelar(){
+  const myId = _doceMyId();
+  if(!myId) return;
+  if(_db){
+    _db.collection('doce-pedido').doc(myId).delete()
+      .then(()=>_toast('Pedido cancelado ✓', true))
+      .catch(e=>_toast('Erro ao cancelar', false));
+  } else {
+    _DOCE_DATA.mine = null; _doceRender();
+  }
+}
+
+_doceInit();
+
+/* ═══════════════════════════════════════════════════════════
+   CAP I — Frase do dia · gravação de vídeo + sync em tempo real
+   ═══════════════════════════════════════════════════════════ */
+const _VID_CACHE_KEY = 'cosmoVideos';
+function _loadVideos(){ try{ return JSON.parse(localStorage.getItem(_VID_CACHE_KEY)||'{}'); }catch(e){ return {}; } }
+function _saveVideos(map){ try{ localStorage.setItem(_VID_CACHE_KEY, JSON.stringify(map)); }catch(e){} }
+
+let _vidStream = null, _vidRecorder = null, _vidChunks = [], _vidTimer = null, _vidStart = 0, _vidBlob = null, _vidDataUrl = null;
+let _vidActiveUid = 'cap1_frase';
+const _VID_MAX_SEC = 10;
+const _VID_TITLES = {
+  cap1_frase:  { title: 'Frase do dia em vídeo', sub: 'grave uma frase curta ou suba um vídeo curto · chega na hora pra ela' },
+  cap1_spread: { title: 'Vídeo ou animação autoral', sub: 'sua voz lendo uma carta, uma animação sua · grava ou sobe um arquivo' }
+};
+
+// Firebase Storage (vídeos grandes vão pra Storage; doc do Firestore guarda só a URL)
+let _stg = null;
+try{
+  if(_db && typeof firebase.storage === 'function'){ _stg = firebase.storage(); }
+}catch(e){ console.warn('Storage não disponível:', e); _stg = null; }
+
+function _jgOpenVideoRec(ev, uid){
+  if(ev && ev.target && ev.target.closest('video')) return;
+  _vidActiveUid = (uid && _VID_TITLES[uid]) ? uid : 'cap1_frase';
+  const meta = _VID_TITLES[_vidActiveUid];
+  const titleEl = document.getElementById('vidRecTitle');
+  if(titleEl) titleEl.textContent = meta.title;
+  const subEl = document.querySelector('#vidRecModal .vid-sub');
+  if(subEl) subEl.textContent = meta.sub;
+  const m = document.getElementById('vidRecModal');
+  if(!m) return;
+  m.classList.add('on');
+  _jgResetRecUI();
+  _jgStartCamera();
+}
+function _jgCloseVideoRec(){
+  const m = document.getElementById('vidRecModal');
+  if(!m) return;
+  m.classList.remove('on');
+  _jgStopCamera();
+  _vidBlob = null; _vidDataUrl = null; _vidChunks = [];
+}
+function _jgResetRecUI(){
+  document.getElementById('vidRecStart').style.display='';
+  document.getElementById('vidRecStop').style.display='none';
+  document.getElementById('vidRecRetry').style.display='none';
+  document.getElementById('vidRecSend').style.display='none';
+  document.getElementById('vidRecPick').style.display='';
+  document.getElementById('vidRecStatus').textContent='grave até 10s ou suba um arquivo do celular/computador';
+  document.getElementById('vidRecStage').classList.remove('recording','has-preview');
+  document.getElementById('vidRecTimer').textContent='0s';
+  const v = document.getElementById('vidRecPreview');
+  v.muted = true; v.controls = false; v.removeAttribute('src');
+}
+async function _jgStartCamera(){
+  try{
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+      document.getElementById('vidRecStatus').textContent='Este aparelho não permite gravar vídeo aqui.';
+      document.getElementById('vidRecStart').disabled = true;
+      return;
+    }
+    _vidStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 480 }, height: { ideal: 480 } },
+      audio: true
+    });
+    const v = document.getElementById('vidRecPreview');
+    v.srcObject = _vidStream;
+    v.muted = true;
+    v.play().catch(()=>{});
+  }catch(e){
+    console.warn('Câmera negada:', e);
+    document.getElementById('vidRecStatus').textContent='Permita acesso à câmera e ao microfone para gravar.';
+    document.getElementById('vidRecStart').disabled = true;
+  }
+}
+function _jgStopCamera(){
+  try{
+    if(_vidStream){ _vidStream.getTracks().forEach(t=>t.stop()); _vidStream = null; }
+    if(_vidRecorder && _vidRecorder.state !== 'inactive'){ try{ _vidRecorder.stop(); }catch(e){} }
+    if(_vidTimer){ clearInterval(_vidTimer); _vidTimer = null; }
+  }catch(e){}
+}
+function _jgPickMime(){
+  if(typeof MediaRecorder === 'undefined') return null;
+  const cands = ['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm','video/mp4'];
+  for(const m of cands){ try{ if(MediaRecorder.isTypeSupported(m)) return m; }catch(e){} }
+  return '';
+}
+function _jgStartRec(){
+  if(!_vidStream){ _jgStartCamera(); return; }
+  const mime = _jgPickMime();
+  if(mime === null){ document.getElementById('vidRecStatus').textContent='Gravação não suportada neste navegador.'; return; }
+  _vidChunks = [];
+  try{
+    _vidRecorder = new MediaRecorder(_vidStream, mime ? { mimeType: mime, videoBitsPerSecond: 500000, audioBitsPerSecond: 64000 } : { videoBitsPerSecond: 500000, audioBitsPerSecond: 64000 });
+  }catch(e){
+    try{ _vidRecorder = new MediaRecorder(_vidStream); }catch(e2){ document.getElementById('vidRecStatus').textContent='Erro: '+(e2.message||e2); return; }
+  }
+  _vidRecorder.ondataavailable = ev=>{ if(ev.data && ev.data.size) _vidChunks.push(ev.data); };
+  _vidRecorder.onstop = ()=>{
+    const type = _vidRecorder.mimeType || 'video/webm';
+    _vidBlob = new Blob(_vidChunks, { type });
+    const v = document.getElementById('vidRecPreview');
+    try{ v.srcObject = null; }catch(e){}
+    v.src = URL.createObjectURL(_vidBlob);
+    v.muted = false; v.controls = true;
+    document.getElementById('vidRecStage').classList.remove('recording');
+    document.getElementById('vidRecStage').classList.add('has-preview');
+    document.getElementById('vidRecStart').style.display='none';
+    document.getElementById('vidRecStop').style.display='none';
+    document.getElementById('vidRecRetry').style.display='';
+    document.getElementById('vidRecSend').style.display='';
+    const kb = Math.round(_vidBlob.size/1024);
+    document.getElementById('vidRecStatus').textContent = 'pré-visualização · ' + kb + ' KB';
+  };
+  _vidRecorder.start(250);
+  _vidStart = Date.now();
+  document.getElementById('vidRecStage').classList.add('recording');
+  document.getElementById('vidRecStart').style.display='none';
+  document.getElementById('vidRecStop').style.display='';
+  document.getElementById('vidRecStatus').textContent='gravando…';
+  _vidTimer = setInterval(()=>{
+    const s = Math.floor((Date.now()-_vidStart)/1000);
+    document.getElementById('vidRecTimer').textContent = s + 's';
+    if(s >= _VID_MAX_SEC) _jgStopRec();
+  }, 200);
+}
+function _jgStopRec(){
+  if(_vidTimer){ clearInterval(_vidTimer); _vidTimer = null; }
+  if(_vidRecorder && _vidRecorder.state !== 'inactive'){ try{ _vidRecorder.stop(); }catch(e){} }
+}
+function _jgRetryRec(){
+  _vidBlob = null; _vidDataUrl = null; _vidChunks = [];
+  _jgResetRecUI();
+  _jgStartCamera();
+}
+
+// Subir vídeo do celular/computador
+function _jgPickVideoFile(){
+  const fi = document.getElementById('vidRecFile');
+  if(!fi) return;
+  fi.value = '';
+  fi.click();
+}
+(function bindVideoFilePicker(){
+  const fi = document.getElementById('vidRecFile');
+  if(!fi) return;
+  fi.addEventListener('change', ()=>{
+    const f = fi.files && fi.files[0];
+    if(!f) return;
+    _vidBlob = f;
+    _jgStopCamera();
+    const stage = document.getElementById('vidRecStage');
+    stage.classList.remove('recording');
+    stage.classList.add('has-preview');
+    const v = document.getElementById('vidRecPreview');
+    try{ v.srcObject = null; }catch(e){}
+    v.src = URL.createObjectURL(f);
+    v.muted = false; v.controls = true;
+    document.getElementById('vidRecStart').style.display='none';
+    document.getElementById('vidRecStop').style.display='none';
+    document.getElementById('vidRecPick').style.display='none';
+    document.getElementById('vidRecRetry').style.display='';
+    document.getElementById('vidRecSend').style.display='';
+    const mb = (f.size/1024/1024).toFixed(1);
+    document.getElementById('vidRecStatus').textContent = 'pré-visualização · ' + mb + ' MB · ' + (f.name||'arquivo');
+  });
+})();
+
+// Envia o vídeo: Storage para arquivos grandes, base64 inline como fallback
+function _jgSendRec(){
+  if(!_vidBlob){ return; }
+  const status = document.getElementById('vidRecStatus');
+  const uid = _vidActiveUid || 'cap1_frase';
+  const mime = _vidBlob.type || 'video/webm';
+  const size = _vidBlob.size;
+  status.textContent = 'Enviando…';
+
+  // Pre-render local: gera URL temporária para o usuário ver feedback imediato
+  const tmpLocalUrl = URL.createObjectURL(_vidBlob);
+  _applyVideo(uid, tmpLocalUrl);
+
+  const finishOk = (saveUrl, saveDocData)=>{
+    const cache = _loadVideos(); cache[uid] = saveUrl; _saveVideos(cache);
+    _applyVideo(uid, saveUrl);
+    if(_db){
+      _db.collection('videos').doc(uid).set(Object.assign({ ts: Date.now(), by: _CLIENT, mime }, saveDocData))
+        .then(()=>{ status.textContent = 'Enviado ✓'; if(navigator.vibrate) navigator.vibrate([10,40,10,40,80]); setTimeout(_jgCloseVideoRec, 800); })
+        .catch(err=>{ console.warn('Falha ao salvar doc:', err); status.textContent = 'Vídeo enviado, mas falhou ao notificar: ' + (err.code||err.message); });
+    } else {
+      status.textContent = 'Salvo no aparelho (sem nuvem)';
+      setTimeout(_jgCloseVideoRec, 800);
+    }
+  };
+
+  const tryBase64Fallback = ()=>{
+    const MAX_BYTES = 900 * 1024; // limite seguro do Firestore
+    if(size > MAX_BYTES){
+      status.textContent = 'Vídeo grande demais para o caminho de emergência (' + Math.round(size/1024) + ' KB). Tente um mais curto.';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = ev=>{ finishOk(ev.target.result, { video: ev.target.result }); };
+    reader.onerror = ()=>{ status.textContent = 'Erro ao ler o vídeo.'; };
+    reader.readAsDataURL(_vidBlob);
+  };
+
+  if(_stg){
+    try{
+      const ext = (mime.indexOf('mp4') >= 0) ? 'mp4' : 'webm';
+      const ref = _stg.ref().child('videos/' + uid + '.' + ext);
+      const task = ref.put(_vidBlob, { contentType: mime });
+      task.on('state_changed',
+        s => { const pct = Math.round((s.bytesTransferred/s.totalBytes)*100); status.textContent = 'Enviando… ' + pct + '%'; },
+        err => { console.warn('Storage falhou, tentando base64:', err); tryBase64Fallback(); },
+        () => {
+          task.snapshot.ref.getDownloadURL().then(url => finishOk(url, { url, ext }))
+            .catch(err => { console.warn('Falha ao obter URL:', err); tryBase64Fallback(); });
+        }
+      );
+    }catch(e){ console.warn('Storage put falhou:', e); tryBase64Fallback(); }
+  } else {
+    tryBase64Fallback();
+  }
+}
+
+function _applyVideo(uid, dataUrl){
+  const slot = document.querySelector('.jg-video-slot[data-uid="'+uid+'"]');
+  if(!slot || !dataUrl) return;
+  let v = slot.querySelector('video.jg-vplay');
+  if(!v){
+    v = document.createElement('video');
+    v.className = 'jg-vplay';
+    v.controls = true; v.playsInline = true; v.preload = 'metadata';
+    slot.appendChild(v);
+  }
+  if(v.src !== dataUrl) v.src = dataUrl;
+  slot.classList.add('has-video');
+}
+
+// Restaura vídeos do cache local
+(function initVideos(){
+  const cache = _loadVideos();
+  Object.keys(cache).forEach(k => _applyVideo(k, cache[k]));
+  const modal = document.getElementById('vidRecModal');
+  if(modal){
+    modal.addEventListener('click', e=>{ if(e.target.id === 'vidRecModal') _jgCloseVideoRec(); });
+  }
+})();
+
+// Sincroniza vídeos em tempo real entre os aparelhos
+let _firstVideoSnap = true;
+if(_db){
+  try{
+    _db.collection('videos').onSnapshot(snap=>{
+      const cache = _loadVideos();
+      let notify = false;
+      snap.docChanges().forEach(ch=>{
+        if(ch.type === 'removed') return;
+        const d = ch.doc.data();
+        if(!d) return;
+        const src = d.url || d.video; // url = Firebase Storage; video = base64 legado/fallback
+        if(!src) return;
+        _applyVideo(ch.doc.id, src);
+        cache[ch.doc.id] = src;
+        if(!_firstVideoSnap && d.by && d.by !== _CLIENT) notify = true;
+      });
+      _saveVideos(cache);
+      _firstVideoSnap = false;
+      if(notify) _toast('Chegou um vídeo novo ✦', true);
+    }, err=>{ console.warn('Falha ao sincronizar vídeos:', err); });
+  }catch(e){ console.warn('onSnapshot vídeos falhou:', e); }
+}
 
 // Reduz a imagem antes de salvar para caber no armazenamento do navegador
 function _resizeImage(dataURL, maxDim, cb){

@@ -611,6 +611,17 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
   function getData(){ try{ return JSON.parse(localStorage.getItem(STORE)||'{"total":0,"items":[]}'); }catch(e){ return {total:0,items:[]}; } }
   function setData(d){ try{ localStorage.setItem(STORE, JSON.stringify(d)); }catch(e){} }
 
+  /* ═══ CONTADOR REAL (agregação no servidor — sem o teto dos últimos 30 docs) ═══ */
+  function _refreshDoceCount(){
+    const el = document.getElementById('doceCount');
+    if(!_db){ el.textContent = getData().total; return; }
+    try{
+      _db.collection('doces').where('by','==',_CLIENT).count().get()
+        .then(s=>{ el.textContent = s.data().count; })
+        .catch(()=>{ el.textContent = getData().total; });
+    }catch(e){ el.textContent = getData().total; }
+  }
+
   /* ═══ ENVIAR DOCE ═══ */
   function enviarDoce(){
     if(!doceAtual) return;
@@ -622,7 +633,9 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     data.items.unshift(entry);
     data.total = (data.total||0) + 1;
     setData(data);
-    document.getElementById('doceCount').textContent = data.total;
+    // otimista: soma 1 ao que está na tela; o valor exato vem do servidor logo depois
+    const cntEl = document.getElementById('doceCount');
+    cntEl.textContent = (parseInt(cntEl.textContent,10)||0) + 1;
     adicionarHistorico(entry, true);
 
     /* vibração crescente */
@@ -639,7 +652,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     /* Firebase */
     if(_db){
       _db.collection('doces').add(entry)
-        .then(()=> _pingPush('doce', { nome: entry.nome, ico: entry.ico, art: entry.art }))
+        .then(()=> _refreshDoceCount())
         .catch(e => console.warn('Falha ao enviar doce:', e));
     }
 
@@ -663,8 +676,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
           _firstDocSnap = false;
           /* carrega histórico completo na 1ª leitura */
           const docs = snap.docs.map(d=>({...d.data()}));
-          const meus = docs.filter(d=>d.by === _CLIENT);
-          document.getElementById('doceCount').textContent = meus.length || getData().total;
+          _refreshDoceCount();
           const hist = document.getElementById('historico');
           hist.innerHTML = '';
           if(!docs.length){ hist.innerHTML = _emptyHist(); return; }
@@ -701,7 +713,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     data.items.slice(0,5).forEach(e => adicionarHistorico(e, false));
   }
   function _emptyHist(){
-    return `<div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.88rem;color:var(--cream3);text-align:center;padding:12px 0;opacity:.6">nenhum doce ainda — manda o primeiro ✦</div>`;
+    return `<div data-ph style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.88rem;color:var(--cream3);text-align:center;padding:12px 0;opacity:.6">nenhum doce ainda — manda o primeiro ✦</div>`;
   }
 
   /* ═══ CHUVA DE PARTÍCULAS ═══ */
