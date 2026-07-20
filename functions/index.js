@@ -181,6 +181,41 @@ exports.notify = onRequest({ cors: true }, async (req, res) => {
     }
     const by = (b.by === 'grazi' || b.by === 'jussara') ? b.by : '';
     const quem = NOMES[by] || 'Seu amor';
+
+    // Push de teste — envia SÓ pro próprio cliente que pediu (self-test).
+    // Usado pelo botão "verificar minhas notificações" no perfil.
+    if (b.kind === 'teste-eu') {
+      if (!by) { res.json({ ok: false, err: 'perfil não escolhido' }); return; }
+      const db = getFirestore();
+      let tokenDoc = null;
+      try { tokenDoc = await db.collection('tokens').doc(by).get(); }
+      catch (e) { res.json({ ok: false, err: 'falha ao ler tokens: ' + (e.message || e) }); return; }
+      if (!tokenDoc.exists || !(tokenDoc.data() || {}).token) {
+        res.json({ ok: false, err: 'sem-token', hint: 'este aparelho ainda não está registrado — permita as notificações e tente de novo' });
+        return;
+      }
+      try {
+        await getMessaging().send({
+          token: tokenDoc.data().token,
+          data: {
+            title: '🔔 Notificação de teste',
+            body: 'Seu álbum está pronto para receber cartas, doces e fotos ✦',
+            tag: 'cosmo-teste', link: './'
+          },
+          webpush: {
+            headers: { Urgency: 'high' },
+            notification: { title: '🔔 Notificação de teste', body: 'Seu álbum está pronto para receber cartas, doces e fotos ✦', icon: BASE + 'icon-192.png', badge: BASE + 'icon-192.png', tag: 'cosmo-teste', renotify: true },
+            fcmOptions: { link: BASE }
+          }
+        });
+        res.json({ ok: true, sent: 1 });
+      } catch (e) {
+        const code = (e && e.errorInfo && e.errorInfo.code) || (e && e.code) || 'erro';
+        res.json({ ok: false, err: 'envio-falhou', code });
+      }
+      return;
+    }
+
     const data = buildData(b, quem);
     if (!data) { res.status(400).json({ ok: false }); return; }
     const log = await sendToOther(by, data);
