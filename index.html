@@ -639,6 +639,102 @@ img{max-width:100%}
 .jg-section h3{font-family:'Playfair Display',serif;font-weight:800;font-size:1.4rem;margin-bottom:2px;line-height:1.1}
 .jg-section .jg-deck{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:var(--jg-cream3);margin-bottom:18px}
 
+/* ═══ POTE DE RECADINHOS — Cap I ═══ */
+.pote-section{margin:24px var(--jg-space);padding:22px 20px;
+  background:linear-gradient(180deg,#1a1640,#13102f);
+  border:1px solid rgba(232,184,109,.25);border-radius:14px;
+  position:relative;overflow:hidden}
+.pote-section .jg-label{font-family:'Nunito';font-weight:900;font-size:.56rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--jg-gold2);margin-bottom:6px}
+.pote-section h3{font-family:'Playfair Display',serif;font-weight:800;font-size:1.4rem;line-height:1.1;margin-bottom:4px}
+.pote-section .jg-deck{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:var(--jg-cream3);margin-bottom:8px;line-height:1.45}
+.pote-stage{position:relative;height:320px;display:flex;align-items:center;justify-content:center;
+  perspective:1200px;perspective-origin:50% 55%;cursor:pointer;user-select:none;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.pote-stage:focus-visible{outline:2px solid var(--jg-gold2);outline-offset:6px;border-radius:14px}
+.pote-3d{position:relative;width:170px;height:210px;transform-style:preserve-3d;
+  transform:rotateX(-6deg);animation:poteBreathe 8s ease-in-out infinite;will-change:transform}
+@keyframes poteBreathe{0%,100%{transform:rotateX(-6deg) rotateY(0)}50%{transform:rotateX(-6deg) rotateY(5deg)}}
+.pote-glass{position:absolute;inset:26px 0 0 0;
+  background:linear-gradient(180deg,rgba(232,184,109,.22) 0%,rgba(139,107,149,.18) 45%,rgba(124,91,173,.22) 100%);
+  border-radius:16px 16px 24px 24px;border:1.5px solid rgba(232,184,109,.4);
+  box-shadow:inset 0 0 30px rgba(255,255,255,.14),inset 20px 0 30px rgba(232,184,109,.18),inset -20px 0 30px rgba(139,107,149,.2),0 22px 42px rgba(0,0,0,.5);overflow:hidden}
+.pote-glass::after{content:'';position:absolute;top:0;left:14%;width:10%;height:100%;
+  background:linear-gradient(180deg,rgba(255,255,255,.4),rgba(255,255,255,.05) 55%,rgba(255,255,255,.2));
+  border-radius:99px}
+.pote-papers{position:absolute;bottom:12px;left:12%;right:12%;height:64%;overflow:hidden}
+.pote-papers span{display:block;position:absolute;
+  width:46%;height:11px;background:linear-gradient(180deg,#F0DFC0,#D4C4A0);border-radius:2px;
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.32))}
+.pote-papers span:nth-child(1){left:8%;top:30%;transform:rotate(-14deg)}
+.pote-papers span:nth-child(2){right:6%;top:44%;transform:rotate(11deg)}
+.pote-papers span:nth-child(3){left:22%;top:58%;transform:rotate(-6deg)}
+.pote-papers span:nth-child(4){right:14%;top:70%;transform:rotate(17deg)}
+.pote-papers span:nth-child(5){left:30%;top:82%;transform:rotate(-3deg)}
+.pote-lid{position:absolute;top:0;left:6%;right:6%;height:38px;
+  background:linear-gradient(180deg,#8E6A1F,#5A4210 70%,#3A2810);
+  border-radius:10px 10px 4px 4px;border:1.5px solid rgba(232,184,109,.35);
+  box-shadow:inset 0 -7px 10px rgba(0,0,0,.4),inset 0 2px 3px rgba(244,220,168,.35),0 4px 8px rgba(0,0,0,.35);
+  transform-origin:50% 100%;transition:transform .7s var(--jg-spring)}
+.pote-lid::before{content:'';position:absolute;top:8px;left:35%;right:35%;height:3px;
+  background:rgba(244,220,168,.35);border-radius:99px}
+.pote-stage.opening .pote-lid{transform:translateY(-32px) rotate(-8deg)}
+.pote-stage.opening .pote-3d{animation:poteShake .45s cubic-bezier(.36,.07,.19,.97) 3}
+@keyframes poteShake{
+  0%,100%{transform:rotateX(-6deg) rotateY(0) translateX(0)}
+  25%{transform:rotateX(-6deg) rotateY(-4deg) translateX(-5px)}
+  75%{transform:rotateX(-6deg) rotateY(4deg) translateX(5px)}
+}
+/* bilhete que voa */
+.pote-note{position:absolute;left:50%;top:50%;
+  transform:translate(-50%,20%) scale(.3);opacity:0;pointer-events:none;
+  width:min(260px,80%);padding:14px 18px;
+  background:linear-gradient(160deg,#F0DFC0,#E8D5B7 60%,#D4C4A0);
+  border-radius:4px;filter:drop-shadow(0 14px 26px rgba(0,0,0,.5));
+  color:var(--jg-ink2);z-index:3;text-align:center;
+  transition:opacity .5s var(--jg-out),transform .8s var(--jg-spring)}
+.pote-note.shown{opacity:1}
+.pote-note.flying{animation:poteFly 1.2s var(--jg-spring) forwards}
+@keyframes poteFly{
+  0%{opacity:0;transform:translate(-50%,20%) scale(.3) rotate(-8deg)}
+  40%{opacity:1;transform:translate(-50%,-40%) scale(1) rotate(2deg)}
+  100%{opacity:1;transform:translate(-50%,-70%) scale(1) rotate(0)}
+}
+.pote-note.static{opacity:1;transform:translate(-50%,-70%) scale(1)}
+.pote-note .pote-note-date{font-family:'Nunito';font-weight:800;font-size:.5rem;letter-spacing:2px;text-transform:uppercase;
+  color:var(--jg-gold-deep);margin-bottom:6px}
+.pote-note .pote-note-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;line-height:1.4;color:var(--jg-ink2)}
+.pote-note .pote-slot-mark{display:inline-block;padding:3px 8px;border-radius:99px;
+  background:rgba(232,184,109,.2);border:1px solid rgba(142,106,31,.4);
+  font-family:'Nunito';font-weight:800;font-size:.5rem;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--jg-gold-deep);margin-bottom:4px}
+/* selo "voltamos amanhã" */
+.pote-seal{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.85rem;color:var(--jg-gold2);
+  padding:6px 14px;border:1px solid rgba(232,184,109,.4);border-radius:99px;
+  background:rgba(232,184,109,.08);white-space:nowrap;opacity:0;
+  transition:opacity .5s var(--jg-out);pointer-events:none;z-index:2}
+.pote-stage.sealed .pote-seal{opacity:.9}
+.pote-hint{margin-top:4px;text-align:center;
+  font-family:'Nunito';font-weight:700;font-size:.55rem;letter-spacing:2px;text-transform:uppercase;
+  color:var(--jg-cream3);opacity:.6}
+.pote-stage.sealed ~ .pote-hint{opacity:0}
+.pote-share{display:none;margin:8px auto 0;padding:9px 18px;border-radius:99px;
+  background:transparent;border:1.5px solid rgba(232,184,109,.45);color:var(--jg-gold2);
+  font-family:'Nunito';font-weight:800;font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
+  transition:border-color .2s,background .2s}
+.pote-share:hover{border-color:var(--jg-gold2);background:rgba(232,184,109,.08)}
+.pote-stage.sealed ~ .pote-share{display:block}
+.pote-legend{margin-top:16px;padding:12px 14px;border:1px dashed rgba(232,184,109,.35);
+  border-radius:10px;background:rgba(232,184,109,.04);text-align:center}
+.pote-legend p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.82rem;color:var(--jg-cream2);line-height:1.4;margin:2px 0}
+.pote-legend b{font-family:'Nunito';font-weight:800;font-style:normal;color:var(--jg-gold3);font-size:.7rem;letter-spacing:1.5px}
+@media (prefers-reduced-motion:reduce){
+  .pote-3d{animation:none;transform:rotateX(-6deg)}
+  .pote-stage.opening .pote-3d{animation:none}
+  .pote-stage.opening .pote-lid{transform:translateY(-24px)}
+  .pote-note.flying{animation:none;opacity:1;transform:translate(-50%,-70%) scale(1)}
+}
+
 .jg-stickers{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
 .jg-stk{position:relative;padding:8px;background:linear-gradient(160deg,var(--jg-cream),var(--jg-cream2));filter:drop-shadow(0 8px 18px rgba(0,0,0,.4));transition:transform .3s var(--jg-spring);opacity:0;transform:translateY(20px);
   -webkit-mask:radial-gradient(circle 2.6px at 6px 6px,transparent 2.2px,#000 2.6px) top left/12px 12px repeat-x,radial-gradient(circle 2.6px at 6px 6px,transparent 2.2px,#000 2.6px) bottom left/12px 12px repeat-x,radial-gradient(circle 2.6px at 6px 6px,transparent 2.2px,#000 2.6px) top left/12px 12px repeat-y,radial-gradient(circle 2.6px at 6px 6px,transparent 2.2px,#000 2.6px) top right/12px 12px repeat-y,linear-gradient(#000,#000);
@@ -807,6 +903,29 @@ img{max-width:100%}
         <p>Abra o pergaminho, escreva no tempo do coração e sele. Ela chega no aparelho dela com uma notificação suave.</p>
         <a class="jg-cta" href="carta-amor.html">✒ Escrever carta</a>
         <a class="jg-cta-ghost" href="carta-amor.html">ver as enviadas</a>
+      </section>
+      <section class="pote-section" id="poteSection" aria-labelledby="poteTitle">
+        <div class="jg-label">o pote</div>
+        <h3 id="poteTitle">Um bilhete por dia</h3>
+        <p class="jg-deck">toque no pote pra pegar o recado de hoje — sela até amanhã</p>
+        <div class="pote-stage" id="poteStage" role="button" tabindex="0" aria-label="Abrir o pote de recadinhos de hoje">
+          <div class="pote-3d">
+            <div class="pote-glass"></div>
+            <div class="pote-papers"><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="pote-lid"></div>
+          </div>
+          <div class="pote-note" id="poteNote">
+            <div class="pote-note-date"></div>
+            <div class="pote-note-text"></div>
+          </div>
+          <div class="pote-seal" aria-hidden="true">✦ voltamos amanhã ✦</div>
+        </div>
+        <div class="pote-hint">toque no pote</div>
+        <button class="pote-share" type="button" id="poteShare">✦ mandar este pra ela</button>
+        <div class="pote-legend">
+          <p><b>31 bilhetes autorais</b> entram no <code>POTE_BILHETES</code> — um por dia do mês, cicla.</p>
+          <p>slot · texto autoral · até 140 caracteres · tom carinhoso</p>
+        </div>
       </section>
       <section class="jg-section">
         <div class="jg-label">as figurinhas</div>
@@ -1111,6 +1230,93 @@ document.addEventListener('click',(e)=>{
   _jgMarkRead(id);
   if(id === '1'){ e.preventDefault(); e.stopPropagation(); goCap(1); }
 });
+
+/* ═══ POTE DE RECADINHOS — 31 slots autorais (dia 1..31, cicla) ═══
+   A Grazi preenche a frase em cada slot. Enquanto vazio, aparece o slot marker.
+*/
+const POTE_BILHETES = Array.from({length:31}, (_, i) => ({ dia: i+1, frase: null }));
+const _POTE_KEY_PREFIX = 'jg-pote-';
+function _poteTodayKey(){
+  const d = new Date();
+  return _POTE_KEY_PREFIX + d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+}
+function _poteOpenedToday(){ try{ return !!localStorage.getItem(_poteTodayKey()); }catch(e){ return false; } }
+function _poteMarkOpened(b){ try{ localStorage.setItem(_poteTodayKey(), JSON.stringify(b)); }catch(e){} }
+function _poteTodayBilhete(){
+  const d = new Date();
+  return POTE_BILHETES[(d.getDate()-1) % POTE_BILHETES.length];
+}
+function _poteFill(b){
+  const note = document.getElementById('poteNote');
+  if(!note) return;
+  const t = note.querySelector('.pote-note-text');
+  const d = note.querySelector('.pote-note-date');
+  d.textContent = 'dia ' + b.dia;
+  if(b.frase){
+    t.textContent = b.frase;
+  } else {
+    t.innerHTML = '<span class="pote-slot-mark">slot · frase autoral · dia ' + b.dia + '</span><br>a Grazi ainda vai escrever esse.';
+  }
+}
+function _potePaint(){
+  const stage = document.getElementById('poteStage');
+  if(!stage) return;
+  const note = document.getElementById('poteNote');
+  if(_poteOpenedToday()){
+    stage.classList.add('sealed');
+    _poteFill(_poteTodayBilhete());
+    if(note){ note.classList.add('shown'); note.classList.add('static'); }
+  } else {
+    stage.classList.remove('sealed');
+    if(note){ note.className = 'pote-note'; note.querySelector('.pote-note-text').textContent = ''; note.querySelector('.pote-note-date').textContent = ''; }
+  }
+}
+function _poteOpen(){
+  const stage = document.getElementById('poteStage');
+  if(!stage || stage.classList.contains('opening')) return;
+  if(_poteOpenedToday()){ return; /* já aberto, o painel mostra o de hoje */ }
+  const b = _poteTodayBilhete();
+  stage.classList.add('opening');
+  setTimeout(()=>{
+    _poteFill(b);
+    const note = document.getElementById('poteNote');
+    note.classList.add('shown','flying');
+    _poteMarkOpened(b);
+    stage.classList.add('sealed');
+    stage.classList.remove('opening');
+    // ping push discreto — se a função existir
+    try{ if(typeof _pingPush === 'function') _pingPush('pote', { dia: b.dia }); }catch(e){}
+  }, 700);
+}
+function _poteInit(){
+  const stage = document.getElementById('poteStage');
+  if(!stage || stage._wired) return;
+  stage._wired = true;
+  stage.addEventListener('click', _poteOpen);
+  stage.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); _poteOpen(); }
+  });
+  const share = document.getElementById('poteShare');
+  if(share){
+    share.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const b = _poteTodayBilhete();
+      try{ if(typeof _pingPush === 'function') _pingPush('carta', { by:'pote', dia:b.dia }); }catch(e){}
+      // feedback visual mínimo
+      share.textContent = '✦ enviado ✦';
+      share.disabled = true;
+      setTimeout(()=>{ share.textContent = '✦ mandar este pra ela'; share.disabled = false; }, 2200);
+    });
+  }
+  _potePaint();
+}
+/* pinta e ativa o pote sempre que o Cap I é aberto */
+(function(){
+  const _origGoCap = window.goCap;
+  if(typeof _origGoCap === 'function'){
+    window.goCap = function(n){ _origGoCap(n); if(n === 1){ _poteInit(); _potePaint(); } };
+  }
+})();
 
 /* ═══ ALBUM DATA ═══ */
 const AL=[
