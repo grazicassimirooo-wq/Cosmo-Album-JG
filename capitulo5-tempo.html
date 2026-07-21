@@ -257,12 +257,30 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
 @keyframes bigBeat{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 
 /* toast */
-.toast{position:fixed;top:24px;left:50%;z-index:100;transform:translateX(-50%) translateY(-20px);
+.toast{position:fixed;top:68px;left:50%;z-index:100;transform:translateX(-50%) translateY(-20px);
   background:linear-gradient(180deg,#0D3028,#061A14);color:var(--gold3);
   font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.8rem;letter-spacing:1.5px;padding:10px 22px;
   border-radius:4px;border:1.5px solid var(--gold);box-shadow:0 8px 24px rgba(0,0,0,.5);
   opacity:0;transition:all .4s}
 
+
+
+/* ═══ top-bar de navegação (voltar ao sumário) ═══ */
+.chap-topbar{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:14px var(--space) 6px;opacity:0;animation:fadeUp .7s var(--ease-out) .1s forwards}
+.chap-topbar .cb-back{background:none;border:none;cursor:pointer;text-decoration:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--cream3);display:flex;align-items:center;gap:6px;padding:6px 4px;transition:color .2s}
+.chap-topbar .cb-back:hover,.chap-topbar .cb-back:focus-visible{color:var(--gold2)}
+.chap-topbar .cb-who{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.7rem;letter-spacing:2px;color:var(--gold2);opacity:.75}
+/* ═══ fundo ambiente do desktop — auroras suaves atrás da coluna estreita ═══ */
+.dt-aurora{position:fixed;inset:-15% -10%;z-index:0;pointer-events:none;opacity:0;filter:blur(60px);will-change:transform,opacity}
+.dt-aurora-a{background:radial-gradient(ellipse 45% 55% at 10% 28%,rgba(124,91,173,.34),transparent 65%),radial-gradient(ellipse 40% 45% at 8% 82%,rgba(212,115,110,.22),transparent 65%)}
+.dt-aurora-b{background:radial-gradient(ellipse 42% 55% at 92% 22%,rgba(232,184,109,.20),transparent 65%),radial-gradient(ellipse 45% 50% at 90% 78%,rgba(124,91,173,.24),transparent 65%)}
+@media (min-width:900px){
+  .dt-aurora-a{opacity:.55;animation:dtAmbA 26s cubic-bezier(.2,.7,.2,1) infinite alternate}
+  .dt-aurora-b{opacity:.50;animation:dtAmbB 32s cubic-bezier(.2,.7,.2,1) infinite alternate}
+}
+@keyframes dtAmbA{0%{transform:translate3d(-2%,0,0) scale(1)}100%{transform:translate3d(3%,-2%,0) scale(1.08)}}
+@keyframes dtAmbB{0%{transform:translate3d(2%,1%,0) scale(1.04)}100%{transform:translate3d(-2%,-1%,0) scale(1)}}
+@media (prefers-reduced-motion:reduce){.dt-aurora{animation:none!important}}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001s!important;animation-delay:0s!important;transition-duration:.001s!important}
   .sky-stars,.numeral{opacity:.85}
@@ -399,6 +417,16 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
 </style>
 </head>
 <body>
+<script>
+/* marca este capítulo como visitado (mesmo em deep-link/refresh/nav interna) */
+(function(){
+  try{
+    var K='jg-read-chapters';
+    var r=JSON.parse(localStorage.getItem(K)||'[]');
+    if(!r.includes('2')){ r.push('2'); localStorage.setItem(K, JSON.stringify(r)); }
+  }catch(e){}
+})();
+</script>
 <div class="cosmo-login-gate" id="cosmoLoginGate" aria-hidden="true">
   <div class="clg-card">
     <div class="clg-deco">✦ ✧ ✦</div>
@@ -443,7 +471,16 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
 <div class="sky-bg"></div>
 <div class="sky-stars"></div>
 
+<div class="dt-aurora dt-aurora-a"></div>
+<div class="dt-aurora dt-aurora-b"></div>
 <div class="board">
+
+  <!-- ── TOP-BAR / voltar ao sumário ── -->
+  <div class="chap-topbar">
+    <a class="cb-back" href="index.html#sumario" aria-label="Voltar ao sumário">← <span>sumário</span></a>
+    <span class="cb-who">capítulo II de V</span>
+  </div>
+
 
   <!-- ── HEADER ── -->
   <header class="chap-head">
@@ -685,11 +722,11 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
   </aside>
 
   <!-- NAV INFERIOR -->
-  <div class="chapnav">
-    <a class="nb" href="index.html#cap1">← Cap. I</a>
-    <a class="nb-mid" href="index.html#sumario">☰ sumário</a>
-    <button class="nb next" type="button" onclick="document.getElementById('s-quiz').scrollIntoView({behavior:'smooth'})">Quiz ↓</button>
-  </div>
+  <nav class="chapnav" aria-label="Navegação entre capítulos">
+    <a class="nb prev" href="index.html#cap1" aria-label="Capítulo anterior: Palavras de Afirmação">← Cap. I</a>
+    <a class="nb-mid" href="index.html#sumario" aria-label="Voltar ao sumário">☰ sumário</a>
+    <a class="nb next" href="capitulo3-toque.html" aria-label="Próximo capítulo: Toque Físico">Cap. III →</a>
+  </nav>
 
 </div>
 
