@@ -197,6 +197,18 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
 .legend li::before{content:'✦';position:absolute;left:0;color:var(--gold2);font-size:.6rem;top:3px}
 .legend li b{font-family:'Nunito';font-weight:800;font-style:normal;color:var(--gold3);font-size:.72rem}
 
+
+/* ═══ fundo ambiente do desktop — auroras suaves atrás da coluna estreita ═══ */
+.dt-aurora{position:fixed;inset:-15% -10%;z-index:0;pointer-events:none;opacity:0;filter:blur(60px);will-change:transform,opacity}
+.dt-aurora-a{background:radial-gradient(ellipse 45% 55% at 10% 28%,rgba(124,91,173,.34),transparent 65%),radial-gradient(ellipse 40% 45% at 8% 82%,rgba(212,115,110,.22),transparent 65%)}
+.dt-aurora-b{background:radial-gradient(ellipse 42% 55% at 92% 22%,rgba(232,184,109,.20),transparent 65%),radial-gradient(ellipse 45% 50% at 90% 78%,rgba(124,91,173,.24),transparent 65%)}
+@media (min-width:900px){
+  .dt-aurora-a{opacity:.55;animation:dtAmbA 26s cubic-bezier(.2,.7,.2,1) infinite alternate}
+  .dt-aurora-b{opacity:.50;animation:dtAmbB 32s cubic-bezier(.2,.7,.2,1) infinite alternate}
+}
+@keyframes dtAmbA{0%{transform:translate3d(-2%,0,0) scale(1)}100%{transform:translate3d(3%,-2%,0) scale(1.08)}}
+@keyframes dtAmbB{0%{transform:translate3d(2%,1%,0) scale(1.04)}100%{transform:translate3d(-2%,-1%,0) scale(1)}}
+@media (prefers-reduced-motion:reduce){.dt-aurora{animation:none!important}}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001s!important;animation-delay:0s!important;transition-duration:.001s!important}
   .stars,.numeral{opacity:.85}
@@ -270,6 +282,8 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
 <div class="sky" data-parallax="0.06"></div>
 <div class="stars" data-parallax="0.18"></div>
 
+<div class="dt-aurora dt-aurora-a"></div>
+<div class="dt-aurora dt-aurora-b"></div>
 <div class="board">
 
   <!-- ──────── HEADER DO CAPÍTULO ──────── -->
