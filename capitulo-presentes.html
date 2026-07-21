@@ -1115,11 +1115,44 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
   function _fidGet(){ try{ return JSON.parse(localStorage.getItem(_FID_KEY)||'{}'); }catch(e){ return {}; } }
   function _fidSet(d){ try{ localStorage.setItem(_FID_KEY, JSON.stringify(d)); }catch(e){} }
   function _fidCount(){ return Object.keys(_fidGet()).length; }
+  function _fidWho(){ try{ return localStorage.getItem('cosmoUser') || 'anon'; }catch(e){ return 'anon'; } }
+  function _fidSync(id, at){
+    if(!_db) return;
+    try{
+      _db.collection('fidelidade').doc(_fidWho() + '-' + id).set({
+        by: _CLIENT, who: _fidWho(), seloId: id, at, ts: Date.now()
+      }, { merge: true }).catch(()=>{});
+    }catch(e){}
+  }
+  function _fidListen(){
+    if(!_db) return;
+    try{
+      _db.collection('fidelidade').where('who','==', _fidWho()).onSnapshot(snap => {
+        const local = _fidGet();
+        let changed = false;
+        snap.forEach(doc => {
+          const d = doc.data();
+          if(d && d.seloId && !local[d.seloId]){
+            local[d.seloId] = { at: d.at || new Date().toISOString(), remote: true };
+            changed = true;
+          }
+        });
+        if(changed){
+          _fidSet(local);
+          // repinta o grid (destroi e reconstrói) pra refletir selos vindos de outro aparelho
+          const grid = document.getElementById('fidGrid');
+          if(grid){ grid.innerHTML = ''; grid._built = false; _fidBuild(); }
+        }
+      }, ()=>{});
+    }catch(e){}
+  }
   function _fidMark(id){
     const d = _fidGet(); if(d[id]) return;
-    d[id] = { at: new Date().toISOString() };
+    const at = new Date().toISOString();
+    d[id] = { at };
     _fidSet(d);
     _fidUpdate();
+    _fidSync(id, at);
     try{ if(typeof _pingPush === 'function') _pingPush('fidelidade', { selo: id, total: _fidCount() }); }catch(e){}
   }
   function _fidFmtDate(iso){
@@ -1215,7 +1248,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     });
     _fidUpdate();
   }
-  document.addEventListener('DOMContentLoaded', _fidBuild);
+  document.addEventListener('DOMContentLoaded', ()=>{ _fidBuild(); _fidListen(); });
 </script>
 <script src="visual-fx.js" defer></script>
 <script src="magic.js" defer></script>
