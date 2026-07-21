@@ -287,6 +287,51 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
 @keyframes dtAmbA{0%{transform:translate3d(-2%,0,0) scale(1)}100%{transform:translate3d(3%,-2%,0) scale(1.08)}}
 @keyframes dtAmbB{0%{transform:translate3d(2%,1%,0) scale(1.04)}100%{transform:translate3d(-2%,-1%,0) scale(1)}}
 @media (prefers-reduced-motion:reduce){.dt-aurora{animation:none!important}}
+
+/* ═══ CARTÃO FIDELIDADE — 12 selos raspáveis ═══ */
+.fid-perspective{perspective:1400px;perspective-origin:50% 50%;margin:8px 0 4px}
+.fid-card{position:relative;width:100%;transform-style:preserve-3d;transition:transform 1.3s var(--ease-spring);min-height:440px}
+.fid-card.flipped{transform:rotateY(180deg)}
+.fid-face{position:absolute;inset:0;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.fid-back{transform:rotateY(180deg);display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,#1a1235,#0e0925);border-radius:14px;border:1.5px solid rgba(232,184,109,.5);
+  padding:32px 24px;text-align:center;
+  box-shadow:0 12px 28px rgba(0,0,0,.4),inset 0 1px 0 rgba(244,220,168,.15)}
+.fid-back-inner{max-width:280px}
+.fid-back-deco{color:var(--gold2);letter-spacing:5px;margin-bottom:14px;opacity:.85;font-size:1rem}
+.fid-back h4{font-family:'Playfair Display',serif;font-weight:900;font-size:1.5rem;line-height:1.15;color:var(--cream);margin-bottom:12px}
+.fid-back-slot{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.98rem;color:var(--cream2);line-height:1.5;margin-bottom:16px;
+  padding:10px 14px;border:1px dashed rgba(232,184,109,.35);border-radius:10px;background:rgba(232,184,109,.04)}
+.fid-back-cite{font-family:'Dancing Script',cursive;color:var(--gold2);font-size:1.15rem}
+
+.fid-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.fid-cell{position:relative;aspect-ratio:1/1;
+  background:linear-gradient(160deg,#F0DFC0,#E8D5B7);
+  border-radius:6px;overflow:hidden;
+  box-shadow:0 4px 10px rgba(0,0,0,.3);
+  border:1px dashed rgba(142,106,31,.35)}
+.fid-cell.redeemed{border-style:solid;border-color:rgba(232,184,109,.6)}
+.fid-content{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:6px 4px;gap:2px;color:var(--ink2)}
+.fid-icon{font-size:1.35rem;line-height:1;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
+.fid-title{font-family:'Playfair Display',serif;font-weight:700;font-size:.6rem;line-height:1.1;color:var(--ink2)}
+.fid-frase{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.55rem;line-height:1.2;color:rgba(58,36,16,.75)}
+.fid-date{font-family:'Nunito';font-weight:700;font-size:.4rem;letter-spacing:1px;color:var(--gold-deep);opacity:.85;margin-top:2px}
+.fid-slot-mark{display:inline-block;padding:1px 4px;border-radius:99px;background:rgba(232,184,109,.2);border:1px solid rgba(142,106,31,.4);
+  font-family:'Nunito';font-weight:800;font-size:.4rem;letter-spacing:1px;text-transform:uppercase;color:var(--gold-deep)}
+.fid-scratch{position:absolute;inset:0;z-index:2;cursor:crosshair;touch-action:none;
+  border-radius:6px;display:block;width:100%;height:100%}
+.fid-progress{margin-top:12px}
+.fid-bar{width:100%;height:5px;background:rgba(232,184,109,.15);border-radius:99px;overflow:hidden}
+.fid-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2),var(--gold3));border-radius:99px;transition:width .8s var(--ease-out);width:0}
+.fid-lab{font-family:'Nunito';font-weight:800;font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--cream3);margin-top:6px;text-align:center}
+.fid-lab b{color:var(--gold2);font-weight:900}
+.fid-legend{margin-top:14px;padding:12px 14px;border:1px dashed rgba(232,184,109,.35);border-radius:10px;background:rgba(232,184,109,.04);text-align:center}
+.fid-legend p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.78rem;color:var(--cream2);line-height:1.4;margin:2px 0}
+.fid-legend b{font-family:'Nunito';font-weight:800;font-style:normal;color:var(--gold3);font-size:.68rem}
+
+@media (prefers-reduced-motion:reduce){.fid-card{transition:none}}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001s!important;animation-delay:0s!important;transition-duration:.001s!important}
   .sky-stars,.numeral{opacity:.85}
@@ -473,6 +518,36 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
           <span class="mimo-hint mimo-empty-hint">ainda não chegou ♡</span>
         </div>
       </div>
+    </div>
+  </section>
+
+<!-- ════════ CARTÃO FIDELIDADE — 12 selos ════════ -->
+  <section class="cardapio-box fid-section" aria-labelledby="fidTitle">
+    <div class="label">o cartão fidelidade</div>
+    <h3 id="fidTitle">Cartão do nosso amor</h3>
+    <p class="deck">12 selos pra raspar quando quiser — cada um é uma promessa cumprida entre nós</p>
+    <div class="fid-perspective">
+      <div class="fid-card" id="fidCard">
+        <div class="fid-face fid-front">
+          <div class="fid-grid" id="fidGrid" role="list"></div>
+          <div class="fid-progress">
+            <div class="fid-bar"><div class="fid-fill" id="fidFill"></div></div>
+            <div class="fid-lab"><b id="fidNum">0</b> de 12 selos resgatados</div>
+          </div>
+        </div>
+        <div class="fid-face fid-back" aria-hidden="true">
+          <div class="fid-back-inner">
+            <div class="fid-back-deco">✦ ❦ ✦</div>
+            <h4>Você resgatou os 12</h4>
+            <p class="fid-back-slot">slot · frase autoral · até 140 caracteres · aparece quando o cartão completa</p>
+            <p class="fid-back-cite">— com amor, G ✦</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fid-legend">
+      <p><b>12 selos autorais</b> no <code>FID_SELOS</code> — cada um com <b>título</b>, <b>frase</b> e <b>ícone</b>.</p>
+      <p>slot · título 2–3 palavras · frase até 60 chars · ícone 1:1 ou emoji</p>
     </div>
   </section>
 
@@ -1028,6 +1103,119 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     requestAnimationFrame(()=>{ f.style.opacity='1'; f.style.transform='translateX(-50%) translateY(0)'; });
     setTimeout(()=>{ f.style.opacity='0'; f.style.transform='translateX(-50%) translateY(-20px)'; setTimeout(()=>f.remove(),400); },2200);
   }
+
+  /* ═══════ CARTÃO FIDELIDADE — 12 selos autorais em slot ═══════ */
+  const FID_SELOS = Array.from({length:12}, (_, i) => ({
+    id: i+1,
+    titulo: null,   // slot · título 2-3 palavras
+    frase: null,    // slot · frase até 60 chars
+    icon:  '✦'      // slot · emoji ou ilustração 1:1
+  }));
+  const _FID_KEY = 'jg-fidelidade';
+  function _fidGet(){ try{ return JSON.parse(localStorage.getItem(_FID_KEY)||'{}'); }catch(e){ return {}; } }
+  function _fidSet(d){ try{ localStorage.setItem(_FID_KEY, JSON.stringify(d)); }catch(e){} }
+  function _fidCount(){ return Object.keys(_fidGet()).length; }
+  function _fidMark(id){
+    const d = _fidGet(); if(d[id]) return;
+    d[id] = { at: new Date().toISOString() };
+    _fidSet(d);
+    _fidUpdate();
+    try{ if(typeof _pingPush === 'function') _pingPush('fidelidade', { selo: id, total: _fidCount() }); }catch(e){}
+  }
+  function _fidFmtDate(iso){
+    const d = new Date(iso);
+    const m = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+    return d.getDate() + ' · ' + m[d.getMonth()];
+  }
+  function _fidUpdate(){
+    const c = _fidCount();
+    const num = document.getElementById('fidNum');
+    const fill = document.getElementById('fidFill');
+    const card = document.getElementById('fidCard');
+    if(num) num.textContent = c;
+    if(fill) fill.style.width = (c/12*100) + '%';
+    if(card && c >= 12) card.classList.add('flipped');
+  }
+  function _fidInitScratch(cv, seloId){
+    const ctx = cv.getContext('2d');
+    const w = cv.width, h = cv.height;
+    // camada dourada com brilho + label "raspar"
+    const grad = ctx.createLinearGradient(0,0,w,h);
+    grad.addColorStop(0,'#8E6A1F'); grad.addColorStop(.5,'#F4DCA8'); grad.addColorStop(1,'#8E6A1F');
+    ctx.fillStyle = grad; ctx.fillRect(0,0,w,h);
+    ctx.fillStyle = 'rgba(58,36,16,.55)';
+    ctx.font = '900 9px Nunito, sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('RASPAR', w/2, h/2);
+    let drawing = false;
+    let checked = false;
+    function pos(e){
+      const r = cv.getBoundingClientRect();
+      const p = (e.touches && e.touches[0]) || e;
+      return { x: (p.clientX - r.left) * (w/r.width), y: (p.clientY - r.top) * (h/r.height) };
+    }
+    function scratch(x,y){
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath(); ctx.arc(x,y,12,0,Math.PI*2); ctx.fill();
+      ctx.globalCompositeOperation = 'source-over';
+      if(!checked){
+        const d = ctx.getImageData(0,0,w,h).data;
+        let cl=0, tot=0;
+        for(let i=3; i<d.length; i+=40){ tot++; if(d[i]<30) cl++; }
+        if(cl/tot > .32){
+          checked = true;
+          cv.style.transition = 'opacity .5s';
+          cv.style.opacity = '0';
+          setTimeout(()=>{
+            cv.style.display = 'none';
+            _fidMark(seloId);
+            const cell = cv.closest('.fid-cell');
+            if(cell){
+              cell.classList.add('redeemed');
+              const dt = cell.querySelector('.fid-date');
+              if(dt) dt.textContent = _fidFmtDate(new Date().toISOString());
+            }
+          }, 500);
+        }
+      }
+    }
+    cv.addEventListener('pointerdown', e => { drawing = true; const p = pos(e); scratch(p.x,p.y); });
+    cv.addEventListener('pointermove', e => { if(!drawing) return; e.preventDefault(); const p = pos(e); scratch(p.x,p.y); });
+    cv.addEventListener('pointerup',    ()=>{ drawing = false; });
+    cv.addEventListener('pointercancel',()=>{ drawing = false; });
+    cv.addEventListener('pointerleave', ()=>{ drawing = false; });
+  }
+  function _fidBuild(){
+    const grid = document.getElementById('fidGrid');
+    if(!grid || grid._built) return;
+    grid._built = true;
+    const state = _fidGet();
+    FID_SELOS.forEach(s => {
+      const cell = document.createElement('div');
+      cell.className = 'fid-cell';
+      cell.setAttribute('role', 'listitem');
+      if(state[s.id]) cell.classList.add('redeemed');
+      const titleHTML = s.titulo ? s.titulo : '<span class="fid-slot-mark">slot · '+s.id+'</span>';
+      const fraseHTML = s.frase  ? s.frase  : '<em>frase autoral</em>';
+      const dateHTML  = state[s.id] ? _fidFmtDate(state[s.id].at) : '';
+      cell.innerHTML =
+        '<div class="fid-content">'
+          +'<div class="fid-icon" aria-hidden="true">'+ (s.icon||'✦') +'</div>'
+          +'<div class="fid-title">'+ titleHTML +'</div>'
+          +'<div class="fid-frase">'+ fraseHTML +'</div>'
+          +'<div class="fid-date">'+ dateHTML +'</div>'
+        +'</div>'
+        +'<canvas class="fid-scratch" width="140" height="140" data-selo="'+s.id+'" aria-label="Raspar selo '+s.id+'"></canvas>';
+      grid.appendChild(cell);
+      if(state[s.id]){
+        const cv = cell.querySelector('canvas'); if(cv) cv.style.display = 'none';
+      } else {
+        const cv = cell.querySelector('canvas'); if(cv) _fidInitScratch(cv, s.id);
+      }
+    });
+    _fidUpdate();
+  }
+  document.addEventListener('DOMContentLoaded', _fidBuild);
 </script>
 <script src="visual-fx.js" defer></script>
 <script src="magic.js" defer></script>
