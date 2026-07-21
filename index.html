@@ -458,7 +458,7 @@ img{max-width:100%}
 .jg-scope{
   --jg-night:#12102E;--jg-night2:#0A0820;--jg-night3:#06041C;
   --jg-cream:#F0DFC0;--jg-cream2:#E8D5B7;--jg-cream3:#D4C4A0;
-  --jg-coral:#D4736E;--jg-coral-lt:#E89890;--jg-mauve:#8B6B95;
+  --jg-coral:#D4736E;--jg-coral-lt:#E89890;--jg-mauve:#8B6B95;--jg-mauve-lt:#B396BE;
   --jg-green-lt:#7BA06B;--jg-gold:#C4956A;--jg-gold2:#E8B86D;--jg-gold3:#F4DCA8;--jg-gold-deep:#8E6A1F;
   --jg-violet:#7C5BAD;--jg-ink:#2A2540;--jg-ink2:#3A2410;
   --jg-space:clamp(22px,6vw,30px);
@@ -551,6 +551,45 @@ img{max-width:100%}
 .jg-tocrow .jg-pg::before{content:'';display:block;width:30px;height:1px;background:linear-gradient(90deg,transparent,var(--jg-gold2));margin:0 0 3px auto;opacity:.6}
 .jg-tocrow.read .jg-read-mark{display:inline-flex}
 .jg-read-mark{display:none;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,var(--jg-gold3),var(--jg-gold-deep));color:var(--jg-night);font-size:.6rem;font-weight:900;box-shadow:0 0 8px rgba(232,184,109,.4)}
+
+/* ═══ CADERNO VI — estado bloqueado/desbloqueado ═══ */
+.jg-tocrow.locked{opacity:.55;cursor:not-allowed}
+.jg-tocrow.locked:hover{background:none;border-bottom-color:rgba(232,184,109,.16)}
+.jg-tocrow.locked:hover .jg-numchip{transform:none}
+.jg-tocrow.locked .jg-numchip{
+  background:transparent;color:var(--jg-cream3);
+  border:1.5px dashed rgba(232,184,109,.45);border-radius:8px;
+  -webkit-mask:none;mask:none;filter:none;
+}
+.jg-tocrow.locked .jg-lang{color:var(--jg-cream3)}
+.jg-tocrow.locked .jg-lock{display:inline-flex}
+.jg-lock{display:none;align-items:center;justify-content:center;width:13px;height:13px;color:var(--jg-gold2);opacity:.8;flex-shrink:0}
+.jg-lock svg{width:100%;height:100%}
+.jg-lock-tip{position:absolute;left:50%;bottom:8px;transform:translate(-50%,6px);
+  background:rgba(10,8,32,.95);color:var(--jg-cream2);
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.72rem;
+  padding:5px 12px;border-radius:99px;border:1px solid rgba(232,184,109,.35);
+  pointer-events:none;white-space:nowrap;opacity:0;
+  transition:opacity .3s var(--jg-out),transform .3s var(--jg-out);
+  z-index:5}
+.jg-lock-tip b{font-family:'Nunito';font-style:normal;font-weight:900;color:var(--jg-gold2)}
+.jg-tocrow.locked.tap .jg-lock-tip{opacity:1;transform:translate(-50%,0)}
+
+/* chip "novo" após desbloqueio */
+.jg-new-chip{display:none;font-family:'Nunito';font-weight:900;font-size:.5rem;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--jg-night);
+  background:linear-gradient(120deg,var(--jg-gold2),var(--jg-gold3));
+  padding:3px 8px;border-radius:99px;margin-left:6px}
+.jg-tocrow.unlocked .jg-new-chip{display:inline-flex;animation:jg-newBlink 1.4s ease-in-out 2}
+@keyframes jg-newBlink{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+
+/* transição de desbloqueio */
+.jg-tocrow.unlocked{animation:jg-unlockFade 1.4s var(--jg-out) forwards}
+@keyframes jg-unlockFade{0%{opacity:.55}30%{opacity:.55}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){
+  .jg-tocrow.unlocked{animation:none}
+  .jg-new-chip{animation:none!important}
+}
 
 .jg-howto{margin:8px var(--jg-space) 0;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.85rem;color:var(--jg-cream3);opacity:0;animation:jg-fadeUp .7s var(--jg-out) 1.2s forwards}
 .jg-howto b{font-family:'Nunito';font-weight:800;font-style:normal;color:var(--jg-gold2);font-size:.62rem;letter-spacing:1.5px}
@@ -683,7 +722,7 @@ img{max-width:100%}
         <div class="jg-sub">cada um é uma forma de te amar</div>
         <div class="jg-progress">
           <div class="jg-bar"><div class="jg-fill" id="jg-progFill"></div></div>
-          <div class="jg-lab"><b id="jg-progNum">0</b> de 5 visitados</div>
+          <div class="jg-lab"><b id="jg-progNum">0</b> de <b id="jg-progTot">5</b> visitados</div>
         </div>
       </header>
       <div class="jg-hair"></div>
@@ -712,6 +751,15 @@ img{max-width:100%}
           <div class="jg-numchip">V</div>
           <div class="jg-titles"><div class="jg-lang">Presentes <span class="jg-read-mark">✓</span></div><div class="jg-promise">um doce, sem motivo</div></div>
           <div class="jg-pg">cap. V<br>pág · 74</div>
+        </button>
+        <button class="jg-tocrow jg-reveal right locked" style="--acc:var(--jg-mauve-lt)" data-id="6" aria-disabled="true" type="button">
+          <div class="jg-numchip">VI</div>
+          <div class="jg-titles">
+            <div class="jg-lang">Caderno secreto <span class="jg-lock" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><span class="jg-read-mark">✓</span><span class="jg-new-chip">novo</span></div>
+            <div class="jg-promise">revela quando os cinco forem visitados</div>
+          </div>
+          <div class="jg-pg">cap. VI<br>selado</div>
+          <span class="jg-lock-tip">faltam <b>5</b> cadernos</span>
         </button>
       </nav>
       <p class="jg-howto"><b>Modo misto</b><br>toque numa linha para abrir um capítulo, ou comece pelo primeiro e folheie em sequência</p>
@@ -940,6 +988,12 @@ function goPack(){
 function _jgApplyHash(){
   const h = (location.hash||'').replace('#','').toLowerCase();
   if(h === 'sumario'){ goSumario(); return true; }
+  if(h === 'cap6'){
+    // rota externa; abre só se desbloqueado, senão cai no sumário
+    if(_jgSecretUnlocked()){ location.href = 'capitulo-secreto.html'; }
+    else { goSumario(); }
+    return true;
+  }
   const m = h.match(/^cap(\d+)$/);
   if(m){ goCap(parseInt(m[1],10)); return true; }
   return false;
@@ -954,14 +1008,48 @@ window.addEventListener('hashchange', _jgApplyHash);
 const _JG_KEY = 'jg-read-chapters';
 function _jgGetRead(){ try{ return JSON.parse(localStorage.getItem(_JG_KEY)||'[]'); }catch(e){ return []; } }
 function _jgMarkRead(id){ const r=_jgGetRead(); if(!r.includes(id)){ r.push(id); localStorage.setItem(_JG_KEY,JSON.stringify(r)); } }
+/* Caderno VI: destrava só quando os 5 primeiros já foram visitados */
+const _JG_CORE_IDS = ['1','2','3','4','5'];
+function _jgSecretUnlocked(r){ r = r || _jgGetRead(); return _JG_CORE_IDS.every(id => r.includes(id)); }
 function _jgPaint(){
   const r=_jgGetRead();
   document.querySelectorAll('#s-sumario .jg-tocrow').forEach(row=>{
     if(r.includes(row.dataset.id)) row.classList.add('read'); else row.classList.remove('read');
   });
-  const n=r.length, num=document.getElementById('jg-progNum'), fill=document.getElementById('jg-progFill');
-  if(num) num.textContent=n;
-  if(fill) fill.style.width=(n/5*100)+'%';
+  const coreDone = r.filter(x => _JG_CORE_IDS.includes(x)).length;
+  const unlocked = _jgSecretUnlocked(r);
+  const row6 = document.querySelector('#s-sumario .jg-tocrow[data-id="6"]');
+  if(row6){
+    if(unlocked){
+      // primeira pintura desbloqueada nesta visita → pega a animação "unlocked"
+      if(row6.classList.contains('locked')){
+        row6.classList.remove('locked');
+        row6.classList.add('unlocked');
+        row6.setAttribute('aria-disabled', 'false');
+      }
+    } else {
+      row6.classList.add('locked');
+      row6.classList.remove('unlocked');
+      row6.setAttribute('aria-disabled', 'true');
+      const missing = 5 - coreDone;
+      const tipNum = row6.querySelector('.jg-lock-tip b');
+      const tipRest = row6.querySelector('.jg-lock-tip');
+      if(tipNum && tipRest){
+        tipNum.textContent = missing;
+        // "faltam 1 caderno" vs "faltam N cadernos"
+        tipRest.lastChild.textContent = missing === 1 ? ' caderno' : ' cadernos';
+      }
+    }
+  }
+  // contador: enquanto bloqueado, "X de 5"; depois "X de 6" (contando também o VI)
+  const total = unlocked ? 6 : 5;
+  const count = unlocked ? (coreDone + (r.includes('6') ? 1 : 0)) : coreDone;
+  const num = document.getElementById('jg-progNum');
+  const totLab = document.getElementById('jg-progTot');
+  const fill = document.getElementById('jg-progFill');
+  if(num) num.textContent = count;
+  if(totLab) totLab.textContent = total;
+  if(fill) fill.style.width = (count/total*100) + '%';
 }
 
 /* paralaxe + reveal escalonado (uma vez por tela exibida) */
@@ -1005,8 +1093,21 @@ document.addEventListener('click',(e)=>{
   if(!row) return;
   const id = row.dataset.id;
   if(!id) return;
+  // linha VI: se bloqueada, pisca o tooltip; se destravada, navega pro secreto
+  if(id === '6'){
+    e.preventDefault(); e.stopPropagation();
+    if(row.classList.contains('locked')){
+      row.classList.add('tap');
+      clearTimeout(row._tapTimer);
+      row._tapTimer = setTimeout(()=> row.classList.remove('tap'), 2000);
+      return;
+    }
+    _jgMarkRead('6');
+    location.href = 'capitulo-secreto.html';
+    return;
+  }
   // capítulos 2–5 navegam pra outra página via onclick inline;
-  // registra a visita antes de sair pro progresso "de 5" contar certo
+  // registra a visita antes de sair pro progresso contar certo
   _jgMarkRead(id);
   if(id === '1'){ e.preventDefault(); e.stopPropagation(); goCap(1); }
 });
