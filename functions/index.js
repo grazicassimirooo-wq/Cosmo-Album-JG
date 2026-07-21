@@ -171,6 +171,16 @@ function buildData(b, quem) {
   if (kind === 'pedido') {
     return { title: '🍬 Me manda um doce aqui!', body: quem + ' compartilhou onde está, esperando um docinho 📍♡', tag: 'cosmo-pedido', link: './capitulo-presentes.html' };
   }
+  if (kind === 'pote') {
+    const dia = s(b.dia, 3);
+    const body = dia ? quem + ' pegou o bilhete de hoje do pote (dia ' + dia + ') ✒' : quem + ' abriu o pote de recadinhos ✒';
+    return { title: '✒ Um bilhete do pote', body, tag: 'cosmo-pote', link: './#cap1' };
+  }
+  if (kind === 'fidelidade') {
+    const total = s(b.total, 3);
+    const suffix = total ? ' — ' + total + ' de 12 ♡' : ' ♡';
+    return { title: '✦ Selo resgatado!', body: quem + ' resgatou mais um selo do cartão fidelidade' + suffix, tag: 'cosmo-fidelidade', link: './capitulo-presentes.html' };
+  }
   if (!kind) return null;
   return { title: '💛 Novidade no álbum!', body: quem + ' acabou de fazer algo novo pra você ✦', tag: 'cosmo-novidade', link: pgLink(b) };
 }

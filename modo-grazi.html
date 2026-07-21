@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Modo Grazi · o que ela vem vendo · J&amp;G</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Dancing+Script:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#12102E;--night2:#0A0820;--night3:#06041C;
+  --cream:#F0DFC0;--cream2:#E8D5B7;--cream3:#D4C4A0;
+  --coral:#D4736E;--coral-lt:#E89890;
+  --mauve:#8B6B95;--mauve-lt:#B396BE;--mauve-deep:#5E4668;
+  --gold:#C4956A;--gold2:#E8B86D;--gold3:#F4DCA8;--gold-deep:#8E6A1F;
+  --ink:#2A2540;--ink2:#3A2410;
+  --space:clamp(22px,6vw,30px);
+  --ease-out:cubic-bezier(.2,.7,.2,1);
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream);
+  -webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh;overflow-x:hidden}
+.board{max-width:468px;margin:0 auto;position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+:focus-visible{outline:2px solid var(--gold2);outline-offset:3px;border-radius:6px}
+
+/* atmosfera */
+.sky-bg{position:fixed;inset:-10% -5%;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 45% at 20% 8%,rgba(196,149,106,.20),transparent 60%),
+    radial-gradient(ellipse 55% 35% at 85% 88%,rgba(139,107,149,.14),transparent 60%),
+    linear-gradient(180deg,var(--night),var(--night2) 55%,var(--night3))}
+.sky-stars{position:fixed;inset:-10%;z-index:0;pointer-events:none;opacity:.6;
+  background-image:
+    radial-gradient(1px 1px at 12% 18%,rgba(255,255,255,.5) 50%,transparent),
+    radial-gradient(1.2px 1.2px at 72% 26%,rgba(232,184,109,.55) 50%,transparent),
+    radial-gradient(1px 1px at 28% 64%,rgba(179,150,190,.5) 50%,transparent),
+    radial-gradient(1.2px 1.2px at 86% 50%,#fff 50%,transparent);
+  background-repeat:no-repeat}
+
+.dt-aurora{position:fixed;inset:-15% -10%;z-index:0;pointer-events:none;opacity:0;filter:blur(60px);will-change:transform,opacity}
+.dt-aurora-a{background:radial-gradient(ellipse 45% 55% at 10% 28%,rgba(196,149,106,.28),transparent 65%)}
+.dt-aurora-b{background:radial-gradient(ellipse 42% 55% at 92% 22%,rgba(139,107,149,.22),transparent 65%)}
+@media (min-width:900px){
+  .dt-aurora-a{opacity:.55;animation:dtA 26s var(--ease-out) infinite alternate}
+  .dt-aurora-b{opacity:.55;animation:dtB 32s var(--ease-out) infinite alternate}
+}
+@keyframes dtA{0%{transform:translate3d(-2%,0,0) scale(1)}100%{transform:translate3d(3%,-2%,0) scale(1.08)}}
+@keyframes dtB{0%{transform:translate3d(2%,1%,0) scale(1.04)}100%{transform:translate3d(-2%,-1%,0) scale(1)}}
+
+/* topbar */
+.chap-topbar{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:14px var(--space) 6px}
+.cb-back{background:none;border:none;cursor:pointer;text-decoration:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--cream3);display:flex;align-items:center;gap:6px;padding:6px 4px;transition:color .2s}
+.cb-back:hover,.cb-back:focus-visible{color:var(--gold2)}
+.cb-who{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.7rem;letter-spacing:2px;color:var(--gold2);opacity:.75}
+
+/* header */
+.head{padding:26px var(--space) 12px;text-align:left}
+.kicker{font-family:'Nunito';font-weight:800;font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold2)}
+.head h1{font-family:'Playfair Display',serif;font-weight:900;font-size:clamp(2.2rem,10vw,2.8rem);line-height:1;margin:8px 0 6px;letter-spacing:-.5px}
+.head .sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:var(--cream2);line-height:1.5;max-width:360px}
+.folio{font-family:'Cormorant Garamond',serif;font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--cream3);opacity:.55;margin-top:14px}
+
+.hair{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.55;margin:6px var(--space)}
+
+/* seções */
+.card{margin:16px var(--space);padding:20px 20px 22px;
+  background:linear-gradient(180deg,#181535,#12102f);
+  border:1px solid rgba(232,184,109,.24);border-radius:14px}
+.card .label{font-family:'Nunito';font-weight:900;font-size:.56rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold2);margin-bottom:6px}
+.card h3{font-family:'Playfair Display',serif;font-weight:800;font-size:1.3rem;line-height:1.1;margin-bottom:4px}
+.card .deck{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.9rem;color:var(--cream3);margin-bottom:14px;line-height:1.45}
+.card .state{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:var(--cream);line-height:1.5}
+.card .state b{font-family:'Nunito';font-weight:800;font-style:normal;color:var(--gold2)}
+.card .state.empty{color:var(--cream3);opacity:.75}
+.card .aside{margin-top:10px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.78rem;color:var(--cream3);opacity:.72;line-height:1.45}
+
+/* pote */
+.pote-hero{display:flex;align-items:center;gap:14px;padding:8px 0 2px}
+.pote-mini{width:52px;height:60px;border-radius:6px 6px 12px 12px;flex-shrink:0;
+  background:linear-gradient(180deg,rgba(232,184,109,.35),rgba(139,107,149,.25) 55%,rgba(124,91,173,.35));
+  border:1.5px solid rgba(232,184,109,.5);position:relative;overflow:hidden}
+.pote-mini::before{content:'';position:absolute;top:0;left:12%;right:12%;height:12px;
+  background:linear-gradient(180deg,#8E6A1F,#5A4210);border-radius:5px 5px 2px 2px}
+.pote-mini::after{content:'';position:absolute;bottom:6px;left:14%;width:36%;height:6px;
+  background:linear-gradient(180deg,#F0DFC0,#D4C4A0);border-radius:2px;transform:rotate(-8deg)}
+.pote-info .dia-num{font-family:'Playfair Display',serif;font-weight:900;font-size:1.8rem;line-height:1;color:var(--gold2);margin-right:6px}
+.pote-info .dia-lbl{font-family:'Nunito';font-weight:700;font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--cream3);display:block;margin-top:4px}
+
+/* fidelidade — grid mini */
+.fid-mini{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:4px}
+.fid-dot{aspect-ratio:1/1;border-radius:6px;
+  background:rgba(255,255,255,.04);border:1px dashed rgba(232,184,109,.28);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-weight:900;font-size:.65rem;color:var(--cream3);opacity:.55}
+.fid-dot.on{opacity:1;background:linear-gradient(160deg,var(--gold2),var(--gold));border:1.5px solid var(--gold-deep);color:var(--ink)}
+.fid-summary{margin-top:12px;display:flex;align-items:center;gap:10px}
+.fid-summary .n{font-family:'Playfair Display',serif;font-weight:900;font-size:2rem;line-height:1;color:var(--gold2)}
+.fid-summary .lbl{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.85rem;color:var(--cream2);line-height:1.4}
+.fid-bar{height:4px;background:rgba(232,184,109,.15);border-radius:99px;overflow:hidden;margin-top:8px}
+.fid-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2),var(--gold3));border-radius:99px;transition:width .8s var(--ease-out);width:0}
+
+/* secreto */
+.secreto-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;
+  background:rgba(212,115,110,.14);border:1px solid rgba(179,150,190,.4);
+  font-family:'Nunito';font-weight:800;font-size:.55rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--mauve-lt)}
+
+/* rodapé */
+.foot{padding:22px var(--space) 38px;text-align:center}
+.foot .privacy{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.78rem;color:var(--cream3);opacity:.65;line-height:1.5;max-width:340px;margin:0 auto}
+
+/* gate wrong user */
+.wrong{padding:36px var(--space);text-align:center}
+.wrong h2{font-family:'Playfair Display',serif;font-weight:900;font-size:1.6rem;color:var(--cream);margin-bottom:12px}
+.wrong p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:var(--cream2);margin-bottom:20px;max-width:340px;margin-left:auto;margin-right:auto;line-height:1.5}
+.wrong a{display:inline-block;padding:11px 22px;border-radius:99px;text-decoration:none;
+  background:linear-gradient(180deg,var(--gold3),var(--gold) 60%,var(--gold-deep));color:var(--ink);
+  font-family:'Nunito';font-weight:900;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;
+  box-shadow:0 6px 18px rgba(196,149,106,.4)}
+
+@media (prefers-reduced-motion:reduce){.dt-aurora{animation:none!important}}
+
+/* login gate */
+.cosmo-login-gate{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:24px;
+  background:radial-gradient(ellipse at 50% 20%,rgba(124,91,173,.15),transparent 55%),linear-gradient(170deg,#100E28,#181440,#12102A);}
+.cosmo-login-gate.show{display:flex}
+.clg-card{max-width:340px;width:100%;text-align:center;font-family:'Nunito',sans-serif}
+.clg-deco{font-size:1rem;color:#C4956A;opacity:.6;letter-spacing:4px;margin-bottom:10px}
+.clg-card h2{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;color:#F0DFC0;margin-bottom:6px}
+.clg-card p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:rgba(240,223,192,.6);margin-bottom:26px}
+.clg-options{display:flex;flex-direction:column;gap:14px}
+.clg-opt{display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;
+  background:rgba(240,223,192,.04);border:1px solid rgba(240,223,192,.12);
+  color:#F0DFC0;font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;letter-spacing:.5px;cursor:pointer;transition:.2s;text-align:left}
+.clg-opt:active{background:rgba(240,223,192,.1);transform:scale(.98)}
+.clg-ico{font-size:1.6rem}
+</style>
+</head>
+<body>
+<div class="cosmo-login-gate" id="cosmoLoginGate" aria-hidden="true">
+  <div class="clg-card">
+    <div class="clg-deco">✦ ✧ ✦</div>
+    <h2>Quem é você?</h2>
+    <p>Escolha seu perfil pra personalizar o álbum</p>
+    <div class="clg-options">
+      <button type="button" class="clg-opt" data-user="jussara"><span class="clg-ico">🌼</span><span>Jussara</span></button>
+      <button type="button" class="clg-opt" data-user="grazi"><span class="clg-ico">🌻</span><span>Grazi</span></button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var u=null; try{ u = localStorage.getItem('cosmoUser'); }catch(e){}
+  if(u){ try{ localStorage.setItem('cosmoLastUser', u); }catch(e){} return; }
+  document.addEventListener('DOMContentLoaded', function(){
+    var gate = document.getElementById('cosmoLoginGate');
+    if(!gate) return;
+    gate.classList.add('show');
+    gate.querySelectorAll('.clg-opt').forEach(function(b){
+      b.addEventListener('click', function(){
+        try{
+          localStorage.setItem('cosmoUser', b.dataset.user);
+          localStorage.setItem('cosmoLastUser', b.dataset.user);
+        }catch(e){}
+        location.reload();
+      });
+    });
+  });
+})();
+</script>
+
+<div class="sky-bg"></div>
+<div class="sky-stars"></div>
+<div class="dt-aurora dt-aurora-a"></div>
+<div class="dt-aurora dt-aurora-b"></div>
+
+<div class="board" id="board">
+  <!-- topbar -->
+  <div class="chap-topbar">
+    <a class="cb-back" href="index.html#sumario" aria-label="Voltar ao sumário">← <span>sumário</span></a>
+    <span class="cb-who">para a Grazi ✦</span>
+  </div>
+
+  <!-- container que muda conforme identidade -->
+  <div id="content"></div>
+</div>
+
+<!-- Firebase read-only -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+(function(){
+  const who = (function(){ try{ return localStorage.getItem('cosmoUser'); }catch(e){ return null; } })();
+  const other = who === 'grazi' ? 'jussara' : who === 'jussara' ? 'grazi' : null;
+
+  // gate: só a Grazi vê o Modo Grazi
+  if(who !== 'grazi'){
+    document.getElementById('content').innerHTML =
+      '<div class="wrong">'
+      +'<h2>Este espaço é da Grazi ✦</h2>'
+      +'<p>O <em>Modo Grazi</em> é um cantinho pra ela ver, sem intromissão, o que a Jussara vem visitando. Volta pro sumário e continua folheando o álbum ♡</p>'
+      +'<a href="index.html#sumario">← voltar ao sumário</a>'
+      +'</div>';
+    return;
+  }
+
+  // render skeleton
+  document.getElementById('content').innerHTML =
+    '<header class="head">'
+     +'<div class="kicker">✦ Modo Grazi</div>'
+     +'<h1>O que a Jussara<br>vem vendo</h1>'
+     +'<p class="sub">um cantinho tranquilo pra você acompanhar o que ela abre — sem push, sem barulho, só carinho.</p>'
+     +'<div class="folio">JG · MODO GRAZI · read-only</div>'
+    +'</header>'
+    +'<div class="hair"></div>'
+    +'<section class="card" id="cardPote">'
+      +'<div class="label">o pote de hoje</div>'
+      +'<h3>Bilhete do dia</h3>'
+      +'<p class="deck">se ela já abriu o pote hoje, aparece qual dia caiu.</p>'
+      +'<div id="poteBody" class="state empty">ainda carregando…</div>'
+      +'<div class="aside">o pote é diário — cicla no dia do mês. o bilhete de hoje some meia-noite pra dar lugar ao de amanhã.</div>'
+    +'</section>'
+    +'<section class="card" id="cardFid">'
+      +'<div class="label">cartão fidelidade</div>'
+      +'<h3>Os 12 selos da Jussara</h3>'
+      +'<p class="deck">cada bolinha é um selo — dourada = ela raspou, cinza = ainda selado.</p>'
+      +'<div class="fid-mini" id="fidMini"></div>'
+      +'<div class="fid-summary"><span class="n" id="fidN">0</span><span class="lbl">de 12 selos resgatados</span></div>'
+      +'<div class="fid-bar"><div class="fid-bar-fill" id="fidBar"></div></div>'
+    +'</section>'
+    +'<section class="card" id="cardSecreto">'
+      +'<div class="label">o caderno secreto</div>'
+      +'<h3>Ela abriu o VI?</h3>'
+      +'<p class="deck">só marca visita — sem detalhe de dentro. o conteúdo é dos dois.</p>'
+      +'<div id="secretoBody" class="state empty">ainda carregando…</div>'
+    +'</section>'
+    +'<div class="foot"><p class="privacy">O que a Jussara escreve, sente e escolhe fica com ela. Este painel mostra só as visitas — nada do que está dentro dos cadernos.</p></div>';
+
+  // firebase
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyD0-GBYHLsYc_mqqq3Ymhbq3ynpIdx2sMg",
+    authDomain: "album--jussara.firebaseapp.com",
+    projectId: "album--jussara",
+    storageBucket: "album--jussara.firebasestorage.app",
+    messagingSenderId: "732871382789",
+    appId: "1:732871382789:web:7d93bce8c431ba80bd496c"
+  };
+  let _db = null;
+  try{
+    if(typeof firebase !== 'undefined'){
+      if(!firebase.apps || !firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+      _db = firebase.firestore();
+      try{ _db.settings({ experimentalAutoDetectLongPolling: true, merge: true }); }catch(e){}
+    }
+  }catch(e){ _db = null; }
+
+  // pinta o grid de 12 pré-vazio
+  const fidMini = document.getElementById('fidMini');
+  for(let i=1; i<=12; i++){
+    const dot = document.createElement('div');
+    dot.className = 'fid-dot';
+    dot.setAttribute('data-selo', String(i));
+    dot.textContent = i;
+    fidMini.appendChild(dot);
+  }
+
+  function todayYmd(){
+    const d = new Date();
+    return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+  }
+  function relativo(ts){
+    const dif = Date.now() - ts;
+    const d = Math.floor(dif / 86400000);
+    if(d === 0) return 'hoje';
+    if(d === 1) return 'ontem';
+    if(d < 7)   return 'há ' + d + ' dias';
+    if(d < 30)  return 'há ' + Math.floor(d/7) + (Math.floor(d/7)===1?' semana':' semanas');
+    return 'há ' + Math.floor(d/30) + (Math.floor(d/30)===1?' mês':' meses');
+  }
+
+  if(!_db){
+    document.getElementById('poteBody').textContent    = 'sem conexão com o servidor no momento.';
+    document.getElementById('secretoBody').textContent = 'sem conexão com o servidor no momento.';
+    return;
+  }
+
+  // POTE de hoje — doc jussara-YYYY-M-D
+  _db.collection('pote-log').doc(other + '-' + todayYmd()).onSnapshot(snap => {
+    const body = document.getElementById('poteBody');
+    if(!snap.exists){
+      body.className = 'state empty';
+      body.textContent = 'a Jussara ainda não abriu o pote hoje ♡';
+      return;
+    }
+    const d = snap.data() || {};
+    body.className = 'state';
+    body.innerHTML =
+      '<div class="pote-hero">'
+        +'<div class="pote-mini" aria-hidden="true"></div>'
+        +'<div class="pote-info"><span class="dia-num">'+(d.dia||'?')+'</span><b>dia</b><span class="dia-lbl">bilhete de hoje · aberto '+relativo(d.ts||Date.now())+'</span></div>'
+      +'</div>';
+  }, ()=>{
+    document.getElementById('poteBody').textContent = 'não foi possível ler o pote agora.';
+  });
+
+  // FIDELIDADE — todos os selos dela
+  _db.collection('fidelidade').where('who','==', other).onSnapshot(snap => {
+    const seen = new Set();
+    let latest = 0;
+    snap.forEach(doc => {
+      const d = doc.data();
+      if(d && d.seloId){ seen.add(String(d.seloId)); if(d.ts && d.ts > latest) latest = d.ts; }
+    });
+    document.querySelectorAll('#fidMini .fid-dot').forEach(dot => {
+      const id = dot.getAttribute('data-selo');
+      if(seen.has(id)) dot.classList.add('on'); else dot.classList.remove('on');
+    });
+    document.getElementById('fidN').textContent = seen.size;
+    document.getElementById('fidBar').style.width = (seen.size/12*100)+'%';
+  }, ()=>{});
+
+  // SECRETO — visitas dela
+  _db.collection('secreto-log').where('who','==', other).onSnapshot(snap => {
+    const body = document.getElementById('secretoBody');
+    let latest = 0;
+    let visits = 0;
+    snap.forEach(doc => {
+      const d = doc.data();
+      if(d && d.ts){ visits++; if(d.ts > latest) latest = d.ts; }
+    });
+    if(!visits){
+      body.className = 'state empty';
+      body.textContent = 'ela ainda não abriu o caderno secreto ♡';
+      return;
+    }
+    body.className = 'state';
+    body.innerHTML =
+      '<span class="secreto-badge">✦ visitado</span> '
+      +'a Jussara abriu o Cap VI <b>'+relativo(latest)+'</b>'
+      + (visits > 1 ? ' — <em>'+visits+' vezes ao todo</em>' : '');
+  }, ()=>{});
+})();
+</script>
+</body>
+</html>

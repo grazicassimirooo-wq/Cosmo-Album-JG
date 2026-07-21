@@ -872,6 +872,7 @@ img{max-width:100%}
       <footer class="jg-foot">
         <div class="jg-folio">JG · sumário</div>
         <div class="jg-signature">com amor, G ✦</div>
+        <a class="jg-modo-grazi-link" id="modoGraziLink" href="modo-grazi.html" style="display:none;margin-top:14px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--jg-mauve-lt);opacity:.65;text-decoration:none;padding:4px 10px;border-radius:99px;border:1px solid rgba(179,150,190,.25)">✦ modo grazi ✦</a>
       </footer>
     </div>
   </div>
@@ -1169,6 +1170,12 @@ function _jgPaint(){
   if(num) num.textContent = count;
   if(totLab) totLab.textContent = total;
   if(fill) fill.style.width = (count/total*100) + '%';
+  // link discreto "Modo Grazi" — só aparece quando o perfil é 'grazi'
+  const mg = document.getElementById('modoGraziLink');
+  if(mg){
+    let who = null; try{ who = localStorage.getItem('cosmoUser'); }catch(e){}
+    mg.style.display = who === 'grazi' ? 'inline-block' : 'none';
+  }
 }
 
 /* paralaxe + reveal escalonado (uma vez por tela exibida) */
@@ -1231,17 +1238,55 @@ document.addEventListener('click',(e)=>{
   if(id === '1'){ e.preventDefault(); e.stopPropagation(); goCap(1); }
 });
 
+/* avisa a função de push na nuvem (o gatilho do Firestore não dispara neste projeto) */
+const _PUSH_URL = 'https://southamerica-east1-album--jussara.cloudfunctions.net/notify';
+function _pingPush(kind, extra){
+  try{
+    fetch(_PUSH_URL, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(Object.assign({ kind, by: _CLIENT, k: 'jg-cosmo-2026' }, extra||{})) }).catch(()=>{});
+  }catch(e){}
+}
+window._pingPush = _pingPush;
+
 /* ═══ POTE DE RECADINHOS — 31 slots autorais (dia 1..31, cicla) ═══
    A Grazi preenche a frase em cada slot. Enquanto vazio, aparece o slot marker.
 */
 const POTE_BILHETES = Array.from({length:31}, (_, i) => ({ dia: i+1, frase: null }));
 const _POTE_KEY_PREFIX = 'jg-pote-';
-function _poteTodayKey(){
+function _poteTodayId(){
   const d = new Date();
-  return _POTE_KEY_PREFIX + d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+  const ymd = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+  const who = (function(){ try{ return localStorage.getItem('cosmoUser') || 'anon'; }catch(e){ return 'anon'; } })();
+  return { ymd, who, docId: who + '-' + ymd };
 }
+function _poteTodayKey(){ return _POTE_KEY_PREFIX + _poteTodayId().ymd; }
 function _poteOpenedToday(){ try{ return !!localStorage.getItem(_poteTodayKey()); }catch(e){ return false; } }
 function _poteMarkOpened(b){ try{ localStorage.setItem(_poteTodayKey(), JSON.stringify(b)); }catch(e){} }
+function _poteSync(b){
+  if(!_db) return;
+  try{
+    const info = _poteTodayId();
+    _db.collection('pote-log').doc(info.docId).set({
+      by: _CLIENT, who: info.who, dia: b.dia, ymd: info.ymd, ts: Date.now()
+    }, { merge: true }).catch(()=>{});
+  }catch(e){}
+}
+function _poteListen(){
+  if(!_db) return;
+  try{
+    const info = _poteTodayId();
+    _db.collection('pote-log').doc(info.docId).onSnapshot(snap => {
+      if(!snap.exists) return;
+      const d = snap.data();
+      if(!d) return;
+      // outra sessão do MESMO perfil abriu → refletir localmente sem re-animar
+      if(!_poteOpenedToday()){
+        _poteMarkOpened({ dia: d.dia });
+        _potePaint();
+      }
+    }, ()=>{});
+  }catch(e){}
+}
 function _poteTodayBilhete(){
   const d = new Date();
   return POTE_BILHETES[(d.getDate()-1) % POTE_BILHETES.length];
@@ -1282,10 +1327,10 @@ function _poteOpen(){
     const note = document.getElementById('poteNote');
     note.classList.add('shown','flying');
     _poteMarkOpened(b);
+    _poteSync(b);
     stage.classList.add('sealed');
     stage.classList.remove('opening');
-    // ping push discreto — se a função existir
-    try{ if(typeof _pingPush === 'function') _pingPush('pote', { dia: b.dia }); }catch(e){}
+    try{ _pingPush('pote', { dia: b.dia }); }catch(e){}
   }, 700);
 }
 function _poteInit(){
@@ -1301,14 +1346,14 @@ function _poteInit(){
     share.addEventListener('click', (e)=>{
       e.stopPropagation();
       const b = _poteTodayBilhete();
-      try{ if(typeof _pingPush === 'function') _pingPush('carta', { by:'pote', dia:b.dia }); }catch(e){}
-      // feedback visual mínimo
+      try{ _pingPush('carta', { by:'pote', dia:b.dia }); }catch(e){}
       share.textContent = '✦ enviado ✦';
       share.disabled = true;
       setTimeout(()=>{ share.textContent = '✦ mandar este pra ela'; share.disabled = false; }, 2200);
     });
   }
   _potePaint();
+  _poteListen();
 }
 /* pinta e ativa o pote sempre que o Cap I é aberto */
 (function(){

@@ -13,15 +13,18 @@ service cloud.firestore {
         'counters',        // contadores das figurinhas
         'doce-pedido',     // pedido de doce em tempo real
         'doces',           // doces enviados
+        'fidelidade',      // selos do cartão fidelidade (Cap V) — Fase 2/3
         'letters',         // cartas de amor
         'photos',          // fotos do álbum (doc guarda URL do Storage)
         'places',          // lugares
+        'pote-log',        // aberturas diárias do pote de recadinhos (Cap I) — Fase 3
         'presence',        // presença "estou aqui"
         'presence-status', // online/visto por último (estilo WhatsApp)
         'profiles',        // perfis J & G
         'push-log',        // diagnóstico dos envios de push (escrito pela função)
         'quiz-linguagem',  // resultado do quiz
         'reactions',       // reações
+        'secreto-log',     // visitas ao caderno secreto (Cap VI) — só timestamp, sem conteúdo — Fase 3
         'serviceMedia',    // mídia do capítulo serviço
         'services',        // atos de serviço
         'tempo-diario',    // diário do tempo de qualidade
