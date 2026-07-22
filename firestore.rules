@@ -14,6 +14,7 @@ service cloud.firestore {
         'doce-pedido',     // pedido de doce em tempo real
         'doces',           // doces enviados
         'fidelidade',      // selos do cartão fidelidade (Cap V) — Fase 2/3
+        'jg-slots',        // fotos/vídeos autorais nos slots decorativos — Fase 5.7
         'letters',         // cartas de amor
         'photos',          // fotos do álbum (doc guarda URL do Storage)
         'places',          // lugares

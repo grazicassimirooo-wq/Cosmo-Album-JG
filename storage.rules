@@ -24,5 +24,10 @@ service firebase.storage {
       allow write: if request.resource.size < 80 * 1024 * 1024
                    && request.resource.contentType.matches('(image|video)/.*');
     }
+    match /jg-slots/{file} {
+      allow read;
+      allow write: if request.resource.size < 80 * 1024 * 1024
+                   && request.resource.contentType.matches('(image|video)/.*');
+    }
   }
 }
