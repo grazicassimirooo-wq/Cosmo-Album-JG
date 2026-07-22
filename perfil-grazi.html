@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Perfil Cósmico da Grazi ✦ combinação com a Jussara · J&amp;G</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Dancing+Script:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#12102E;--night2:#0A0820;--night3:#06041C;
+  --cream:#F0DFC0;--cream2:#E8D5B7;--cream3:#D4C4A0;
+  --coral:#D4736E;--coral-lt:#E89890;
+  --mauve:#8B6B95;--mauve-lt:#B396BE;--mauve-deep:#5E4668;
+  --gold:#C4956A;--gold2:#E8B86D;--gold3:#F4DCA8;--gold-deep:#8E6A1F;
+  --violet:#7C5BAD;--indigo:#4A4090;--green:#7BA06B;
+  --ink:#2A2540;--ink2:#3A2410;
+  --space:clamp(22px,6vw,30px);
+  --ease-out:cubic-bezier(.2,.7,.2,1);
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream);
+  -webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh;overflow-x:hidden}
+.board{max-width:520px;margin:0 auto;position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+:focus-visible{outline:2px solid var(--gold2);outline-offset:3px;border-radius:6px}
+
+/* atmosfera — Grazi tem palette girassol/dourado + violeta */
+.sky-bg{position:fixed;inset:-10% -5%;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 45% at 15% 8%,rgba(196,149,106,.28),transparent 60%),
+    radial-gradient(ellipse 55% 40% at 85% 82%,rgba(124,91,173,.24),transparent 60%),
+    radial-gradient(ellipse 40% 30% at 50% 55%,rgba(232,184,109,.10),transparent 55%),
+    linear-gradient(180deg,var(--night),var(--night2) 55%,var(--night3))}
+.sky-stars{position:fixed;inset:-10%;z-index:0;pointer-events:none;opacity:.55;
+  background-image:
+    radial-gradient(1px 1px at 12% 18%,rgba(255,255,255,.5) 50%,transparent),
+    radial-gradient(1.2px 1.2px at 72% 26%,rgba(232,184,109,.6) 50%,transparent),
+    radial-gradient(1px 1px at 28% 64%,rgba(179,150,190,.5) 50%,transparent),
+    radial-gradient(1.5px 1.5px at 55% 42%,rgba(244,220,168,.75) 50%,transparent),
+    radial-gradient(1.2px 1.2px at 86% 50%,#fff 50%,transparent);
+  background-repeat:no-repeat}
+
+/* parallax sun aurora atrás do hero */
+.sun-aurora{position:fixed;top:-8%;left:50%;transform:translateX(-50%);width:120vw;max-width:640px;height:520px;
+  z-index:0;pointer-events:none;opacity:.55;filter:blur(50px);
+  background:radial-gradient(ellipse 50% 60% at 50% 50%,rgba(232,184,109,.38),rgba(196,149,106,.16) 45%,transparent 70%);
+  animation:sunPulse 18s ease-in-out infinite}
+@keyframes sunPulse{0%,100%{opacity:.42;transform:translateX(-50%) scale(1)}50%{opacity:.62;transform:translateX(-50%) scale(1.1)}}
+@media (prefers-reduced-motion:reduce){.sun-aurora{animation:none}}
+
+/* topbar */
+.chap-topbar{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:14px var(--space) 6px}
+.cb-back{background:none;border:none;cursor:pointer;text-decoration:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--cream3);display:flex;align-items:center;gap:6px;padding:6px 4px;transition:color .2s}
+.cb-back:hover,.cb-back:focus-visible{color:var(--gold2)}
+.cb-who{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.7rem;letter-spacing:2px;color:var(--gold2);opacity:.85}
+
+/* HEADER hero */
+.head{padding:34px var(--space) 8px;text-align:left;position:relative;z-index:2}
+.kicker{font-family:'Nunito';font-weight:800;font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold2);opacity:0;animation:fadeUp .7s var(--ease-out) .1s forwards}
+.head h1{font-family:'Playfair Display',serif;font-weight:900;font-size:clamp(2.6rem,12vw,3.6rem);line-height:.94;margin:10px 0 6px;letter-spacing:-1px;
+  background:linear-gradient(180deg,var(--cream),var(--gold3) 55%,var(--gold2));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  opacity:0;animation:fadeUp .8s var(--ease-out) .22s forwards}
+.head .sub{font-family:'Dancing Script',cursive;font-size:1.6rem;color:var(--coral-lt);margin-bottom:14px;opacity:0;animation:fadeUp .8s var(--ease-out) .42s forwards}
+.head .lede{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--cream2);max-width:420px;line-height:1.55;opacity:0;animation:fadeUp .8s var(--ease-out) .55s forwards}
+.head .folio{font-family:'Cormorant Garamond',serif;font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--cream3);opacity:0;animation:folioIn 1s var(--ease-out) .75s forwards;margin-top:14px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes folioIn{to{opacity:.55}}
+
+/* numeral gigante decorativo */
+.numeral{position:absolute;top:22px;right:var(--space);font-family:'Playfair Display',serif;font-weight:900;font-size:5.6rem;line-height:.85;
+  background:linear-gradient(180deg,var(--gold3),var(--gold) 55%,var(--gold-deep));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  opacity:0;animation:numIn 1.2s var(--ease-spring) .35s forwards;pointer-events:none;letter-spacing:-3px;user-select:none}
+.numeral::after{content:'';position:absolute;top:8px;right:-8px;width:10px;height:10px;border-radius:50%;background:var(--coral);box-shadow:0 0 14px var(--coral-lt)}
+@keyframes numIn{from{opacity:0;transform:scale(.6) rotate(-8deg)}to{opacity:.85;transform:scale(1) rotate(0)}}
+
+.hair{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.55;margin:6px var(--space)}
+
+/* HERO — foto autoral */
+.ed-hero{margin:22px var(--space);text-align:center;position:relative;z-index:2}
+.ed-hero-slot{
+  display:block;width:min(300px,74vw);aspect-ratio:4/5;margin:0 auto;
+  border-radius:14px;overflow:hidden;position:relative;
+  background:linear-gradient(160deg,rgba(232,184,109,.08),rgba(139,107,149,.10));
+  border:1px solid rgba(232,184,109,.28);
+  box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 60px rgba(232,184,109,.14)}
+.ed-hero-cap{font-family:'Dancing Script',cursive;font-size:1.35rem;color:var(--gold2);margin-top:14px;opacity:.9;letter-spacing:.3px}
+
+/* QUOTE */
+.ed-quote{margin:18px var(--space);padding:22px 26px;position:relative;
+  background:linear-gradient(160deg,rgba(232,184,109,.06),rgba(139,107,149,.06));
+  border:1px solid rgba(232,184,109,.22);border-radius:12px}
+.ed-quote::before{content:'"';position:absolute;top:-14px;left:16px;font-family:'Playfair Display',serif;font-size:5rem;color:rgba(232,184,109,.14);line-height:1}
+.ed-quote p{font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic;line-height:1.6;color:var(--cream2);position:relative}
+
+/* SIGN-CARDS */
+.sign-card{margin:16px var(--space);padding:22px 22px 20px;position:relative;overflow:hidden;
+  background:linear-gradient(160deg,#181535,#12102f);
+  border:1px solid rgba(232,184,109,.24);border-radius:14px}
+.sign-card::before{content:attr(data-glyph);position:absolute;top:14px;right:18px;font-size:3.6rem;opacity:.09;pointer-events:none;line-height:1}
+.sign-symbol{font-size:1.6rem;line-height:1;margin-bottom:8px;display:block}
+.sign-name{font-family:'Playfair Display',serif;font-weight:800;font-size:1.22rem;margin-bottom:4px;line-height:1.15}
+.sign-role{font-family:'Nunito';font-size:.58rem;font-weight:900;letter-spacing:2px;text-transform:uppercase;opacity:.5;margin-bottom:12px}
+.sign-text{font-family:'Cormorant Garamond',serif;font-size:.94rem;font-style:italic;line-height:1.6;color:var(--cream2)}
+
+/* STAT bars */
+.stat{margin-top:14px}
+.stat-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.stat-label{font-family:'Nunito';font-size:.6rem;font-weight:800;letter-spacing:1px;width:130px;text-align:right;color:var(--cream3);opacity:.75}
+.stat-track{flex:1;height:6px;background:rgba(240,223,192,.08);border-radius:99px;overflow:hidden}
+.stat-fill{height:100%;border-radius:99px;transition:width 1.5s var(--ease-spring)}
+.stat-val{font-size:.62rem;font-weight:900;width:32px;text-align:right;color:var(--gold2)}
+
+/* TAGS */
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.tag{font-family:'Nunito';font-size:.58rem;font-weight:800;padding:5px 11px;border-radius:99px;border:1px solid rgba(232,184,109,.24);letter-spacing:.5px;color:var(--gold2);background:rgba(232,184,109,.04)}
+.tag.coral{border-color:rgba(212,115,110,.3);color:var(--coral-lt);background:rgba(212,115,110,.05)}
+.tag.mauve{border-color:rgba(179,150,190,.3);color:var(--mauve-lt);background:rgba(139,107,149,.05)}
+.tag.green{border-color:rgba(123,160,107,.3);color:var(--green);background:rgba(123,160,107,.05)}
+
+/* SLOT DE FOTO dentro da sign-card (usa jg-slot-upload.js) */
+.card-slot{margin-top:16px;aspect-ratio:4/3;border-radius:8px;overflow:hidden;position:relative;
+  background:repeating-linear-gradient(45deg,rgba(232,184,109,.06),rgba(232,184,109,.06) 10px,rgba(139,107,149,.05) 10px,rgba(139,107,149,.05) 20px);
+  border:1.5px dashed rgba(232,184,109,.28);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:14px 12px;text-align:center}
+.card-slot .cs-icon{font-size:1.4rem;opacity:.5;color:var(--gold2);line-height:1}
+.card-slot .cs-name{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.82rem;color:var(--cream3);line-height:1.3}
+
+/* PETS */
+.pets-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.pet-card{padding:12px;border-radius:10px;background:rgba(232,184,109,.04);border:1px solid rgba(232,184,109,.15);text-align:center}
+.pet-emoji{font-size:1.4rem;display:block;margin-bottom:6px}
+.pet-name-slot{font-family:'Cormorant Garamond',serif;font-size:.75rem;color:var(--cream2);margin-bottom:6px;font-style:italic}
+.pet-photo{aspect-ratio:1/1;border-radius:8px;margin-bottom:6px;
+  background:repeating-linear-gradient(45deg,rgba(232,184,109,.05),rgba(232,184,109,.05) 8px,rgba(139,107,149,.05) 8px,rgba(139,107,149,.05) 16px);
+  border:1.5px dashed rgba(232,184,109,.22);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--gold2);opacity:.65}
+.pet-curiosity{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.7rem;color:var(--cream3);opacity:.7;line-height:1.3}
+
+/* COSMIC PROFILE */
+.cosmic-profile{margin:20px var(--space);padding:22px 22px 20px;
+  background:linear-gradient(160deg,rgba(232,184,109,.10),rgba(139,107,149,.08));
+  border:1px solid rgba(232,184,109,.36);border-radius:14px}
+.cosmic-profile h3{font-family:'Playfair Display',serif;font-weight:800;font-size:1.2rem;margin-bottom:14px;color:var(--gold3)}
+.cosmic-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed rgba(232,184,109,.15)}
+.cosmic-row:last-of-type{border-bottom:none}
+.cr-icon{font-size:1.1rem;width:26px;text-align:center;line-height:1}
+.cr-label{font-family:'Nunito';font-size:.6rem;font-weight:900;letter-spacing:1.5px;color:var(--gold2);opacity:.7;width:90px;text-transform:uppercase}
+.cr-value{font-family:'Cormorant Garamond',serif;font-size:.92rem;font-weight:600;font-style:italic;color:var(--cream);flex:1;line-height:1.35}
+.rarity-badge{margin-top:14px;text-align:center;padding:8px 14px;border-radius:99px;
+  background:linear-gradient(90deg,rgba(232,184,109,.18),rgba(212,115,110,.14));
+  border:1px solid rgba(232,184,109,.4);
+  font-family:'Nunito';font-weight:900;font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold3)}
+
+/* PLACEHOLDER inline chip */
+.ph{display:inline-block;padding:2px 8px;border-radius:99px;
+  background:rgba(232,184,109,.14);border:1px dashed rgba(232,184,109,.42);
+  font-family:'Nunito';font-weight:800;font-size:.55rem;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold2);
+  font-style:normal;white-space:nowrap}
+
+/* ═══ COMBINAÇÃO CÓSMICA ═══ */
+.combo-divisor{margin:40px var(--space) 22px;text-align:center;position:relative}
+.combo-divisor::before,.combo-divisor::after{content:'';position:absolute;top:50%;width:calc(50% - 90px);height:1px;background:linear-gradient(90deg,transparent,var(--coral))}
+.combo-divisor::before{left:0}
+.combo-divisor::after{right:0;background:linear-gradient(90deg,var(--coral),transparent)}
+.combo-divisor span{font-family:'Playfair Display',serif;font-style:italic;font-size:.9rem;color:var(--coral-lt);letter-spacing:.5px;padding:0 14px;background:var(--night3);position:relative}
+
+.combo{margin:22px var(--space) 28px;padding:26px 22px 24px;position:relative;
+  background:linear-gradient(160deg,rgba(212,115,110,.10),rgba(139,107,149,.10) 60%,rgba(232,184,109,.08));
+  border:1px solid rgba(212,115,110,.32);border-radius:16px;overflow:hidden}
+.combo::before{content:'';position:absolute;inset:-40%;background:conic-gradient(from 0deg,transparent 0deg,rgba(232,184,109,.08) 40deg,transparent 90deg,rgba(212,115,110,.06) 180deg,transparent 220deg,rgba(139,107,149,.08) 300deg,transparent 360deg);animation:comboSpin 30s linear infinite;pointer-events:none;z-index:0}
+@keyframes comboSpin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.combo::before{animation:none}}
+.combo > *{position:relative;z-index:1}
+.combo-kicker{font-family:'Nunito';font-weight:800;font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--coral-lt);text-align:center;margin-bottom:6px}
+.combo h2{font-family:'Playfair Display',serif;font-weight:900;font-size:clamp(1.6rem,7vw,2rem);line-height:1;text-align:center;margin-bottom:6px;color:var(--cream)}
+.combo-deck{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.94rem;color:var(--cream2);text-align:center;margin-bottom:22px;line-height:1.5}
+
+/* tabela comparativa */
+.combo-table{display:grid;grid-template-columns:1fr auto 1fr;gap:8px 10px;align-items:center;margin-bottom:20px;
+  background:rgba(6,4,28,.35);border:1px solid rgba(232,184,109,.18);border-radius:12px;padding:16px 14px}
+.combo-head{font-family:'Nunito';font-weight:900;font-size:.55rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold2);text-align:center;padding-bottom:6px}
+.combo-head.j{color:var(--mauve-lt)}
+.combo-head.g{color:var(--gold2)}
+.combo-label{font-family:'Nunito';font-weight:800;font-size:.55rem;letter-spacing:1.2px;text-transform:uppercase;color:var(--cream3);opacity:.65;text-align:center;padding:0 4px}
+.combo-cell{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.88rem;color:var(--cream);text-align:center;padding:4px 2px;line-height:1.3}
+.combo-cell.j{color:var(--mauve-lt)}
+.combo-cell.g{color:var(--gold3)}
+
+.combo-note{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.98rem;line-height:1.6;color:var(--cream);margin-top:8px;padding:16px 18px;
+  background:rgba(6,4,28,.4);border-left:2px solid var(--coral);border-radius:0 8px 8px 0}
+.combo-note b{font-family:'Nunito';font-style:normal;font-weight:800;color:var(--coral-lt);font-size:.58rem;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:6px}
+
+.combo-signature{text-align:center;margin-top:22px;font-family:'Dancing Script',cursive;font-size:1.3rem;color:var(--coral-lt);opacity:.85}
+
+/* nav footer */
+.foot{padding:22px var(--space) 40px;display:flex;flex-direction:column;gap:12px;align-items:center}
+.foot-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:99px;text-decoration:none;
+  background:transparent;border:1px solid rgba(232,184,109,.4);color:var(--gold2);
+  font-family:'Nunito';font-weight:800;font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;transition:.2s}
+.foot-btn:hover{background:rgba(232,184,109,.14);color:var(--gold3)}
+.foot-btn.primary{background:linear-gradient(180deg,var(--gold3),var(--gold) 60%,var(--gold-deep));color:var(--ink);border:none;box-shadow:0 6px 18px rgba(196,149,106,.4)}
+.foot p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.78rem;color:var(--cream3);opacity:.65;line-height:1.5;text-align:center;max-width:340px}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.2s!important}}
+
+/* login gate compartilhado */
+.cosmo-login-gate{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:24px;
+  background:radial-gradient(ellipse at 50% 20%,rgba(124,91,173,.15),transparent 55%),linear-gradient(170deg,#100E28,#181440,#12102A);}
+.cosmo-login-gate.show{display:flex}
+.clg-card{max-width:340px;width:100%;text-align:center;font-family:'Nunito',sans-serif}
+.clg-deco{font-size:1rem;color:#C4956A;opacity:.6;letter-spacing:4px;margin-bottom:10px}
+.clg-card h2{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;color:#F0DFC0;margin-bottom:6px}
+.clg-card p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:rgba(240,223,192,.6);margin-bottom:26px}
+.clg-options{display:flex;flex-direction:column;gap:14px}
+.clg-opt{display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:16px;
+  background:rgba(240,223,192,.04);border:1px solid rgba(240,223,192,.12);color:#F0DFC0;
+  font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;letter-spacing:.5px;cursor:pointer;transition:.2s;text-align:left}
+.clg-opt:active{background:rgba(240,223,192,.1);transform:scale(.98)}
+.clg-ico{font-size:1.6rem}
+</style>
+</head>
+<body>
+
+<div class="cosmo-login-gate" id="cosmoLoginGate" aria-hidden="true">
+  <div class="clg-card">
+    <div class="clg-deco">✦ ✧ ✦</div>
+    <h2>Quem é você?</h2>
+    <p>Escolha seu perfil pra personalizar o álbum</p>
+    <div class="clg-options">
+      <button type="button" class="clg-opt" data-user="jussara"><span class="clg-ico">🌼</span><span>Jussara</span></button>
+      <button type="button" class="clg-opt" data-user="grazi"><span class="clg-ico">🌻</span><span>Grazi</span></button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var u=null; try{ u = localStorage.getItem('cosmoUser'); }catch(e){}
+  if(u) return;
+  var g = document.getElementById('cosmoLoginGate');
+  g.classList.add('show'); g.setAttribute('aria-hidden','false');
+  g.querySelectorAll('.clg-opt').forEach(function(b){
+    b.addEventListener('click', function(){
+      try{ localStorage.setItem('cosmoUser', b.dataset.user); }catch(e){}
+      g.classList.remove('show'); location.reload();
+    });
+  });
+})();
+</script>
+
+<div class="sky-bg"></div>
+<div class="sky-stars"></div>
+<div class="sun-aurora"></div>
+
+<div class="board">
+
+  <div class="chap-topbar">
+    <a class="cb-back" href="index.html#sumario">← sumário</a>
+    <span class="cb-who">edição limitada ✦ Grazi</span>
+  </div>
+
+  <!-- HEADER -->
+  <header class="head">
+    <div class="numeral">G</div>
+    <div class="kicker">✦ Perfil Cósmico · Edição Rara</div>
+    <h1>Grazi</h1>
+    <p class="sub">a alma que trouxe o álbum ♡</p>
+    <p class="lede">
+      Esse aqui é o outro lado da constelação — o perfil de quem escreveu o álbum inteiro pra Jussara. Slots marcados são pra Grazi preencher com o que só ela sabe dizer sobre si. No fim, a combinação cósmica: como as duas se encaixam nas estrelas.
+    </p>
+    <div class="folio">JG · CAP EXTRA · PERFIL CÓSMICO · edit-me</div>
+  </header>
+
+  <div class="hair"></div>
+
+  <!-- FOTO HERO -->
+  <div class="ed-hero">
+    <div class="ed-hero-slot" data-slot-id="grazi-hero" data-slot-alt="retrato autoral da Grazi"></div>
+    <div class="ed-hero-cap">a estrela que escreve nas margens ✦</div>
+  </div>
+
+  <!-- CITAÇÃO -->
+  <div class="ed-quote">
+    <p><span class="ph">SLOT · citação autoral · até 240 chars</span> — uma frase que resume quem você é. algo como: "há pessoas que passam pela vida e há pessoas que reescrevem ela inteira". o tom fica com você.</p>
+  </div>
+
+  <!-- SIGN CARD 1: SOL -->
+  <section class="sign-card" data-glyph="☉">
+    <span class="sign-symbol">☉</span>
+    <div class="sign-name" style="color:var(--gold2)">Sol em <span class="ph">SIGNO</span></div>
+    <div class="sign-role"><span class="ph">SLOT · arquétipo do sol</span></div>
+    <div class="sign-text">
+      <span class="ph">SLOT · texto autoral 3–5 linhas</span> — o que o teu sol diz de você: como você aparece no mundo, sua essência solar. tom Cormorant italic, direto e carinhoso.
+    </div>
+    <div class="stat">
+      <div class="stat-row"><span class="stat-label">☉ <span class="ph">TRAÇO 1</span></span><div class="stat-track"><div class="stat-fill" style="width:90%;background:linear-gradient(90deg,var(--gold),var(--gold3))"></div></div><span class="stat-val">90</span></div>
+      <div class="stat-row"><span class="stat-label">☉ <span class="ph">TRAÇO 2</span></span><div class="stat-track"><div class="stat-fill" style="width:85%;background:linear-gradient(90deg,var(--coral),var(--gold2))"></div></div><span class="stat-val">85</span></div>
+      <div class="stat-row"><span class="stat-label">☉ <span class="ph">TRAÇO 3</span></span><div class="stat-track"><div class="stat-fill" style="width:95%;background:linear-gradient(90deg,var(--violet),var(--mauve-lt))"></div></div><span class="stat-val">95</span></div>
+    </div>
+    <div class="card-slot" data-slot-id="grazi-sol-foto" data-slot-alt="foto do sol da Grazi">
+      <span class="cs-icon">📸</span>
+      <span class="cs-name">foto que traduz seu sol · toque pra enviar</span>
+    </div>
+  </section>
+
+  <!-- SIGN CARD 2: ASCENDENTE -->
+  <section class="sign-card" data-glyph="⚡">
+    <span class="sign-symbol">⚡</span>
+    <div class="sign-name" style="color:var(--coral-lt)">Ascendente em <span class="ph">SIGNO</span></div>
+    <div class="sign-role"><span class="ph">SLOT · a máscara / primeira impressão</span></div>
+    <div class="sign-text">
+      <span class="ph">SLOT · texto autoral</span> — o ascendente é como você chega antes das palavras. o que as pessoas sentem primeiro. dá o tom da sua entrada em qualquer lugar.
+    </div>
+    <div class="tags">
+      <span class="tag coral">⚡ <span class="ph">TAG 1</span></span>
+      <span class="tag mauve">⚡ <span class="ph">TAG 2</span></span>
+      <span class="tag">⚡ <span class="ph">TAG 3</span></span>
+    </div>
+    <div class="card-slot" data-slot-id="grazi-asc-foto" data-slot-alt="foto do ascendente da Grazi">
+      <span class="cs-icon">📸</span>
+      <span class="cs-name">foto espontânea, sem pose · toque pra enviar</span>
+    </div>
+  </section>
+
+  <!-- SIGN CARD 3: LUA -->
+  <section class="sign-card" data-glyph="☾">
+    <span class="sign-symbol">☾</span>
+    <div class="sign-name" style="color:var(--mauve-lt)">Lua em <span class="ph">SIGNO</span></div>
+    <div class="sign-role"><span class="ph">SLOT · o mundo emocional</span></div>
+    <div class="sign-text">
+      <span class="ph">SLOT · texto autoral</span> — a lua é o coração escondido: como você sente, como você se acalma, o que te faz chorar de alegria e o que te desmonta.
+    </div>
+    <div class="tags">
+      <span class="tag mauve">☾ <span class="ph">TAG 1</span></span>
+      <span class="tag">☾ <span class="ph">TAG 2</span></span>
+      <span class="tag coral">☾ <span class="ph">TAG 3</span></span>
+    </div>
+    <div class="card-slot" data-slot-id="grazi-lua-foto" data-slot-alt="foto da lua da Grazi">
+      <span class="cs-icon">📸</span>
+      <span class="cs-name">foto de um momento íntimo · toque pra enviar</span>
+    </div>
+  </section>
+
+  <!-- PETS / FAMÍLIA -->
+  <section class="sign-card" data-glyph="🐾">
+    <span class="sign-symbol">🐾</span>
+    <div class="sign-name" style="color:var(--green)">Família de quatro patas</div>
+    <div class="sign-role">para conhecer alguém, observe como ela ama seus bichinhos</div>
+    <div class="pets-grid">
+      <div class="pet-card">
+        <span class="pet-emoji">🐾</span>
+        <div class="pet-name-slot"><span class="ph">NOME DO PET</span></div>
+        <div class="pet-photo" data-slot-id="grazi-pet-1" data-slot-alt="foto do pet 1"></div>
+        <div class="pet-curiosity"><span class="ph">curiosidade</span> · até 60 chars</div>
+      </div>
+      <div class="pet-card">
+        <span class="pet-emoji">🐾</span>
+        <div class="pet-name-slot"><span class="ph">NOME DO PET</span></div>
+        <div class="pet-photo" data-slot-id="grazi-pet-2" data-slot-alt="foto do pet 2"></div>
+        <div class="pet-curiosity"><span class="ph">curiosidade</span> · até 60 chars</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COSMIC PROFILE -->
+  <div class="cosmic-profile">
+    <h3>🌻 Perfil Cósmico da Grazi</h3>
+    <div class="cosmic-row"><span class="cr-icon">🌸</span><span class="cr-label">Flor</span><span class="cr-value"><span class="ph">SLOT · flor da Grazi</span></span></div>
+    <div class="cosmic-row"><span class="cr-icon">🌙</span><span class="cr-label">Elemento</span><span class="cr-value"><span class="ph">terra · água · fogo · ar</span></span></div>
+    <div class="cosmic-row"><span class="cr-icon">⭐</span><span class="cr-label">Planeta</span><span class="cr-value"><span class="ph">SLOT · planeta regente</span></span></div>
+    <div class="cosmic-row"><span class="cr-icon">🔮</span><span class="cr-label">Energia</span><span class="cr-value"><span class="ph">SLOT · uma palavra ou frase curta</span></span></div>
+    <div class="cosmic-row"><span class="cr-icon">🌿</span><span class="cr-label">Habitat</span><span class="cr-value"><span class="ph">SLOT · onde você floresce</span> — até 140 chars</span></div>
+    <div class="rarity-badge">💛 Nível de Raridade: RARÍSSIMA 💛</div>
+  </div>
+
+  <!-- ═══ COMBINAÇÃO CÓSMICA ═══ -->
+  <div class="combo-divisor"><span>✦ onde as duas se encaixam ✦</span></div>
+
+  <section class="combo" aria-label="Combinação cósmica Grazi e Jussara">
+    <div class="combo-kicker">✦ A COMBINAÇÃO CÓSMICA</div>
+    <h2>Grazi &amp; Jussara</h2>
+    <p class="combo-deck">o que o mapa das duas diz — o que a Jussara já registrou está pintado, o lado da Grazi é seu pra preencher.</p>
+
+    <div class="combo-table">
+      <div class="combo-head g">🌻 Grazi</div>
+      <div class="combo-head" aria-hidden="true"></div>
+      <div class="combo-head j">🌼 Jussara</div>
+
+      <div class="combo-cell g"><span class="ph">SIGNO SOLAR</span></div>
+      <div class="combo-label">Sol</div>
+      <div class="combo-cell j">Capricórnio ♑</div>
+
+      <div class="combo-cell g"><span class="ph">SIGNO ASC</span></div>
+      <div class="combo-label">Ascendente</div>
+      <div class="combo-cell j">Sagitário ♐</div>
+
+      <div class="combo-cell g"><span class="ph">SIGNO LUNAR</span></div>
+      <div class="combo-label">Lua</div>
+      <div class="combo-cell j">Gêmeos ♊</div>
+
+      <div class="combo-cell g"><span class="ph">ELEMENTO</span></div>
+      <div class="combo-label">Elemento</div>
+      <div class="combo-cell j">Ar</div>
+
+      <div class="combo-cell g"><span class="ph">FLOR</span></div>
+      <div class="combo-label">Flor</div>
+      <div class="combo-cell j">Margarida</div>
+
+      <div class="combo-cell g"><span class="ph">PLANETA</span></div>
+      <div class="combo-label">Planeta</div>
+      <div class="combo-cell j">Saturno</div>
+
+      <div class="combo-cell g"><span class="ph">ENERGIA</span></div>
+      <div class="combo-label">Energia</div>
+      <div class="combo-cell j">Good Vibes</div>
+    </div>
+
+    <div class="combo-note">
+      <b>✦ como a gente combina</b>
+      <span class="ph">SLOT · texto autoral da combinação · 3–5 linhas</span> — o que faz sentido nesse encontro. tipo: o teu <em>elemento</em> com o <em>ar</em> dela, o teu <em>sol</em> encontrando o <em>capricórnio</em> dela, o que a diferença entre vocês faz nascer.
+    </div>
+
+    <div class="combo-note" style="border-left-color:var(--gold2);margin-top:12px">
+      <b>✦ pequena verdade cósmica</b>
+      <span class="ph">SLOT · uma linha só</span> — uma verdade curtinha e definitiva, tipo "a gente combina até nas estrelas — e nas coisas que ninguém sabe".
+    </div>
+
+    <!-- foto das duas -->
+    <div style="margin-top:22px">
+      <div style="font-family:'Nunito';font-weight:800;font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--coral-lt);text-align:center;margin-bottom:8px">✦ prova visual da combinação</div>
+      <div class="card-slot" data-slot-id="jg-combinacao" data-slot-alt="foto das duas juntas" style="aspect-ratio:5/4">
+        <span class="cs-icon">💛</span>
+        <span class="cs-name">uma foto de vocês duas · toque pra enviar</span>
+      </div>
+    </div>
+
+    <div class="combo-signature">a gente combina até nas estrelas ✦</div>
+  </section>
+
+  <!-- FOOTER -->
+  <div class="foot">
+    <a class="foot-btn primary" href="index.html#sumario">← voltar ao sumário</a>
+    <a class="foot-btn" href="quiz-linguagem.html">✦ quiz das linguagens do amor</a>
+    <a class="foot-btn" href="direcao-de-arte.html">✧ direção de arte do álbum</a>
+    <p>slots marcados são pra você preencher · Cormorant italic, tom carinhoso · até você escrever, o placeholder fica dourado</p>
+  </div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="firebase-init.js" defer></script>
+<script src="jg-slot-upload.js" defer></script>
+<script src="magic.js" defer></script>
+
+</body>
+</html>

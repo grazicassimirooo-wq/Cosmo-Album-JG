@@ -1,5 +1,5 @@
 /* Service Worker do Álbum J&G — PWA (instalável + offline) e notificações */
-const CACHE = 'cosmo-album-v26';
+const CACHE = 'cosmo-album-v27';
 const SHELL = [
   './', './index.html', './manifest.json', './icon-192.png', './icon-512.png',
   './capitulo1-palavras.html', './capitulo3-toque.html', './capitulo4-servico.html',
@@ -9,6 +9,7 @@ const SHELL = [
   './memory-gallery.html', './quiz-linguagem.html', './mapa-navegacao.html',
   './narrativa-5-linguagens.html', './direcao-de-arte.html',
   './modo-grazi.html', './modo-jussara.html',
+  './perfil-grazi.html',
   './foto-capa-album.jpg', './foto-pacote-capa.jpg', './foto-jussara.jpg',
   './pote-bg.mp4', './pote-bg.webm',
   './visual-fx.js', './magic.js', './presence.js',
