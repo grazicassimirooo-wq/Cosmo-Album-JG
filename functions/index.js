@@ -172,9 +172,12 @@ function buildData(b, quem) {
     return { title: '🍬 Me manda um doce aqui!', body: quem + ' compartilhou onde está, esperando um docinho 📍♡', tag: 'cosmo-pedido', link: './capitulo-presentes.html' };
   }
   if (kind === 'pote') {
-    const dia = s(b.dia, 3);
-    const body = dia ? quem + ' pegou o bilhete de hoje do pote (dia ' + dia + ') ✒' : quem + ' abriu o pote de recadinhos ✒';
-    return { title: '✒ Um bilhete do pote', body, tag: 'cosmo-pote', link: './#cap1' };
+    // agora o corpo diz que ela leu UM dos bilhetes que a outra escreveu
+    return { title: '✒ Um bilhete do pote', body: quem + ' abriu um bilhete que você escreveu no pote ✦', tag: 'cosmo-pote', link: './#cap1' };
+  }
+  if (kind === 'bilhete-novo') {
+    // alguém escreveu um bilhete novo pro pote da outra
+    return { title: '✒ Bilhete novo pra você!', body: quem + ' escreveu um bilhete novo no seu pote — abra amanhã ou já ✦', tag: 'cosmo-bilhete-novo', link: './#cap1' };
   }
   if (kind === 'fidelidade') {
     const total = s(b.total, 3);
