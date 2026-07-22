@@ -31,44 +31,28 @@ async function sendToOther(by, data) {
   try {
     const tokensSnap = await db.collection('tokens').get();
     const targets = [];
+    // mesmo token pode estar em dois docs (migração usuária → aparelho): dedup
+    const seen = new Set();
     tokensSnap.forEach((doc) => {
       const t = doc.data();
-      if (t && t.token && t.client !== by) targets.push({ id: doc.id, token: t.token });
-    });
-    log.targets = targets.map((t) => t.id).join(',');
-    if (!targets.length) { log.result = 'sem destinatários'; return log; }
-
-  const tokensSnap = await db.collection('tokens').get();
-  const targets = [];
-  const seen = new Set(); // mesmo token pode estar em dois docs (migração usuária → aparelho)
-  tokensSnap.forEach((doc) => {
-    const t = doc.data();
-    if (t && t.token && t.client !== by && !seen.has(t.token)) {
-      seen.add(t.token);
-      targets.push({ id: doc.id, token: t.token });
-    }
-  });
-  if (!targets.length) return;
-
-  const res = await getMessaging().sendEachForMulticast({
-    tokens: targets.map((t) => t.token),
-    data: {
-      title: '💛 Nova foto no álbum!',
-      body: 'Alguém adicionou uma foto novinha 📸✨'
-    },
-    webpush: { headers: { Urgency: 'high' }, fcmOptions: { link: '/' } }
-  });
-
-  // Limpa tokens que não valem mais (aparelho desinstalou / permissão revogada)
-  const deletions = [];
-  res.responses.forEach((r, i) => {
-    if (!r.success) {
-      const code = r.error && r.error.code;
-      if (code === 'messaging/registration-token-not-registered' ||
-          code === 'messaging/invalid-argument') {
-        deletions.push(db.collection('tokens').doc(targets[i].id).delete());
+      if (t && t.token && t.client !== by && !seen.has(t.token)) {
+        seen.add(t.token);
+        targets.push({ id: doc.id, token: t.token });
       }
     });
+    log.targets = targets.map((t) => t.id).join(',');
+    if (!targets.length) { log.result = 'sem destinatários'; log.ok = 0; log.fail = 0; return log; }
+
+    const res = await getMessaging().sendEachForMulticast({
+      tokens: targets.map((t) => t.token),
+      data: data,
+      webpush: {
+        headers: { Urgency: 'high' },
+        notification: { title: data.title, body: data.body, icon: BASE + 'icon-192.png', badge: BASE + 'icon-192.png', tag: data.tag, renotify: true },
+        fcmOptions: { link: BASE + (data.link || '').replace(/^\.\//, '') }
+      }
+    });
+
     log.ok = res.successCount;
     log.fail = res.failureCount;
     const errs = [];
