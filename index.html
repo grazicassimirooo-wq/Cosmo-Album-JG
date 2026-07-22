@@ -831,6 +831,55 @@ img{max-width:100%}
   align-items:center;gap:8px;width:fit-content}
 .pote-streak.on{display:inline-flex}
 .pote-streak b{font-family:'Nunito';font-style:normal;font-weight:900;color:#FFB08A}
+/* contador do acervo */
+.pote-counter{display:block;text-align:center;margin:6px auto 4px;padding:6px 14px;border-radius:99px;
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.9rem;color:var(--jg-cream2);
+  background:rgba(232,184,109,.06);border:1px solid rgba(232,184,109,.22);width:fit-content;max-width:92%}
+.pote-counter[data-state="novo"]{color:var(--jg-gold3);border-color:rgba(232,184,109,.55);background:rgba(232,184,109,.14);
+  animation:poteCounterPulse 2.6s ease-in-out infinite}
+.pote-counter[data-state="lido"]{color:var(--jg-cream3);opacity:.85}
+.pote-counter[data-state="vazio"]{color:var(--jg-cream3);opacity:.7}
+@keyframes poteCounterPulse{0%,100%{box-shadow:0 0 0 rgba(232,184,109,.0)}50%{box-shadow:0 0 14px rgba(232,184,109,.35)}}
+/* botão de escrever bilhete (primário) */
+.pote-write{display:block;margin:10px auto 0;padding:11px 22px;border-radius:99px;cursor:pointer;
+  background:linear-gradient(140deg,#E8B86D,#C4956A);color:#2A1810;
+  border:1px solid rgba(90,60,20,.5);
+  font-family:'Nunito';font-weight:900;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;
+  box-shadow:0 6px 16px rgba(0,0,0,.35),0 0 14px rgba(232,184,109,.25);
+  transition:transform .2s var(--jg-out),box-shadow .2s var(--jg-out)}
+.pote-write:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,0,0,.45),0 0 18px rgba(232,184,109,.4)}
+.pote-write:active{transform:translateY(0)}
+/* form drawer */
+.pote-form{max-height:0;overflow:hidden;transition:max-height .5s var(--jg-out),opacity .3s var(--jg-out);opacity:0;
+  margin:0 auto;width:100%;max-width:460px}
+.pote-form.on{max-height:460px;opacity:1;margin-top:12px}
+.pote-form-label{display:block;font-family:'Nunito';font-weight:800;font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--jg-gold2);margin-bottom:8px;text-align:center}
+.pote-form-txt{width:100%;min-height:90px;padding:12px 14px;border-radius:10px;resize:vertical;
+  background:linear-gradient(160deg,rgba(240,223,192,.96),rgba(212,196,160,.92));
+  color:#2E1A08;border:1px solid rgba(90,60,20,.4);
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.02rem;line-height:1.4;
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.15)}
+.pote-form-txt:focus{outline:2px solid var(--jg-gold2);outline-offset:2px}
+.pote-form-txt::placeholder{color:rgba(46,26,8,.55);font-style:italic}
+.pote-form-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;flex-wrap:wrap}
+.pote-form-count{font-family:'Nunito';font-weight:700;font-size:.6rem;letter-spacing:1.5px;color:var(--jg-cream3);opacity:.75}
+.pote-form-btns{display:flex;gap:8px;flex-wrap:wrap}
+.pote-form-cancel{padding:7px 14px;border-radius:99px;cursor:pointer;
+  background:transparent;border:1px solid rgba(240,223,192,.3);color:var(--jg-cream2);
+  font-family:'Nunito';font-weight:700;font-size:.58rem;letter-spacing:1.5px;text-transform:uppercase}
+.pote-form-cancel:hover{border-color:var(--jg-cream);color:var(--jg-cream)}
+.pote-form-send{padding:8px 18px;border-radius:99px;cursor:pointer;
+  background:linear-gradient(140deg,#E8B86D,#C4956A);color:#2A1810;
+  border:1px solid rgba(90,60,20,.5);
+  font-family:'Nunito';font-weight:900;font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;
+  box-shadow:0 4px 12px rgba(0,0,0,.3),0 0 10px rgba(232,184,109,.25)}
+.pote-form-send:hover{box-shadow:0 6px 16px rgba(0,0,0,.4),0 0 14px rgba(232,184,109,.4)}
+.pote-form-send:disabled{opacity:.6;cursor:wait}
+.pote-form-status{margin-top:8px;text-align:center;min-height:1em;
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.9rem;color:var(--jg-gold3)}
+/* dica visual: pote com bilhetes novos ganha um leve pulso dourado extra */
+.pote-stage.has-new .pote-lid{box-shadow:inset 0 -7px 10px rgba(0,0,0,.4),inset 0 2px 3px rgba(244,220,168,.4),0 4px 10px rgba(0,0,0,.45),0 0 22px rgba(232,184,109,.55)}
+.pote-stage.has-new .pote-cosmos{opacity:1}
 .pote-legend{margin-top:16px;padding:12px 14px;border:1px dashed rgba(232,184,109,.35);
   border-radius:10px;background:rgba(232,184,109,.04);text-align:center}
 .pote-legend p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.82rem;color:var(--jg-cream2);line-height:1.4;margin:2px 0}
@@ -1040,11 +1089,26 @@ img{max-width:100%}
           <div class="pote-seal" aria-hidden="true">✦ voltamos amanhã ✦</div>
         </div>
         <div class="pote-hint">toque no pote</div>
+        <div class="pote-counter" id="poteCounter" aria-live="polite">ainda sem bilhetes ♡</div>
+        <button class="pote-write" type="button" id="poteWriteBtn">✒ escrever um bilhete pra ela</button>
+        <div class="pote-form" id="poteForm" aria-hidden="true">
+          <label class="pote-form-label" for="poteFormTxt">um bilhete pra ela encontrar no pote dela</label>
+          <textarea id="poteFormTxt" class="pote-form-txt" maxlength="240" rows="3"
+            placeholder="algo curtinho, específico, tom de bilhete de geladeira ♡"></textarea>
+          <div class="pote-form-row">
+            <span class="pote-form-count" id="poteFormCount">0/240</span>
+            <div class="pote-form-btns">
+              <button type="button" class="pote-form-cancel" id="poteFormCancel">cancelar</button>
+              <button type="button" class="pote-form-send" id="poteFormSend">✦ selar e mandar</button>
+            </div>
+          </div>
+          <div class="pote-form-status" id="poteFormStatus" role="status"></div>
+        </div>
         <div class="pote-streak" id="poteStreak">🔥 <b><span id="poteStreakN">0</span> dias</b> seguidos ♡</div>
-        <button class="pote-share" type="button" id="poteShare">✦ mandar este pra ela</button>
+        <button class="pote-share" type="button" id="poteShare">✦ mandar carinho retroativo</button>
         <div class="pote-legend">
-          <p><b>31 bilhetes autorais</b> — edite as frases no arquivo <code>pote-bilhetes.js</code>.</p>
-          <p>um por dia do mês · até 140 caracteres · Cormorant italic</p>
+          <p><b>vocês escrevem uma pra outra ♡</b> — o que você escreve aqui aparece no pote dela.</p>
+          <p>um bilhete por dia · sorteio dos que ainda não leu · até 240 caracteres</p>
         </div>
       </section>
       <section class="jg-section">
@@ -1138,8 +1202,6 @@ img{max-width:100%}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
-<!-- Bilhetes autorais do pote (Grazi edita esse arquivo) -->
-<script src="pote-bilhetes.js"></script>
 <script>
 /* ═══ SCRATCH ENGINE ═══ */
 const canvas=document.getElementById('scratchCanvas'),ctx=canvas.getContext('2d'),
@@ -1383,79 +1445,123 @@ function _pingPush(kind, extra){
 }
 window._pingPush = _pingPush;
 
-/* ═══ POTE DE RECADINHOS — 31 slots autorais (dia 1..31, cicla) ═══
-   As frases moram em pote-bilhetes.js (window.POTE_BILHETES_FRASES).
-   Enquanto slot vazio (null), aparece o slot marker.
+/* ═══ POTE DE RECADINHOS — bilhetes que uma escreve pra outra ler ═══
+   Modelo (Fase 5):
+   - Cada perfil (jussara/grazi) escreve bilhetes; ficam em Firestore
+     na coleção `pote-bilhetes` como {by, texto, ts}.
+   - Ao abrir o pote, sorteia UM dos bilhetes escritos pela OUTRA pessoa
+     que ela ainda NÃO leu (localStorage `jg-pote-lidos` guarda ids).
+     Se já leu todos, entra em modo "releitura carinhosa".
+   - Sela por dia: 1 leitura por dia (mantém a magia da espera).
+   - Escrever é sem limite: pode mandar quantos quiser, quando quiser.
 */
-const POTE_BILHETES = Array.from({length:31}, (_, i) => {
-  const dia = i+1;
-  const frases = (typeof window !== 'undefined' && window.POTE_BILHETES_FRASES) || {};
-  const f = frases[dia];
-  return { dia, frase: (typeof f === 'string' && f.trim()) ? f.trim() : null };
-});
 const _POTE_KEY_PREFIX = 'jg-pote-';
-function _poteTodayId(){
-  const d = new Date();
-  const ymd = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
-  const who = (function(){ try{ return localStorage.getItem('cosmoUser') || 'anon'; }catch(e){ return 'anon'; } })();
-  return { ymd, who, docId: who + '-' + ymd };
+const _POTE_LIDOS_KEY = 'jg-pote-lidos';
+let _poteAcervo = [];        // bilhetes vindos do Firestore (ordenados por ts desc)
+let _poteAcervoUnsub = null;
+let _poteLogUnsub = null;
+
+function _poteWho(){
+  try{ return localStorage.getItem('cosmoUser') || 'anon'; }catch(e){ return 'anon'; }
 }
-function _poteTodayKey(){ return _POTE_KEY_PREFIX + _poteTodayId().ymd; }
-function _poteOpenedToday(){ try{ return !!localStorage.getItem(_poteTodayKey()); }catch(e){ return false; } }
-function _poteMarkOpened(b){ try{ localStorage.setItem(_poteTodayKey(), JSON.stringify(b)); }catch(e){} }
-function _poteSync(b){
-  if(!_db) return;
+function _poteTodayYMD(){
+  const d = new Date();
+  return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+}
+function _poteTodayKey(){ return _POTE_KEY_PREFIX + _poteTodayYMD(); }
+function _poteOpenedTodayInfo(){
   try{
-    const info = _poteTodayId();
-    _db.collection('pote-log').doc(info.docId).set({
-      by: _CLIENT, who: info.who, dia: b.dia, ymd: info.ymd, ts: Date.now()
-    }, { merge: true }).catch(()=>{});
+    const raw = localStorage.getItem(_poteTodayKey());
+    if(!raw) return null;
+    const v = JSON.parse(raw);
+    return (v && v.texto) ? v : null;
+  }catch(e){ return null; }
+}
+function _poteMarkOpened(b){
+  try{
+    localStorage.setItem(_poteTodayKey(), JSON.stringify({ id: b.id, texto: b.texto, by: b.by, releitura: !!b._releitura, ts: Date.now() }));
   }catch(e){}
 }
-function _poteListen(){
-  if(!_db) return;
+function _poteLidosSet(){
+  try{ return new Set(JSON.parse(localStorage.getItem(_POTE_LIDOS_KEY) || '[]')); }catch(e){ return new Set(); }
+}
+function _poteMarcarLido(id){
+  if(!id) return;
   try{
-    const info = _poteTodayId();
-    _db.collection('pote-log').doc(info.docId).onSnapshot(snap => {
-      if(!snap.exists) return;
-      const d = snap.data();
-      if(!d) return;
-      // outra sessão do MESMO perfil abriu → refletir localmente sem re-animar
-      if(!_poteOpenedToday()){
-        _poteMarkOpened({ dia: d.dia });
-        _potePaint();
-      }
-    }, ()=>{});
+    const s = _poteLidosSet();
+    s.add(id);
+    localStorage.setItem(_POTE_LIDOS_KEY, JSON.stringify(Array.from(s)));
   }catch(e){}
 }
-function _poteTodayBilhete(){
-  const d = new Date();
-  return POTE_BILHETES[(d.getDate()-1) % POTE_BILHETES.length];
+function _poteAcervoParaMim(){
+  const w = _poteWho();
+  return _poteAcervo.filter(b => b.by && b.by !== w);
+}
+function _poteSortear(){
+  const acervo = _poteAcervoParaMim();
+  if(!acervo.length) return null;
+  const lidos = _poteLidosSet();
+  const naoLidos = acervo.filter(b => !lidos.has(b.id));
+  if(naoLidos.length){
+    return naoLidos[Math.floor(Math.random() * naoLidos.length)];
+  }
+  const b = acervo[Math.floor(Math.random() * acervo.length)];
+  return Object.assign({}, b, { _releitura: true });
 }
 function _poteFill(b){
   const note = document.getElementById('poteNote');
   if(!note) return;
   const t = note.querySelector('.pote-note-text');
   const d = note.querySelector('.pote-note-date');
-  d.textContent = 'dia ' + b.dia;
-  if(b.frase){
-    t.textContent = b.frase;
-  } else {
-    t.innerHTML = '<span class="pote-slot-mark">slot · frase autoral · dia ' + b.dia + '</span><br>a Grazi ainda vai escrever esse.';
+  if(!b || !b.texto){
+    d.textContent = 'do pote ✦';
+    t.innerHTML = '<span class="pote-slot-mark">ainda vazio</span><br>ela ainda não escreveu nenhum bilhete pra você.';
+    return;
+  }
+  const byNome = b.by === 'grazi' ? 'da grazi ✦' : (b.by === 'jussara' ? 'da jussara ✦' : 'do pote ✦');
+  const marca = b.releitura || b._releitura ? ' · releitura carinhosa' : '';
+  d.textContent = byNome + marca;
+  t.textContent = b.texto;
+}
+function _potePaintCounter(){
+  const el = document.getElementById('poteCounter');
+  const jar = document.getElementById('poteStage');
+  const acervo = _poteAcervoParaMim();
+  const total = acervo.length;
+  const lidos = _poteLidosSet();
+  const naoLidos = acervo.filter(b => !lidos.has(b.id)).length;
+  if(el){
+    if(!total){
+      el.textContent = 'ainda sem bilhetes ♡';
+      el.dataset.state = 'vazio';
+    } else if(naoLidos){
+      el.textContent = '✦ ' + naoLidos + ' bilhete' + (naoLidos===1?'':'s') + ' novo' + (naoLidos===1?'':'s') + ' te esperando';
+      el.dataset.state = 'novo';
+    } else {
+      el.textContent = 'você já leu os ' + total + ' bilhete' + (total===1?'':'s') + ' — releitura carinhosa liberada ✦';
+      el.dataset.state = 'lido';
+    }
+  }
+  if(jar){
+    const fill = Math.min(1, total / 8);
+    jar.style.setProperty('--pote-fill', fill.toFixed(2));
+    jar.classList.toggle('has-new', naoLidos > 0);
   }
 }
 function _potePaint(){
   const stage = document.getElementById('poteStage');
   if(!stage) return;
   const note = document.getElementById('poteNote');
-  if(_poteOpenedToday()){
+  const openedToday = _poteOpenedTodayInfo();
+  if(openedToday){
     stage.classList.add('sealed');
-    _poteFill(_poteTodayBilhete());
-    if(note){ note.classList.add('shown'); note.classList.add('static'); }
+    _poteFill(openedToday);
+    if(note){ note.classList.add('shown','static'); note.classList.remove('flying'); }
   } else {
     stage.classList.remove('sealed');
-    if(note){ note.className = 'pote-note'; note.querySelector('.pote-note-text').textContent = ''; note.querySelector('.pote-note-date').textContent = ''; }
+    if(note){ note.className = 'pote-note'; note.querySelector('.pote-note-text').textContent=''; note.querySelector('.pote-note-date').textContent=''; }
   }
+  _potePaintCounter();
 }
 function _poteEjectSparkles(n){
   const host = document.getElementById('poteSparkles');
@@ -1481,13 +1587,121 @@ function _poteEjectSparkles(n){
   void host.offsetHeight;
   host.classList.add('on');
 }
+function _poteSync(b){
+  if(!_db) return;
+  try{
+    const w = _poteWho();
+    const docId = w + '-' + _poteTodayYMD();
+    _db.collection('pote-log').doc(docId).set({
+      by: _CLIENT, who: w, bilheteId: b.id, ymd: _poteTodayYMD(), ts: Date.now()
+    }, { merge: true }).catch(()=>{});
+  }catch(e){}
+}
+function _poteListen(){
+  if(!_db) return;
+  const w = _poteWho();
+  if(w === 'anon') return;
+  try{
+    if(_poteAcervoUnsub) _poteAcervoUnsub();
+    _poteAcervoUnsub = _db.collection('pote-bilhetes').onSnapshot(snap => {
+      const arr = [];
+      snap.forEach(doc => {
+        const d = doc.data() || {};
+        if(!d.texto || !d.by) return;
+        arr.push({ id: doc.id, by: d.by, texto: String(d.texto), ts: d.ts || 0 });
+      });
+      arr.sort((a,b) => (b.ts||0) - (a.ts||0));
+      _poteAcervo = arr;
+      _potePaintCounter();
+      // se já abriu hoje mas o texto ainda não tinha aparecido no localStorage
+      // (ex: abriu num outro aparelho e chegou pelo pote-log), rehidrata
+      const info = _poteOpenedTodayInfo();
+      if(info && !info.texto){
+        const bref = _poteAcervo.find(x => x.id === info.id);
+        if(bref){ _poteMarkOpened(Object.assign({}, bref, { _releitura: info.releitura })); _potePaint(); }
+      }
+    }, ()=>{});
+    if(_poteLogUnsub) _poteLogUnsub();
+    _poteLogUnsub = _db.collection('pote-log').doc(w + '-' + _poteTodayYMD()).onSnapshot(snap => {
+      if(!snap.exists) return;
+      const d = snap.data() || {};
+      // outra sessão do mesmo perfil abriu → refletir sem re-animar
+      if(!_poteOpenedTodayInfo() && d.bilheteId){
+        const b = _poteAcervo.find(x => x.id === d.bilheteId);
+        if(b){
+          _poteMarkOpened(b);
+          _poteMarcarLido(b.id);
+          _potePaint();
+        }
+      }
+    }, ()=>{});
+  }catch(e){}
+}
+async function _poteEnviarBilhete(texto){
+  const w = _poteWho();
+  if(w === 'anon') throw new Error('perfil não escolhido');
+  const t = (texto || '').trim();
+  if(!t) throw new Error('vazio');
+  if(t.length > 240) throw new Error('longo');
+  if(!_db) throw new Error('sem-db');
+  const ts = Date.now();
+  const doc = await _db.collection('pote-bilhetes').add({ by: w, texto: t, ts });
+  try{ _pingPush('bilhete-novo', {}); }catch(e){}
+  return doc.id;
+}
+function _poteToggleForm(force){
+  const form = document.getElementById('poteForm');
+  if(!form) return;
+  const open = typeof force === 'boolean' ? force : !form.classList.contains('on');
+  form.classList.toggle('on', open);
+  form.setAttribute('aria-hidden', open ? 'false' : 'true');
+  if(open){
+    setTimeout(()=>{ const t = document.getElementById('poteFormTxt'); if(t) t.focus(); }, 260);
+  }
+}
+async function _poteFormSubmit(){
+  const t = document.getElementById('poteFormTxt');
+  const btn = document.getElementById('poteFormSend');
+  const st = document.getElementById('poteFormStatus');
+  if(!t || !btn) return;
+  const val = t.value.trim();
+  if(!val){ if(st) st.textContent = '✒ escreve alguma coisinha primeiro'; return; }
+  if(val.length > 240){ if(st) st.textContent = 'até 240 caracteres, tá?'; return; }
+  btn.disabled = true;
+  const oldTxt = btn.textContent;
+  btn.textContent = '✦ selando…';
+  try{
+    await _poteEnviarBilhete(val);
+    t.value = '';
+    const c = document.getElementById('poteFormCount'); if(c) c.textContent = '0/240';
+    if(st) st.textContent = '✦ selado e enviado pro pote dela ✦';
+    setTimeout(()=>{
+      _poteToggleForm(false);
+      if(st) st.textContent = '';
+      btn.textContent = oldTxt;
+      btn.disabled = false;
+    }, 1600);
+  }catch(e){
+    if(st) st.textContent = 'não deu — tenta de novo (' + (e.message || 'erro') + ')';
+    btn.textContent = oldTxt;
+    btn.disabled = false;
+  }
+}
 function _poteOpen(){
   const stage = document.getElementById('poteStage');
   if(!stage || stage.classList.contains('opening')) return;
-  if(_poteOpenedToday()){ return; /* já aberto, o painel mostra o de hoje */ }
-  const b = _poteTodayBilhete();
+  if(_poteOpenedTodayInfo()){ return; }
+  const b = _poteSortear();
+  if(!b){
+    // acervo vazio → shake curto e abre o form de escrever
+    stage.classList.add('opening');
+    setTimeout(()=>{
+      stage.classList.remove('opening');
+      _poteToggleForm(true);
+    }, 500);
+    return;
+  }
   stage.classList.add('opening');
-  // sparkles do momento em que a tampa abre
   setTimeout(()=> _poteEjectSparkles(14), 300);
   setTimeout(()=>{
     _poteFill(b);
@@ -1495,22 +1709,22 @@ function _poteOpen(){
     note.classList.add('shown','flying');
     stage.classList.add('bursting');
     _poteMarkOpened(b);
+    _poteMarcarLido(b.id);
     _poteSync(b);
-    try{ _pingPush('pote', { dia: b.dia }); }catch(e){}
-    // repinta o streak logo depois — o doc de hoje já subiu
+    try{ _pingPush('pote', {}); }catch(e){}
     setTimeout(_poteStreakPaint, 400);
-    // fecha o loop: bilhete pousado, burst apagou, cena selada
     setTimeout(()=>{
       stage.classList.remove('opening','bursting');
       stage.classList.add('sealed');
       const host = document.getElementById('poteSparkles');
       if(host){ host.classList.remove('on'); host.innerHTML=''; }
+      _potePaintCounter();
     }, 1500);
   }, 700);
 }
 function _poteStreakPaint(){
   if(!_db) return;
-  const who = _poteTodayId().who;
+  const who = _poteWho();
   if(who === 'anon') return;
   try{
     _db.collection('pote-log').where('who','==', who).get().then(snap => {
@@ -1538,19 +1752,40 @@ function _poteInit(){
   const stage = document.getElementById('poteStage');
   if(!stage || stage._wired) return;
   stage._wired = true;
-  stage.addEventListener('click', _poteOpen);
+  stage.addEventListener('click', (e)=>{
+    // não abre se clicou dentro do form
+    if(e.target.closest('#poteForm')) return;
+    _poteOpen();
+  });
   stage.addEventListener('keydown', (e)=>{
+    if(e.target.closest('#poteForm')) return;
     if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); _poteOpen(); }
   });
+  const btnWrite = document.getElementById('poteWriteBtn');
+  if(btnWrite){
+    btnWrite.addEventListener('click', (e)=>{ e.stopPropagation(); _poteToggleForm(); });
+  }
+  const btnSend = document.getElementById('poteFormSend');
+  if(btnSend) btnSend.addEventListener('click', (e)=>{ e.stopPropagation(); _poteFormSubmit(); });
+  const cancel = document.getElementById('poteFormCancel');
+  if(cancel) cancel.addEventListener('click', (e)=>{ e.stopPropagation(); _poteToggleForm(false); });
+  const txt = document.getElementById('poteFormTxt');
+  if(txt){
+    txt.addEventListener('input', ()=>{
+      const c = document.getElementById('poteFormCount');
+      if(c) c.textContent = txt.value.length + '/240';
+    });
+    txt.addEventListener('click', e=> e.stopPropagation());
+    txt.addEventListener('keydown', e=> e.stopPropagation());
+  }
   const share = document.getElementById('poteShare');
   if(share){
     share.addEventListener('click', (e)=>{
       e.stopPropagation();
-      const b = _poteTodayBilhete();
-      try{ _pingPush('carta', { by:'pote', dia:b.dia }); }catch(e){}
+      try{ _pingPush('carta', { by:'pote' }); }catch(err){}
       share.textContent = '✦ enviado ✦';
       share.disabled = true;
-      setTimeout(()=>{ share.textContent = '✦ mandar este pra ela'; share.disabled = false; }, 2200);
+      setTimeout(()=>{ share.textContent = '✦ mandar carinho retroativo'; share.disabled = false; }, 2200);
     });
   }
   _potePaint();
