@@ -107,6 +107,32 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
   background:rgba(212,115,110,.14);border:1px solid rgba(179,150,190,.4);
   font-family:'Nunito';font-weight:800;font-size:.55rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--mauve-lt)}
 
+/* bilhetes do pote — histórico */
+.bt-tabs{display:flex;gap:8px;margin-bottom:12px}
+.bt-tab{flex:1;padding:8px 12px;border-radius:99px;cursor:pointer;
+  background:rgba(232,184,109,.06);border:1px solid rgba(232,184,109,.2);color:var(--cream2);
+  font-family:'Nunito';font-weight:800;font-size:.55rem;letter-spacing:1.5px;text-transform:uppercase;
+  transition:background .2s,border-color .2s,color .2s;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px}
+.bt-tab.on{background:rgba(232,184,109,.18);border-color:rgba(232,184,109,.55);color:var(--gold3)}
+.bt-count{padding:1px 7px;border-radius:99px;background:rgba(232,184,109,.24);color:var(--gold3);font-size:.55rem;font-weight:900}
+.bt-list{display:flex;flex-direction:column;gap:8px;max-height:360px;overflow-y:auto;padding:2px 2px 4px}
+.bt-item{padding:11px 13px;border-radius:8px;position:relative;
+  background:linear-gradient(160deg,#F4DCA8 0%,#E8B86D 55%,#C4956A 100%);color:#2E1A08;
+  border:1px solid rgba(90,60,20,.4);
+  box-shadow:0 4px 10px rgba(0,0,0,.35);
+  -webkit-mask:radial-gradient(circle 3px at 3px 50%,transparent 2.6px,#000 3px) left/6px 100% no-repeat,
+    radial-gradient(circle 3px at calc(100% - 3px) 50%,transparent 2.6px,#000 3px) right/6px 100% no-repeat,
+    linear-gradient(#000,#000) 6px 0/calc(100% - 12px) 100% no-repeat;
+  mask:radial-gradient(circle 3px at 3px 50%,transparent 2.6px,#000 3px) left/6px 100% no-repeat,
+    radial-gradient(circle 3px at calc(100% - 3px) 50%,transparent 2.6px,#000 3px) right/6px 100% no-repeat,
+    linear-gradient(#000,#000) 6px 0/calc(100% - 12px) 100% no-repeat}
+.bt-item .bt-txt{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;line-height:1.35;color:#2E1A08}
+.bt-item .bt-meta{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;
+  font-family:'Nunito';font-weight:800;font-size:.5rem;letter-spacing:1.3px;text-transform:uppercase;color:rgba(46,26,8,.7)}
+.bt-item .bt-lido{padding:2px 8px;border-radius:99px;background:rgba(90,60,20,.14);border:1px solid rgba(90,60,20,.3);color:rgba(46,26,8,.75)}
+.bt-item .bt-lido.on{background:rgba(46,26,8,.75);color:#F4DCA8;border-color:rgba(46,26,8,.9)}
+.bt-empty{text-align:center;padding:14px;font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--cream3);opacity:.6}
+
 /* timeline */
 .tl-list{display:flex;flex-direction:column;gap:8px;margin-top:6px}
 .tl-item{display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;
@@ -265,6 +291,17 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
       +'<p class="deck">quais dos cadernos a Grazi abriu — inclui o secreto.</p>'
       +'<div id="visitsBody" class="state empty">ainda carregando…</div>'
     +'</section>'
+    +'<section class="card" id="cardBilhetes">'
+      +'<div class="label">o pote — histórico</div>'
+      +'<h3>Bilhetes que vocês trocaram</h3>'
+      +'<p class="deck">o que você mandou pra ela e o que ela te mandou — em ordem cronológica.</p>'
+      +'<div class="bt-tabs">'
+        +'<button type="button" class="bt-tab on" data-bt="env">✒ enviados <span class="bt-count" id="btCountEnv">0</span></button>'
+        +'<button type="button" class="bt-tab" data-bt="rec">💛 recebidos <span class="bt-count" id="btCountRec">0</span></button>'
+      +'</div>'
+      +'<div class="bt-list" id="btListEnv"></div>'
+      +'<div class="bt-list" id="btListRec" style="display:none"></div>'
+    +'</section>'
     +'<section class="card" id="cardTimeline">'
       +'<div class="label">últimas coisas</div>'
       +'<h3>Timeline</h3>'
@@ -396,17 +433,63 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     }
   }
 
-  // POTE — TODOS os docs dela (pra timeline e streak)
+  // BILHETES DO POTE — histórico completo (todos os que vocês trocaram)
+  let _allBilhetes = [];
+  let _lidosPelaOther = new Set(); // ids que a OUTRA já leu (do pote-log dela)
+  function _esc(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function renderBilhetes(){
+    const env = _allBilhetes.filter(b => b.by === who).sort((a,b)=> (b.ts||0)-(a.ts||0));
+    const rec = _allBilhetes.filter(b => b.by === other).sort((a,b)=> (b.ts||0)-(a.ts||0));
+    const cEnv = document.getElementById('btCountEnv');
+    const cRec = document.getElementById('btCountRec');
+    if(cEnv) cEnv.textContent = env.length;
+    if(cRec) cRec.textContent = rec.length;
+    const fmt = (arr, showLido) => arr.length
+      ? arr.map(b => {
+          const lido = _lidosPelaOther.has(b.id);
+          return '<div class="bt-item">'
+            +'<div class="bt-txt">'+_esc(b.texto)+'</div>'
+            +'<div class="bt-meta"><span>'+relativo(b.ts||0)+'</span>'
+              + (showLido ? '<span class="bt-lido'+(lido?' on':'')+'">'+(lido?'✓ ela leu':'aguardando abrir')+'</span>' : '')
+            +'</div>'
+          +'</div>';
+        }).join('')
+      : '<div class="bt-empty">nenhum ainda ♡</div>';
+    const listEnv = document.getElementById('btListEnv');
+    const listRec = document.getElementById('btListRec');
+    if(listEnv) listEnv.innerHTML = fmt(env, true);
+    if(listRec) listRec.innerHTML = fmt(rec, false);
+  }
+  document.querySelectorAll('.bt-tab').forEach(t => t.addEventListener('click', ()=>{
+    document.querySelectorAll('.bt-tab').forEach(x => x.classList.toggle('on', x === t));
+    const which = t.dataset.bt;
+    document.getElementById('btListEnv').style.display = which === 'env' ? '' : 'none';
+    document.getElementById('btListRec').style.display = which === 'rec' ? '' : 'none';
+  }));
+  _db.collection('pote-bilhetes').onSnapshot(snap => {
+    _allBilhetes = [];
+    snap.forEach(doc => {
+      const d = doc.data() || {};
+      if(!d.texto || !d.by) return;
+      _allBilhetes.push({ id: doc.id, by: d.by, texto: String(d.texto), ts: d.ts || 0 });
+    });
+    renderBilhetes();
+  }, ()=>{});
+
+  // POTE — TODOS os docs dela (pra timeline, streak e marca "ela leu")
   _db.collection('pote-log').where('who','==', other).onSnapshot(snap => {
     buf.pote = [];
+    _lidosPelaOther = new Set();
     let todayDoc = null;
     const tYmd = todayYmd();
     snap.forEach(doc => {
       const d = doc.data() || {};
       if(!d.ts) return;
       buf.pote.push({ ts:d.ts, dia:d.dia, ymd:d.ymd });
+      if(d.bilheteId) _lidosPelaOther.add(d.bilheteId);
       if(d.ymd === tYmd) todayDoc = d;
     });
+    renderBilhetes();
     // card do pote de hoje
     const body = document.getElementById('poteBody');
     if(todayDoc){
