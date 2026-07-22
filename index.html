@@ -647,85 +647,22 @@ img{max-width:100%}
 .pote-section .jg-label{font-family:'Nunito';font-weight:900;font-size:.56rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--jg-gold2);margin-bottom:6px}
 .pote-section h3{font-family:'Playfair Display',serif;font-weight:800;font-size:1.4rem;line-height:1.1;margin-bottom:4px}
 .pote-section .jg-deck{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:var(--jg-cream3);margin-bottom:8px;line-height:1.45}
-.pote-stage{position:relative;height:340px;display:flex;align-items:center;justify-content:center;
-  perspective:1200px;perspective-origin:50% 55%;cursor:pointer;user-select:none;
-  -webkit-tap-highlight-color:transparent;touch-action:manipulation;isolation:isolate}
+.pote-stage{position:relative;height:auto;min-height:340px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;user-select:none;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;isolation:isolate;
+  aspect-ratio:9/16;max-width:280px;margin:0 auto;border-radius:20px;overflow:hidden}
 .pote-stage:focus-visible{outline:2px solid var(--jg-gold2);outline-offset:6px;border-radius:14px}
-/* nebulosa atrás do pote */
-.pote-cosmos{position:absolute;top:50%;left:50%;width:340px;height:340px;transform:translate(-50%,-50%);
-  background:
-    radial-gradient(circle at 50% 50%,rgba(232,184,109,.35) 0%,rgba(232,184,109,.10) 24%,transparent 55%),
-    radial-gradient(ellipse 80% 45% at 30% 45%,rgba(124,91,173,.28),transparent 70%),
-    radial-gradient(ellipse 70% 40% at 70% 60%,rgba(212,115,110,.18),transparent 70%);
-  filter:blur(4px);opacity:.85;pointer-events:none;
-  animation:poteCosmosPulse 6s ease-in-out infinite}
-@keyframes poteCosmosPulse{0%,100%{opacity:.75;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}}
-/* anéis dourados de luz */
-.pote-orbit{position:absolute;top:50%;left:50%;width:270px;height:80px;
-  border-radius:50%;border:1.5px solid rgba(232,184,109,.55);
-  transform:translate(-50%,-50%) rotate(0deg);
-  filter:drop-shadow(0 0 8px rgba(232,184,109,.6));
-  box-shadow:0 0 22px rgba(232,184,109,.35) inset,0 0 18px rgba(232,184,109,.25);
-  pointer-events:none;opacity:.85}
-.pote-orbit--a{animation:poteOrbitA 12s linear infinite}
-.pote-orbit--b{width:220px;height:60px;border-color:rgba(244,220,168,.4);opacity:.6;animation:poteOrbitB 18s linear infinite reverse}
-@keyframes poteOrbitA{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
-@keyframes poteOrbitB{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
-.pote-3d{position:relative;width:170px;height:210px;transform-style:preserve-3d;
-  transform:rotateX(-6deg);animation:poteBreathe 8s ease-in-out infinite;will-change:transform;z-index:2}
-@keyframes poteBreathe{0%,100%{transform:rotateX(-6deg) rotateY(0)}50%{transform:rotateX(-6deg) rotateY(5deg)}}
-/* corpo do pote — vidro real */
-.pote-glass{position:absolute;inset:26px 0 0 0;
-  background:linear-gradient(180deg,rgba(255,255,255,.14) 0%,rgba(232,184,109,.10) 30%,rgba(124,91,173,.14) 70%,rgba(232,184,109,.10) 100%);
-  border-radius:14px 14px 22px 22px;
-  border:1.5px solid rgba(244,220,168,.55);
-  box-shadow:
-    inset 0 0 40px rgba(255,255,255,.22),
-    inset 12px 0 28px rgba(232,184,109,.20),
-    inset -14px 0 30px rgba(124,91,173,.22),
-    inset 0 -18px 26px rgba(255,255,255,.18),
-    0 26px 46px rgba(0,0,0,.55),
-    0 0 26px rgba(232,184,109,.28);
-  overflow:hidden;backdrop-filter:blur(1px)}
-/* faixa de luz vertical (reflexo) */
-.pote-glass::before{content:'';position:absolute;top:6%;left:12%;width:8%;height:82%;
-  background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,.05) 60%,rgba(255,255,255,.35));
-  border-radius:99px;filter:blur(.5px)}
-.pote-glass::after{content:'';position:absolute;top:10%;right:16%;width:4%;height:60%;
-  background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,.02) 70%);
-  border-radius:99px}
-/* coração vermelho de crochê */
-.pote-heart{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);
-  font-size:78px;line-height:1;color:#C93A3A;
-  text-shadow:
-    0 0 3px #E85555,
-    0 0 8px rgba(232,80,80,.5),
-    0 4px 10px rgba(0,0,0,.6),
-    inset 0 0 12px rgba(120,20,20,.9);
-  filter:drop-shadow(0 6px 12px rgba(180,30,30,.6)) contrast(1.1) saturate(1.15);
-  animation:poteHeartBeat 2.4s ease-in-out infinite;transform-origin:center}
-@keyframes poteHeartBeat{0%,100%{transform:translate(-50%,-50%) scale(1)}20%{transform:translate(-50%,-50%) scale(1.06)}40%{transform:translate(-50%,-50%) scale(.98)}60%{transform:translate(-50%,-50%) scale(1.04)}}
-/* halo dourado atrás do coração */
-.pote-glow{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);
-  width:74%;height:44%;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,190,110,.6) 0%,rgba(232,184,109,.25) 40%,transparent 70%);
-  filter:blur(6px);pointer-events:none;
-  animation:poteGlowPulse 3.2s ease-in-out infinite}
-@keyframes poteGlowPulse{0%,100%{opacity:.7}50%{opacity:1}}
-/* tampa */
-.pote-lid{position:absolute;top:0;left:6%;right:6%;height:38px;
-  background:linear-gradient(180deg,#B8892B,#8E6A1F 55%,#5A4210 85%,#3A2810);
-  border-radius:10px 10px 4px 4px;border:1.5px solid rgba(244,220,168,.4);
-  box-shadow:inset 0 -7px 10px rgba(0,0,0,.4),inset 0 2px 3px rgba(244,220,168,.4),0 4px 10px rgba(0,0,0,.45),0 0 14px rgba(232,184,109,.25);
-  transform-origin:50% 100%;transition:transform .7s var(--jg-spring);z-index:3}
-.pote-lid::before{content:'';position:absolute;top:8px;left:35%;right:35%;height:3px;
-  background:rgba(244,220,168,.4);border-radius:99px}
-.pote-stage.opening .pote-lid{transform:translateY(-38px) rotate(-10deg)}
-.pote-stage.opening .pote-3d{animation:poteShake .45s cubic-bezier(.36,.07,.19,.97) 3}
+/* vídeo do jar cósmico (arte real, não CSS imitando) */
+.pote-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;
+  transition:filter .6s var(--jg-out),transform .8s var(--jg-out)}
+.pote-stage.opening .pote-video{filter:brightness(1.2) saturate(1.1)}
+.pote-stage.sealed .pote-video{filter:brightness(.75) saturate(.85)}
+/* leve tremor no vídeo quando abre */
+.pote-stage.opening .pote-video{animation:poteShake .45s cubic-bezier(.36,.07,.19,.97) 3}
 @keyframes poteShake{
-  0%,100%{transform:rotateX(-6deg) rotateY(0) translateX(0)}
-  25%{transform:rotateX(-6deg) rotateY(-4deg) translateX(-5px)}
-  75%{transform:rotateX(-6deg) rotateY(4deg) translateX(5px)}
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-4px)}
+  75%{transform:translateX(4px)}
 }
 /* sparkles ejetados */
 .pote-sparkles{position:absolute;top:50%;left:50%;width:0;height:0;pointer-events:none;z-index:4}
@@ -885,10 +822,8 @@ img{max-width:100%}
 .pote-legend p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.82rem;color:var(--jg-cream2);line-height:1.4;margin:2px 0}
 .pote-legend b{font-family:'Nunito';font-weight:800;font-style:normal;color:var(--jg-gold3);font-size:.7rem;letter-spacing:1.5px}
 @media (prefers-reduced-motion:reduce){
-  .pote-3d,.pote-cosmos,.pote-orbit,.pote-heart,.pote-glow{animation:none}
-  .pote-3d{transform:rotateX(-6deg)}
-  .pote-stage.opening .pote-3d{animation:none}
-  .pote-stage.opening .pote-lid{transform:translateY(-24px)}
+  .pote-video{animation:none}
+  .pote-stage.opening .pote-video{animation:none;filter:brightness(1.15)}
   .pote-note.flying{animation:none;opacity:1;transform:translate(-50%,-72%) scale(1)}
   .pote-stage.bursting .pote-burst{animation:none;opacity:.4;transform:translate(-50%,-50%) scale(1)}
   .pote-sparkles.on span{animation:none;opacity:0}
@@ -1070,16 +1005,10 @@ img{max-width:100%}
         <h3 id="poteTitle">Um bilhete por dia</h3>
         <p class="jg-deck">toque no pote pra pegar o recado de hoje — sela até amanhã</p>
         <div class="pote-stage" id="poteStage" role="button" tabindex="0" aria-label="Abrir o pote de recadinhos de hoje">
-          <div class="pote-cosmos" aria-hidden="true"></div>
-          <div class="pote-orbit pote-orbit--a" aria-hidden="true"></div>
-          <div class="pote-orbit pote-orbit--b" aria-hidden="true"></div>
-          <div class="pote-3d">
-            <div class="pote-glass">
-              <div class="pote-glow" aria-hidden="true"></div>
-              <div class="pote-heart" aria-hidden="true">♥</div>
-            </div>
-            <div class="pote-lid"></div>
-          </div>
+          <video class="pote-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+            <source src="pote-bg.webm" type="video/webm">
+            <source src="pote-bg.mp4" type="video/mp4">
+          </video>
           <div class="pote-burst" aria-hidden="true"></div>
           <div class="pote-sparkles" id="poteSparkles" aria-hidden="true"></div>
           <div class="pote-note" id="poteNote">
@@ -1756,6 +1685,15 @@ function _poteInit(){
   const stage = document.getElementById('poteStage');
   if(!stage || stage._wired) return;
   stage._wired = true;
+  // respeita prefers-reduced-motion: pausa o vídeo no primeiro frame
+  try{
+    const vid = stage.querySelector('.pote-video');
+    if(vid && matchMedia('(prefers-reduced-motion:reduce)').matches){
+      vid.pause(); vid.currentTime = 0.5;
+    }
+    // iOS às vezes bloqueia autoplay: tenta forçar
+    if(vid) vid.play && vid.play().catch(()=>{});
+  }catch(e){}
   stage.addEventListener('click', (e)=>{
     // não abre se clicou dentro do form
     if(e.target.closest('#poteForm')) return;
