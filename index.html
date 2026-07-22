@@ -724,6 +724,13 @@ img{max-width:100%}
   transition:border-color .2s,background .2s}
 .pote-share:hover{border-color:var(--jg-gold2);background:rgba(232,184,109,.08)}
 .pote-stage.sealed ~ .pote-share{display:block}
+.pote-streak{display:none;margin:8px auto 0;padding:6px 12px;border-radius:99px;
+  background:linear-gradient(90deg,rgba(255,140,80,.14),rgba(232,184,109,.14));
+  border:1px solid rgba(232,140,80,.3);
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.85rem;color:var(--jg-gold3);
+  align-items:center;gap:8px;width:fit-content}
+.pote-streak.on{display:inline-flex}
+.pote-streak b{font-family:'Nunito';font-style:normal;font-weight:900;color:#FFB08A}
 .pote-legend{margin-top:16px;padding:12px 14px;border:1px dashed rgba(232,184,109,.35);
   border-radius:10px;background:rgba(232,184,109,.04);text-align:center}
 .pote-legend p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.82rem;color:var(--jg-cream2);line-height:1.4;margin:2px 0}
@@ -873,6 +880,7 @@ img{max-width:100%}
         <div class="jg-folio">JG · sumário</div>
         <div class="jg-signature">com amor, G ✦</div>
         <a class="jg-modo-grazi-link" id="modoGraziLink" href="modo-grazi.html" style="display:none;margin-top:14px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--jg-mauve-lt);opacity:.65;text-decoration:none;padding:4px 10px;border-radius:99px;border:1px solid rgba(179,150,190,.25)">✦ modo grazi ✦</a>
+        <a class="jg-modo-grazi-link" id="modoJussaraLink" href="modo-jussara.html" style="display:none;margin-top:14px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--jg-mauve-lt);opacity:.65;text-decoration:none;padding:4px 10px;border-radius:99px;border:1px solid rgba(179,150,190,.25)">✦ modo jussara ✦</a>
       </footer>
     </div>
   </div>
@@ -922,6 +930,7 @@ img{max-width:100%}
           <div class="pote-seal" aria-hidden="true">✦ voltamos amanhã ✦</div>
         </div>
         <div class="pote-hint">toque no pote</div>
+        <div class="pote-streak" id="poteStreak">🔥 <b><span id="poteStreakN">0</span> dias</b> seguidos ♡</div>
         <button class="pote-share" type="button" id="poteShare">✦ mandar este pra ela</button>
         <div class="pote-legend">
           <p><b>31 bilhetes autorais</b> entram no <code>POTE_BILHETES</code> — um por dia do mês, cicla.</p>
@@ -1127,7 +1136,21 @@ window.addEventListener('hashchange', _jgApplyHash);
 /* marca de leitura */
 const _JG_KEY = 'jg-read-chapters';
 function _jgGetRead(){ try{ return JSON.parse(localStorage.getItem(_JG_KEY)||'[]'); }catch(e){ return []; } }
-function _jgMarkRead(id){ const r=_jgGetRead(); if(!r.includes(id)){ r.push(id); localStorage.setItem(_JG_KEY,JSON.stringify(r)); } }
+function _jgWho(){ try{ return localStorage.getItem('cosmoUser') || 'anon'; }catch(e){ return 'anon'; } }
+function _jgSyncVisit(id){
+  if(!_db) return;
+  const who = _jgWho(); if(who === 'anon') return;
+  try{
+    _db.collection('visits').doc(who + '-' + id).set({
+      cap: String(id), who, ts: Date.now(), by: _CLIENT
+    }, { merge: true }).catch(()=>{});
+  }catch(e){}
+}
+function _jgMarkRead(id){
+  const r=_jgGetRead();
+  if(!r.includes(id)){ r.push(id); localStorage.setItem(_JG_KEY,JSON.stringify(r)); }
+  _jgSyncVisit(id);
+}
 /* Caderno VI: destrava só quando os 5 primeiros já foram visitados */
 const _JG_CORE_IDS = ['1','2','3','4','5'];
 function _jgSecretUnlocked(r){ r = r || _jgGetRead(); return _JG_CORE_IDS.every(id => r.includes(id)); }
@@ -1170,12 +1193,12 @@ function _jgPaint(){
   if(num) num.textContent = count;
   if(totLab) totLab.textContent = total;
   if(fill) fill.style.width = (count/total*100) + '%';
-  // link discreto "Modo Grazi" — só aparece quando o perfil é 'grazi'
+  // link discreto "Modo Grazi/Jussara" — cada uma só vê o seu
+  let who = null; try{ who = localStorage.getItem('cosmoUser'); }catch(e){}
   const mg = document.getElementById('modoGraziLink');
-  if(mg){
-    let who = null; try{ who = localStorage.getItem('cosmoUser'); }catch(e){}
-    mg.style.display = who === 'grazi' ? 'inline-block' : 'none';
-  }
+  const mj = document.getElementById('modoJussaraLink');
+  if(mg) mg.style.display = who === 'grazi'   ? 'inline-block' : 'none';
+  if(mj) mj.style.display = who === 'jussara' ? 'inline-block' : 'none';
 }
 
 /* paralaxe + reveal escalonado (uma vez por tela exibida) */
@@ -1331,7 +1354,35 @@ function _poteOpen(){
     stage.classList.add('sealed');
     stage.classList.remove('opening');
     try{ _pingPush('pote', { dia: b.dia }); }catch(e){}
+    // repinta o streak logo depois — o doc de hoje já subiu
+    setTimeout(_poteStreakPaint, 400);
   }, 700);
+}
+function _poteStreakPaint(){
+  if(!_db) return;
+  const who = _poteTodayId().who;
+  if(who === 'anon') return;
+  try{
+    _db.collection('pote-log').where('who','==', who).get().then(snap => {
+      const days = new Set();
+      snap.forEach(doc => { const d = doc.data() || {}; if(d.ymd) days.add(d.ymd); });
+      if(!days.size){ document.getElementById('poteStreak')?.classList.remove('on'); return; }
+      const ymdOf = d => d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+      const today = new Date(); today.setHours(0,0,0,0);
+      const yesterday = new Date(today); yesterday.setDate(today.getDate()-1);
+      let cursor = new Date(today);
+      // se abriu ontem mas não hoje, começa a contar de ontem (streak "quente" que espera hoje)
+      if(!days.has(ymdOf(today)) && days.has(ymdOf(yesterday))) cursor = new Date(yesterday);
+      let n = 0;
+      while(days.has(ymdOf(cursor))){ n++; cursor.setDate(cursor.getDate()-1); }
+      const el = document.getElementById('poteStreak');
+      const num = document.getElementById('poteStreakN');
+      if(el && num){
+        if(n >= 2){ num.textContent = n; el.classList.add('on'); }
+        else el.classList.remove('on');
+      }
+    }).catch(()=>{});
+  }catch(e){}
 }
 function _poteInit(){
   const stage = document.getElementById('poteStage');
@@ -1354,6 +1405,7 @@ function _poteInit(){
   }
   _potePaint();
   _poteListen();
+  _poteStreakPaint();
 }
 /* pinta e ativa o pote sempre que o Cap I é aberto */
 (function(){

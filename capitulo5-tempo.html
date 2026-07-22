@@ -1390,6 +1390,23 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     setTimeout(()=>{ f.style.opacity='0'; f.style.transform='translateX(-50%) translateY(-20px)'; setTimeout(()=>f.remove(),400); },1800);
   }
 </script>
+<script>
+
+document.addEventListener('DOMContentLoaded', function(){
+  // sync da visita no Firestore (Fase 4.1) — só se firebase carregou
+  try{
+    if(typeof _db !== 'undefined' && _db){
+      var who = (function(){ try{ return localStorage.getItem('cosmoUser') || 'anon'; }catch(e){ return 'anon'; } })();
+      if(who !== 'anon'){
+        _db.collection('visits').doc(who + '-2').set({
+          cap: '2', who: who, ts: Date.now(), by: (typeof _CLIENT !== 'undefined' ? _CLIENT : who)
+        }, { merge: true }).catch(function(){});
+      }
+    }
+  }catch(e){}
+});
+
+</script>
 <script src="visual-fx.js" defer></script>
 <script src="magic.js" defer></script>
 <script src="presence.js" defer></script>

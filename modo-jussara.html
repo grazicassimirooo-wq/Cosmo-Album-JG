@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Modo Grazi · o que ela vem vendo · J&amp;G</title>
+<title>Modo Jussara · o que ela vem vendo · J&amp;G</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Dancing+Script:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
@@ -203,7 +203,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
   <!-- topbar -->
   <div class="chap-topbar">
     <a class="cb-back" href="index.html#sumario" aria-label="Voltar ao sumário">← <span>sumário</span></a>
-    <span class="cb-who">para a Grazi ✦</span>
+    <span class="cb-who">para a Jussara ✦</span>
   </div>
 
   <!-- container que muda conforme identidade -->
@@ -216,14 +216,14 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
 <script>
 (function(){
   const who = (function(){ try{ return localStorage.getItem('cosmoUser'); }catch(e){ return null; } })();
-  const other = who === 'grazi' ? 'jussara' : who === 'jussara' ? 'grazi' : null;
+  const other = who === 'jussara' ? 'grazi' : who === 'grazi' ? 'jussara' : null;
 
-  // gate: só a Grazi vê o Modo Grazi
-  if(who !== 'grazi'){
+  // gate: só a Jussara vê o Modo Jussara
+  if(who !== 'jussara'){
     document.getElementById('content').innerHTML =
       '<div class="wrong">'
-      +'<h2>Este espaço é da Grazi ✦</h2>'
-      +'<p>O <em>Modo Grazi</em> é um cantinho pra ela ver, sem intromissão, o que a Jussara vem visitando. Volta pro sumário e continua folheando o álbum ♡</p>'
+      +'<h2>Este espaço é da Jussara ✦</h2>'
+      +'<p>O <em>Modo Jussara</em> é um cantinho pra ela ver, sem intromissão, o que a Grazi vem visitando. Volta pro sumário e continua folheando o álbum ♡</p>'
       +'<a href="index.html#sumario">← voltar ao sumário</a>'
       +'</div>';
     return;
@@ -232,10 +232,10 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
   // render skeleton
   document.getElementById('content').innerHTML =
     '<header class="head">'
-     +'<div class="kicker">✦ Modo Grazi</div>'
-     +'<h1>O que a Jussara<br>vem vendo</h1>'
+     +'<div class="kicker">✦ Modo Jussara</div>'
+     +'<h1>O que a Grazi<br>vem vendo</h1>'
      +'<p class="sub">um cantinho tranquilo pra você acompanhar o que ela abre — sem push, sem barulho, só carinho.</p>'
-     +'<div class="folio">JG · MODO GRAZI · read-only</div>'
+     +'<div class="folio">JG · MODO JUSSARA · read-only</div>'
     +'</header>'
     +'<div class="hair"></div>'
     +'<section class="card" id="cardPote">'
@@ -247,7 +247,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     +'</section>'
     +'<section class="card" id="cardFid">'
       +'<div class="label">cartão fidelidade</div>'
-      +'<h3>Os 12 selos da Jussara</h3>'
+      +'<h3>Os 12 selos da Grazi</h3>'
       +'<p class="deck">cada bolinha é um selo — dourada = ela raspou, cinza = ainda selado.</p>'
       +'<div class="fid-mini" id="fidMini"></div>'
       +'<div class="fid-summary"><span class="n" id="fidN">0</span><span class="lbl">de 12 selos resgatados</span></div>'
@@ -262,7 +262,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     +'<section class="card" id="cardVisits">'
       +'<div class="label">os seis cadernos</div>'
       +'<h3>Onde ela andou</h3>'
-      +'<p class="deck">quais dos cadernos a Jussara abriu — inclui o secreto.</p>'
+      +'<p class="deck">quais dos cadernos a Grazi abriu — inclui o secreto.</p>'
       +'<div id="visitsBody" class="state empty">ainda carregando…</div>'
     +'</section>'
     +'<section class="card" id="cardTimeline">'
@@ -418,7 +418,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
         +'</div>';
     } else {
       body.className = 'state empty';
-      body.textContent = 'a Jussara ainda não abriu o pote hoje ♡';
+      body.textContent = 'a Grazi ainda não abriu o pote hoje ♡';
     }
     rebuildTimeline(); computeStreak();
   }, ()=>{
@@ -463,7 +463,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
       body.className = 'state';
       body.innerHTML =
         '<span class="secreto-badge">✦ visitado</span> '
-        +'a Jussara abriu o Cap VI <b>'+relativo(latest)+'</b>'
+        +'a Grazi abriu o Cap VI <b>'+relativo(latest)+'</b>'
         + (buf.sec.length > 1 ? ' — <em>'+buf.sec.length+' vezes ao todo</em>' : '');
     }
     rebuildTimeline();

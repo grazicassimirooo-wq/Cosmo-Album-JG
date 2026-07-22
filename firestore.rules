@@ -31,7 +31,8 @@ service cloud.firestore {
         'tokens',          // tokens de push (FCM)
         'touchMedia',      // mídia do capítulo toque
         'touches',         // toques
-        'videos'           // vídeos (doc guarda URL do Storage)
+        'videos',          // vídeos (doc guarda URL do Storage)
+        'visits'           // visitas aos 6 cadernos (Fase 4) — {who, cap, ts}
       ];
     }
   }
