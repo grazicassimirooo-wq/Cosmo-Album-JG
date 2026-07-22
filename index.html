@@ -1442,8 +1442,9 @@ document.addEventListener('click',(e)=>{
 const _PUSH_URL = 'https://southamerica-east1-album--jussara.cloudfunctions.net/notify';
 function _pingPush(kind, extra){
   try{
+    const who = (function(){ try{ return localStorage.getItem('cosmoUser') || ''; }catch(e){ return ''; } })();
     fetch(_PUSH_URL, { method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(Object.assign({ kind, by: _CLIENT, k: 'jg-cosmo-2026' }, extra||{})) }).catch(()=>{});
+      body: JSON.stringify(Object.assign({ kind, by: _CLIENT, byWho: who, k: 'jg-cosmo-2026' }, extra||{})) }).catch(()=>{});
   }catch(e){}
 }
 window._pingPush = _pingPush;
@@ -2194,8 +2195,10 @@ async function _initFCM(){
     if(!token) return;
     _fcmActive = true;
     // guarda o token deste aparelho para a função no servidor enviar o push
-    // (doc por aparelho; "client" continua sendo a usuária, pra não notificar quem enviou)
-    await _db.collection('tokens').doc(_DEVICE).set({ token, client: _CLIENT, ts: Date.now() });
+    // (doc por aparelho; "who" é o perfil real jussara/grazi — usado pra
+    // não notificar NENHUM aparelho de quem enviou, mesmo tendo 2 celulares)
+    const who = (function(){ try{ return localStorage.getItem('cosmoUser') || ''; }catch(e){ return ''; } })();
+    await _db.collection('tokens').doc(_DEVICE).set({ token, client: _CLIENT, who, ts: Date.now() });
     // migração: remove o doc antigo compartilhado por usuária, se existir
     if(_DEVICE !== _CLIENT){ _db.collection('tokens').doc(_CLIENT).delete().catch(()=>{}); }
     // com o app aberto, mostra a notificação na hora

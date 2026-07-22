@@ -23,9 +23,11 @@
       window._CLIENT = who;
       window._pingPush = window._pingPush || function(kind, extra){
         try{
+          var w = '';
+          try{ w = localStorage.getItem('cosmoUser') || ''; }catch(e){}
           fetch('https://southamerica-east1-album--jussara.cloudfunctions.net/notify', {
             method:'POST', headers:{'Content-Type':'application/json'},
-            body: JSON.stringify(Object.assign({ kind: kind, by: who, k: 'jg-cosmo-2026' }, extra || {}))
+            body: JSON.stringify(Object.assign({ kind: kind, by: who, byWho: w, k: 'jg-cosmo-2026' }, extra || {}))
           }).catch(function(){});
         }catch(e){}
       };

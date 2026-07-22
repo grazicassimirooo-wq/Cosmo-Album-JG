@@ -25,9 +25,9 @@ const KEY = 'jg-cosmo-2026';
 /* Envia o push para todos os tokens, exceto o de quem enviou (`by`).
    `data` precisa ser só strings (exigência do FCM). Cada envio deixa um
    registro em `push-log` para diagnóstico. */
-async function sendToOther(by, data) {
+async function sendToOther(by, byWho, data) {
   const db = getFirestore();
-  const log = { tag: data.tag || '?', by: by || '?', ts: Date.now() };
+  const log = { tag: data.tag || '?', by: by || '?', byWho: byWho || '?', ts: Date.now() };
   try {
     const tokensSnap = await db.collection('tokens').get();
     const targets = [];
@@ -35,10 +35,17 @@ async function sendToOther(by, data) {
     const seen = new Set();
     tokensSnap.forEach((doc) => {
       const t = doc.data();
-      if (t && t.token && t.client !== by && !seen.has(t.token)) {
-        seen.add(t.token);
-        targets.push({ id: doc.id, token: t.token });
+      if (!t || !t.token || seen.has(t.token)) return;
+      // filtro forte: se sabemos o perfil de quem enviou (grazi/jussara),
+      // ignora TODOS os aparelhos daquele perfil (mesmo tendo 2 celulares)
+      if (byWho && (t.who === 'grazi' || t.who === 'jussara')) {
+        if (t.who === byWho) return;
+      } else {
+        // fallback pra tokens antigos sem `who`: filtra por device id (legado)
+        if (t.client === by) return;
       }
+      seen.add(t.token);
+      targets.push({ id: doc.id, token: t.token });
     });
     log.targets = targets.map((t) => t.id).join(',');
     if (!targets.length) { log.result = 'sem destinatários'; log.ok = 0; log.fail = 0; return log; }
@@ -188,8 +195,12 @@ exports.notify = onRequest({ cors: true }, async (req, res) => {
       res.json({ ok: true, pong: true, write });
       return;
     }
-    const by = (b.by === 'grazi' || b.by === 'jussara') ? b.by : '';
-    const quem = NOMES[by] || 'Seu amor';
+    // `by` = id físico do aparelho (fallback legado pra tokens sem `who`);
+    // `byWho` = perfil real (grazi/jussara) — filtro forte no sendToOther
+    const by = b.by ? String(b.by).slice(0, 80) : '';
+    const byWho = (b.byWho === 'grazi' || b.byWho === 'jussara') ? b.byWho
+                 : (b.by === 'grazi' || b.by === 'jussara') ? b.by : '';
+    const quem = NOMES[byWho] || 'Seu amor';
 
     // Push de teste — envia SÓ pro próprio cliente que pediu (self-test).
     // Usado pelo botão "verificar minhas notificações" no perfil.
@@ -227,7 +238,7 @@ exports.notify = onRequest({ cors: true }, async (req, res) => {
 
     const data = buildData(b, quem);
     if (!data) { res.status(400).json({ ok: false }); return; }
-    const log = await sendToOther(by, data);
+    const log = await sendToOther(by, byWho, data);
     if (req.method === 'GET') {
       // resposta amigável pro teste no navegador
       res.set('Content-Type', 'text/html; charset=utf-8');
