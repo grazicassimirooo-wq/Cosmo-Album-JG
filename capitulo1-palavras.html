@@ -320,7 +320,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
         <div class="stk-inner">
           <span class="stk-star">✦</span><span class="stk-den">J&amp;G</span>
           <!-- SLOT: foto OU ilustração autoral · 4:5 retrato · ex.: o pergaminho dobrado, sua arte da carta -->
-          <div class="slot ratio-photo">
+          <div class="slot ratio-photo" data-slot-id="capP-carta-selada" data-slot-alt="a carta selada">
             <span class="sico">✒</span>
             <span class="stype">slot · ilustração ou foto</span>
             <span class="sname">a carta selada</span>
@@ -337,7 +337,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
         <div class="stk-inner">
           <span class="stk-star">✦</span><span class="stk-den">♡</span>
           <!-- SLOT: foto de um bilhete real escrito por vocês · 4:5 -->
-          <div class="slot ratio-photo">
+          <div class="slot ratio-photo" data-slot-id="capP-bilhete-geladeira" data-slot-alt="o bilhete da geladeira">
             <span class="sico">📝</span>
             <span class="stype">slot · foto autoral</span>
             <span class="sname">um bilhete na mão dela</span>
@@ -354,7 +354,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
         <div class="stk-inner">
           <span class="stk-star">✦</span><span class="stk-den">α</span>
           <!-- SLOT: Lottie/GIF curto OU ilustração SVG · 1:1 quadrado -->
-          <div class="slot ratio-square">
+          <div class="slot ratio-square" data-slot-id="capP-frase-do-dia" data-slot-alt="a frase do dia">
             <span class="sico">✨</span>
             <span class="stype">slot · animação curta (Lottie/GIF)</span>
             <span class="sname">frase brilhando</span>
@@ -370,7 +370,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
       <div class="stk reveal" style="filter:drop-shadow(0 8px 18px rgba(0,0,0,.25))">
         <div class="stk-inner" style="opacity:.55">
           <span class="stk-star">✦</span><span class="stk-den">♡</span>
-          <div class="slot ratio-photo" style="background:rgba(90,56,32,.05)">
+          <div class="slot ratio-photo" style="background:rgba(90,56,32,.05)" data-slot-id="capP-proxima-carta" data-slot-alt="próxima carta">
             <span class="sico">✶</span>
             <span class="stype">a conquistar</span>
             <span class="sname">em breve…</span>
@@ -390,7 +390,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     <div class="frame">
       <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
       <!-- SLOT: vídeo externo (Vimeo/YouTube/Mux) OU vídeo local OU Lottie grande · 16:9 -->
-      <div class="slot ratio-video">
+      <div class="slot ratio-video" data-slot-id="capP-video-hero" data-slot-alt="vídeo da carta">
         <span class="sico">▶</span>
         <span class="stype">slot · vídeo ou animação autoral</span>
         <span class="sname">a sua voz lendo uma carta · ou uma animação sua</span>
@@ -463,5 +463,11 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
 </script>
 <script src="visual-fx.js" defer></script>
 <script src="magic.js" defer></script>
+<!-- Firebase (upload dos slots) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js" defer></script>
+<script src="firebase-init.js" defer></script>
+<script src="jg-slot-upload.js" defer></script>
 </body>
 </html>

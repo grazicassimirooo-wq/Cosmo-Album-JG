@@ -314,7 +314,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
     </div>
 
     <!-- slot de arte autoral -->
-    <div class="result-art-slot">
+    <div class="result-art-slot" data-slot-id="quiz-arte-resultado" data-slot-alt="arte do resultado do quiz">
       <div class="sa-name" id="saName">Ilustração · resultado</div>
       <div class="sa-dim">360 × 180 px · tema: a linguagem revelada</div>
     </div>
@@ -340,6 +340,7 @@ body{font-family:'Nunito',sans-serif;background:var(--night3);color:var(--cream)
 <!-- Firebase (sincroniza o resultado entre os dois aparelhos) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <script>
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyD0-GBYHLsYc_mqqq3Ymhbq3ynpIdx2sMg",
@@ -748,5 +749,7 @@ function flash(msg){
 <script src="visual-fx.js" defer></script>
 <script src="magic.js" defer></script>
 <script src="presence.js" defer></script>
+<script src="firebase-init.js" defer></script>
+<script src="jg-slot-upload.js" defer></script>
 </body>
 </html>

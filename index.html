@@ -1119,7 +1119,7 @@ img{max-width:100%}
           <!-- SLOT 1: foto OU ilustração autoral · 4:5 · ~360 × 450 px · "a carta selada" -->
           <div class="jg-stk jg-reveal"><div class="jg-stk-inner">
             <span class="jg-stk-star">✦</span><span class="jg-stk-den">J&amp;G</span>
-            <div class="jg-slot ratio-photo">
+            <div class="jg-slot ratio-photo" data-slot-id="cap1-carta-selada" data-slot-alt="a carta selada">
               <span class="jg-sico">✒</span>
               <span class="jg-stype">slot · ilustração ou foto</span>
               <span class="jg-sname">a carta selada</span>
@@ -1132,7 +1132,7 @@ img{max-width:100%}
           <!-- SLOT 2: foto autoral · 4:5 · ~360 × 450 px · "o bilhete da geladeira" -->
           <div class="jg-stk jg-reveal"><div class="jg-stk-inner">
             <span class="jg-stk-star">✦</span><span class="jg-stk-den">♡</span>
-            <div class="jg-slot ratio-photo">
+            <div class="jg-slot ratio-photo" data-slot-id="cap1-bilhete-geladeira" data-slot-alt="o bilhete da geladeira">
               <span class="jg-sico">📝</span>
               <span class="jg-stype">slot · foto autoral</span>
               <span class="jg-sname">um bilhete na mão dela</span>
@@ -1145,7 +1145,7 @@ img{max-width:100%}
           <!-- SLOT 3: Lottie / GIF / SVG · 1:1 · ~360 × 360 px · "a frase do dia" -->
           <div class="jg-stk jg-reveal"><div class="jg-stk-inner">
             <span class="jg-stk-star">✦</span><span class="jg-stk-den">α</span>
-            <div class="jg-slot ratio-square">
+            <div class="jg-slot ratio-square" data-slot-id="cap1-frase-do-dia" data-slot-alt="a frase do dia">
               <span class="jg-sico">✨</span>
               <span class="jg-stype">slot · animação (Lottie/GIF)</span>
               <span class="jg-sname">frase brilhando</span>
@@ -1158,7 +1158,7 @@ img{max-width:100%}
           <!-- SLOT 4: vazia, a colecionar -->
           <div class="jg-stk jg-reveal" style="filter:drop-shadow(0 8px 18px rgba(0,0,0,.25))"><div class="jg-stk-inner" style="opacity:.55">
             <span class="jg-stk-star">✦</span><span class="jg-stk-den">♡</span>
-            <div class="jg-slot ratio-photo" style="background:rgba(90,56,32,.05)">
+            <div class="jg-slot ratio-photo" style="background:rgba(90,56,32,.05)" data-slot-id="cap1-proxima-carta" data-slot-alt="próxima carta">
               <span class="jg-sico">✶</span>
               <span class="jg-stype">a conquistar</span>
               <span class="jg-sname">em breve…</span>
@@ -1172,7 +1172,7 @@ img{max-width:100%}
       <section class="jg-spread jg-reveal">
         <div class="jg-frame">
           <span class="jg-corner tl"></span><span class="jg-corner tr"></span><span class="jg-corner bl"></span><span class="jg-corner br"></span>
-          <div class="jg-slot ratio-video">
+          <div class="jg-slot ratio-video" data-slot-id="cap1-video-hero" data-slot-alt="vídeo da carta">
             <span class="jg-sico">▶</span>
             <span class="jg-stype">slot · vídeo ou animação autoral</span>
             <span class="jg-sname">a sua voz lendo uma carta · ou uma animação sua</span>
@@ -1201,7 +1201,10 @@ img{max-width:100%}
 <!-- Firebase (compartilha as fotos entre os aparelhos). Carrega antes do app. -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+<!-- Upload de foto/vídeo nos slots decorativos (Cap I e outras páginas) -->
+<script src="jg-slot-upload.js" defer></script>
 <script>
 /* ═══ SCRATCH ENGINE ═══ */
 const canvas=document.getElementById('scratchCanvas'),ctx=canvas.getContext('2d'),
@@ -2437,6 +2440,8 @@ let _stg = null;
 try{
   if(_db && typeof firebase.storage === 'function'){ _stg = firebase.storage(); }
 }catch(e){ console.warn('Storage não disponível:', e); _stg = null; }
+// expõe pro jg-slot-upload.js e outros módulos externos
+try{ window._db = _db; window._stg = _stg; window._CLIENT = _CLIENT; }catch(e){}
 
 function _jgOpenVideoRec(ev, uid){
   if(ev && ev.target && ev.target.closest('video')) return;
