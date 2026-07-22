@@ -1,5 +1,5 @@
 /* Service Worker do Álbum J&G — PWA (instalável + offline) e notificações */
-const CACHE = 'cosmo-album-v21';
+const CACHE = 'cosmo-album-v22';
 const SHELL = [
   './', './index.html', './manifest.json', './icon-192.png', './icon-512.png',
   './capitulo1-palavras.html', './capitulo3-toque.html', './capitulo4-servico.html',
@@ -9,7 +9,7 @@ const SHELL = [
   './narrativa-5-linguagens.html', './direcao-de-arte.html',
   './modo-grazi.html', './modo-jussara.html',
   './foto-capa-album.jpg', './foto-pacote-capa.jpg', './foto-jussara.jpg',
-  './visual-fx.js', './magic.js', './presence.js'
+  './visual-fx.js', './magic.js', './presence.js', './pote-bilhetes.js'
 ];
 
 self.addEventListener('install', e => {
