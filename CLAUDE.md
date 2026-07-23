@@ -59,4 +59,12 @@ real, e Cloud Function de push em `functions/`.
   `firestore.rules`; pasta nova do Storage → `storage.rules`.
 - **Verificação**: Chromium headless (`/opt/pw-browsers/chromium`, viewport
   390×844, `localStorage.cosmoUser` pré-setado) + screenshots antes do push.
+- **Penpot (MCP)**: `.mcp.json` na raiz declara o servidor
+  `https://design.penpot.app/mcp/stream?userToken=${PENPOT_ACCESS_TOKEN}`.
+  Pra usar (localmente ou em sessão remota), definir `PENPOT_ACCESS_TOKEN`
+  no ambiente antes de subir o Claude Code — o token é pessoal (JWE gerado
+  em Penpot → Configurações → Access Tokens) e **nunca** é commitado. Se
+  vazar, revogar imediatamente na mesma tela e gerar outro. Uso: puxar
+  designs/tokens do Penpot pra referenciar no álbum e manter a paleta
+  cósmica consistente entre design e código.
 - Tudo em pt-BR, tom carinhoso.
