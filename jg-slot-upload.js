@@ -28,8 +28,10 @@
 
   const STORAGE_DIR = 'jg-slots';
   const COLLECTION  = 'jg-slots';
-  const MAX_IMG_DIM = 1080;
+  const MAX_IMG_DIM = 900;   // reduz pra caber inline no Firestore se Storage falhar
   const MAX_INLINE  = 900 * 1024; // <1MB → cabe num doc Firestore
+  const DEBUG = true;
+  function _log(){ if(DEBUG){ try{ console.log.apply(console, ['[jg-slot]'].concat([].slice.call(arguments))); }catch(e){} } }
 
   function _who(){ try{ return localStorage.getItem('cosmoUser') || 'anon'; }catch(e){ return 'anon'; } }
   function _client(){ try{ return window._CLIENT || _who(); }catch(e){ return 'anon'; } }
@@ -204,32 +206,47 @@
     const slot = _activeSlot; _activeSlot = null;
     const isVideo = file.type.startsWith('video/');
     const isImg   = file.type.startsWith('image/');
+    _log('file selected', {name: file.name, type: file.type, size: file.size});
     if(!isVideo && !isImg){ _toast('tipo não suportado'); return; }
     if(file.size > 80 * 1024 * 1024){ _toast('arquivo maior que 80MB'); return; }
-    if(_who() === 'anon'){ _toast('escolhe seu perfil primeiro'); return; }
+    if(_who() === 'anon'){ _toast('escolhe seu perfil primeiro (jussara/grazi)'); return; }
 
     slot.classList.add('uploading');
     const id = slot.dataset.slotId;
     const kind = isVideo ? 'video' : 'image';
 
-    const done = (url) => {
+    // MOSTRA A MÍDIA LOCALMENTE IMEDIATAMENTE — assim a Grazi vê a foto no ato,
+    // mesmo que o Firebase demore ou falhe. Só depois sincroniza.
+    const showLocal = (src) => {
+      _applyMedia(slot, src, kind);
       slot.classList.remove('uploading');
-      _applyMedia(slot, url, kind);
-      _toast(kind === 'video' ? 'vídeo enviado ✓' : 'foto enviada ✓');
       if(navigator.vibrate) navigator.vibrate(15);
     };
 
-    const persistFirestore = (src) => {
+    const persistFirestore = (src, isRemote) => {
       const db = _db();
-      if(!db) return;
-      db.collection(COLLECTION).doc(id).set({
+      if(!db){
+        _log('_db missing, não persistiu no Firestore');
+        if(!isRemote) _toast('foto no aparelho — sync do banco falhou (recarregue)');
+        return Promise.resolve();
+      }
+      return db.collection(COLLECTION).doc(id).set({
         src, kind, ts: Date.now(), by: _client()
-      }).then(()=> _pushKind(kind === 'video' ? 'video' : 'foto', { pg: 'album', slot: id })).catch(()=>{});
+      }).then(()=> {
+        _log('firestore ok', id);
+        _pushKind(kind === 'video' ? 'video' : 'foto', { pg: 'album', slot: id });
+      }).catch(err => {
+        _log('firestore falhou', err && err.message);
+        _toast('foto no aparelho — banco recusou (' + ((err && err.code) || 'erro') + ')');
+      });
     };
 
     const uploadStorage = (blob, contentType) => {
       const stg = _stg();
-      if(!stg){ return dataUrlFallback(blob); }
+      if(!stg){
+        _log('_stg missing, indo direto pro dataUrlFallback');
+        return dataUrlFallback(blob);
+      }
       const ext = contentType.includes('gif')  ? 'gif'
                 : contentType.includes('png')  ? 'png'
                 : contentType.includes('webp') ? 'webp'
@@ -247,25 +264,36 @@
             const p = slot.querySelector('.jg-slot-progress');
             if(p) p.textContent = 'enviando… ' + pct + '%';
           },
-          err => { console.warn('Storage falhou:', err); dataUrlFallback(blob); },
+          err => {
+            _log('Storage falhou:', err && err.message);
+            _toast('storage indisponível — usando cache local');
+            dataUrlFallback(blob);
+          },
           () => {
             task.snapshot.ref.getDownloadURL().then(url => {
-              done(url);
-              persistFirestore(url);
-            }).catch(err => { console.warn('URL falhou:', err); dataUrlFallback(blob); });
+              _log('storage ok', url);
+              showLocal(url);
+              persistFirestore(url, true).then(() => _toast(kind === 'video' ? 'vídeo enviado ✓' : 'foto enviada ✓'));
+            }).catch(err => {
+              _log('URL falhou:', err && err.message);
+              dataUrlFallback(blob);
+            });
           });
-      }catch(e){ console.warn('Storage exception:', e); dataUrlFallback(blob); }
+      }catch(e){
+        _log('Storage exception:', e && e.message);
+        dataUrlFallback(blob);
+      }
     };
 
     const dataUrlFallback = (blob) => {
       const r = new FileReader();
       r.onload = ev => {
         const src = ev.target.result;
-        done(src);
+        showLocal(src);
         if(typeof src === 'string' && src.length < MAX_INLINE){
-          persistFirestore(src);
+          persistFirestore(src, false).then(() => _toast('foto salva ✓'));
         } else {
-          _toast('salvo só neste aparelho (arquivo grande + storage indisponível)');
+          _toast('foto salva neste aparelho (grande demais pra sync sem storage)');
         }
       };
       r.onerror = () => { slot.classList.remove('uploading'); _toast('falha ao ler o arquivo'); };
@@ -275,14 +303,28 @@
     if(isImg && !file.type.includes('gif')){
       const r = new FileReader();
       r.onload = ev => _resizeImage(ev.target.result, MAX_IMG_DIM, out => {
+        // mostra IMEDIATAMENTE a foto local (data URL reduzido), depois tenta subir
+        showLocal(out);
         fetch(out).then(res => res.blob())
           .then(blob => uploadStorage(blob, 'image/jpeg'))
-          .catch(() => { done(out); });
+          .catch(err => {
+            _log('fetch dataURL falhou:', err && err.message);
+            // já mostrou local, tenta persistir só a data URL no Firestore
+            if(out.length < MAX_INLINE) persistFirestore(out, false).then(() => _toast('foto salva ✓'));
+            else _toast('foto salva neste aparelho');
+          });
       });
       r.onerror = () => { slot.classList.remove('uploading'); _toast('falha ao ler a foto'); };
       r.readAsDataURL(file);
     } else {
-      uploadStorage(file, file.type || (isVideo ? 'video/mp4' : 'image/jpeg'));
+      // gif ou vídeo: mostra local via blob URL primeiro (instantâneo), depois tenta subir
+      try{ showLocal(URL.createObjectURL(file)); }catch(e){}
+      // se for pequeno (<8MB) tenta subir; se for grande, avisa que ficou só local
+      if(file.size < 8 * 1024 * 1024 || _stg()){
+        uploadStorage(file, file.type || (isVideo ? 'video/mp4' : 'image/jpeg'));
+      } else {
+        _toast(isVideo ? 'vídeo salvo neste aparelho (sem sync)' : 'gif salvo neste aparelho');
+      }
     }
   }
 
