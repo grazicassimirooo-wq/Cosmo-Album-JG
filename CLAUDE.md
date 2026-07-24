@@ -67,4 +67,12 @@ real, e Cloud Function de push em `functions/`.
   vazar, revogar imediatamente na mesma tela e gerar outro. Uso: puxar
   designs/tokens do Penpot pra referenciar no álbum e manter a paleta
   cósmica consistente entre design e código.
+  - **Arquivo do álbum no Penpot** (design system + telas mockup):
+    <https://design.penpot.app/#/workspace?team-id=bd31e32d-d69f-81e2-8008-5f3882d11de5&file-id=bd31e32d-d69f-81e2-8008-5f38d51aa957>
+    (team-id `bd31e32d-…-5f3882d11de5`, file-id `bd31e32d-…-5f38d51aa957`).
+    Já tem paleta cósmica em uso, tela do Capítulo I, pergaminho da carta,
+    potinho do bilhete diário, sumário dos 6 cadernos, e 7 color tokens
+    (`color.noite-profunda`, `color.creme-lunar`, `color.ouro-estrela`,
+    `color.ouro-velho`, `color.violeta-cosmica`, `color.coral-rosado`,
+    `color.ceu-meia-noite`) na biblioteca local pra reusar.
 - Tudo em pt-BR, tom carinhoso.
