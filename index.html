@@ -536,9 +536,9 @@ img{max-width:100%}
 .jg-tocrow.right{transform:translateX(22px)}
 .jg-tocrow.in{opacity:1;transform:translateX(0)}
 .jg-tocrow:last-of-type{border-bottom:none}
-.jg-tocrow:hover{border-bottom-color:rgba(232,184,109,.5);background:rgba(232,184,109,.04)}
-.jg-tocrow:hover .jg-numchip{transform:translateY(-3px) rotate(-2deg)}
-.jg-tocrow:hover .jg-pg{color:var(--jg-gold2)}
+.jg-tocrow:hover{border-bottom-color:color-mix(in oklab,var(--acc) 55%,transparent);background:color-mix(in oklab,var(--acc) 6%,transparent)}
+.jg-tocrow:hover .jg-numchip{transform:translateY(-3px) rotate(-2deg);filter:drop-shadow(0 4px 8px rgba(0,0,0,.4)) drop-shadow(0 0 14px color-mix(in oklab,var(--acc) 55%,transparent))}
+.jg-tocrow:hover .jg-pg{color:var(--acc)}
 
 .jg-numchip{width:54px;height:54px;position:relative;background:linear-gradient(160deg,var(--jg-cream),var(--jg-cream2));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:900;font-size:1.3rem;color:var(--jg-ink);transition:transform .35s var(--jg-spring);filter:drop-shadow(0 4px 8px rgba(0,0,0,.4));
   -webkit-mask:radial-gradient(circle 2.6px at 6px 6px,transparent 2.2px,#000 2.6px) top left/12px 12px repeat-x,radial-gradient(circle 2.6px at 6px 6px,transparent 2.2px,#000 2.6px) bottom left/12px 12px repeat-x,radial-gradient(circle 2.6px at 6px 6px,transparent 2.2px,#000 2.6px) top left/12px 12px repeat-y,radial-gradient(circle 2.6px at 6px 6px,transparent 2.2px,#000 2.6px) top right/12px 12px repeat-y,linear-gradient(#000,#000);
