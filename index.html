@@ -533,9 +533,8 @@ img{max-width:100%}
 .jg-hair{height:1px;background:linear-gradient(90deg,transparent,var(--jg-gold),transparent);opacity:.6;margin:14px var(--jg-space) 4px}
 .jg-toc{padding:14px var(--jg-space) 4px;flex:1;display:flex;flex-direction:column;gap:12px}
 .jg-tocrow{--acc:var(--jg-gold2);display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;padding:14px 16px;border-radius:16px;background:color-mix(in oklab,var(--acc) 5%,transparent);border:1px solid color-mix(in oklab,var(--acc) 45%,transparent);box-shadow:0 6px 18px rgba(0,0,0,.28);width:100%;cursor:pointer;color:inherit;text-align:left;font:inherit;opacity:0;transform:translateX(-22px);transition:opacity .7s var(--jg-out),transform .7s var(--jg-out),border-color .25s,background .25s,box-shadow .25s;position:relative}
-.jg-tocrow.right{transform:translateX(22px);margin-left:14px}
-.jg-tocrow.in{opacity:1;transform:translateX(0)}
-.jg-tocrow.in.right{transform:translateX(0);margin-left:14px}
+.jg-tocrow.right{transform:translateX(22px)}
+.jg-tocrow.in,.jg-tocrow.in.right{opacity:1;transform:translateX(0)}
 .jg-tocrow:hover,.jg-tocrow:active{background:color-mix(in oklab,var(--acc) 12%,transparent);border-color:color-mix(in oklab,var(--acc) 75%,transparent);box-shadow:0 8px 26px rgba(0,0,0,.35),0 0 22px color-mix(in oklab,var(--acc) 30%,transparent)}
 .jg-tocrow:hover .jg-numchip,.jg-tocrow:active .jg-numchip{transform:translateY(-2px);box-shadow:0 4px 10px rgba(0,0,0,.35),0 0 18px color-mix(in oklab,var(--acc) 65%,transparent)}
 .jg-tocrow:hover .jg-pg,.jg-tocrow:active .jg-pg{color:var(--acc)}
